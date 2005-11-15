@@ -38,7 +38,7 @@
             <sql:param value="${param.task}"/>
         </sql:query>  
         
-        <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="glast.pipeline.web.decorators.ProcessDecorator" >
+        <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
             <display:column property="Run" sortable="true" headerClass="sortable" />
             <display:column property="Process" sortable="true" headerClass="sortable" />
             <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/> 

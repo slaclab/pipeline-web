@@ -65,7 +65,7 @@
                     <sql:param value="${param.task}"/>
                 </sql:query>
 
-                <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending" decorator="glast.pipeline.web.decorators.ProcessDecorator">
+                <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
                     <display:column property="Sequence" title="#" sortable="true" headerClass="sortable"/>
                     <display:column property="Name" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}" paramId="process" paramProperty="Id"/>
                     <c:forEach var="row" items="${proc_stats.rows}">

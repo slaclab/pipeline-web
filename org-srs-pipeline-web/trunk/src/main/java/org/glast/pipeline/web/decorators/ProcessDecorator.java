@@ -1,8 +1,8 @@
 package org.glast.pipeline.web.decorators;
 
-import glast.jobcontrol.JobControlClient;
-import glast.jobcontrol.JobStatus;
-import glast.jobcontrol.NoSuchJobException;
+import org.glast.jobcontrol.JobControlClient;
+import org.glast.jobcontrol.JobStatus;
+import org.glast.jobcontrol.NoSuchJobException;
 import org.glast.pipeline.web.util.Util;
 import java.util.Iterator;
 import java.util.Map;

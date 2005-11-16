@@ -99,7 +99,7 @@
       </dependency>
       <dependency>
          <groupId>glast</groupId>
-         <artifactId>bsub</artifactId>
+         <artifactId>org-glast-jobcontrol</artifactId>
          <version>0.4</version>
          <type>jar</type>
          <properties>

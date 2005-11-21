@@ -38,55 +38,26 @@
         <aida:tupleProjection var="wallPlot" tuple="${tuple}" xprojection="WallClock"/>
         <aida:tupleProjection var="ratioPlot" tuple="${tuple}" xprojection="Ratio"/>
         <aida:plotter nx="2" ny="3" height="700">
+            <aida:style>
+                <aida:attribute name="statisticsBoxFontSize" value="8"/>
+                <aida:style type="data">
+                    <aida:attribute name="showErrorBars" value="false"/>   
+                </aida:style>  
+            </aida:style>
             <aida:region title="CPU Used (secs)">
-                <aida:style>
-                    <aida:attribute name="statisticsBoxFontSize" value="8"/>
-                </aida:style>
-                <aida:plot var="${cpuPlot}" >
-                    <aida:style>
-                        <aida:attribute name="showErrorBars" value="false"/>   
-                    </aida:style>                      
-                </aida:plot>
+                <aida:plot var="${cpuPlot}"/>
             </aida:region>
             <aida:region title="Memory Used (MB)">
-                <aida:style>
-                    <aida:attribute name="statisticsBoxFontSize" value="8"/>
-                </aida:style>
-                <aida:plot var="${memoryPlot}">
-                    <aida:style>
-                        <aida:attribute name="showErrorBars" value="false"/>   
-                    </aida:style>                      
-                </aida:plot>
+                <aida:plot var="${memoryPlot}"/>
             </aida:region>
             <aida:region title="Wall Clock time (secs)">
-                <aida:style>
-                    <aida:attribute name="statisticsBoxFontSize" value="8"/>
-                </aida:style>
-                <aida:plot var="${wallPlot}">
-                    <aida:style>
-                        <aida:attribute name="showErrorBars" value="false"/>   
-                    </aida:style>                      
-                </aida:plot>
+                <aida:plot var="${wallPlot}"/>                     
             </aida:region>
             <aida:region title="Pending time (mins)">
-                <aida:style>
-                    <aida:attribute name="statisticsBoxFontSize" value="8"/>
-                </aida:style>
-                <aida:plot var="${waitPlot}">
-                    <aida:style>
-                        <aida:attribute name="showErrorBars" value="false"/>   
-                    </aida:style>                      
-                </aida:plot>
+                <aida:plot var="${waitPlot}"/>                     
             </aida:region>
             <aida:region title="CPU/Wall Clock">
-                <aida:style>
-                    <aida:attribute name="statisticsBoxFontSize" value="8"/>
-                </aida:style>
-                <aida:plot var="${ratioPlot}" >
-                    <aida:style>
-                        <aida:attribute name="showErrorBars" value="false"/>   
-                    </aida:style>                      
-                </aida:plot>
+                <aida:plot var="${ratioPlot}"/>                    
             </aida:region>
         </aida:plotter>
     </body>

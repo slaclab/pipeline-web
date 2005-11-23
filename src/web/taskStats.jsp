@@ -26,7 +26,7 @@
         </div> 
      
         <sql:query var="data">
-           select RUNNAME, tpi2.ended-tpi1.submitted "jobtime" from TASK 
+           select RUNNAME, (tpi2.ended-tpi1.submitted)*24*60  "jobtime" from TASK 
                join run r on task_fk=task_pk
                join TPINSTANCE tpi1 on run_pk = tpi1.run_fk 
 			   and tpi1.taskprocess_fk = (select taskprocess_pk from taskprocess 

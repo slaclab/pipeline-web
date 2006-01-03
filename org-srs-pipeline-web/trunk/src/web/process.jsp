@@ -38,7 +38,7 @@
         
         <h2>Individual Runs for: ${name.rowsByIndex[0][0]}</h2>
         
-        <p><b>*NEW*</b> <a href="processStats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
+        <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
         
         <c:choose>
             <c:when test="${empty param.clear}">  

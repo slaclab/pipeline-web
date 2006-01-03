@@ -48,9 +48,18 @@
         <servlet-class>hep.aida.web.servlet.PlotServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>tabCornerServlet</servlet-name>
+        <servlet-class>org.freehep.webutil.tabs.servlet.TabCornerServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     <servlet-mapping>
         <servlet-name>aidaplot</servlet-name>
         <url-pattern>/aida_plot.jsp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>tabCornerServlet</servlet-name>
+        <url-pattern>/tabCornerServlet.jsp</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>

@@ -144,6 +144,6 @@ public class ProcessDecorator extends TableDecorator
       buffer.append("process=");
       buffer.append(id);
 
-      return "<a href=\"processStats.jsp?"+buffer+"\">Stats</a>";
+      return "<a href=\"stats.jsp?"+buffer+"\">Stats</a>";
    }
 }

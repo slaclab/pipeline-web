@@ -8,8 +8,6 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
         <title>Pipeline: Upload</title>
     </head>
     <body>
@@ -23,7 +21,6 @@
         <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
             <c:redirect url="noPermission.jsp"/>
         </c:if>
-        <c:import url="header.jsp"/>
         <%
         if (FileUpload.isMultipartContent(request)) {
             // Create a new file upload handler

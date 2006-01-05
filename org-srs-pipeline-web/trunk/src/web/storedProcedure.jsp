@@ -9,8 +9,6 @@
 <html>
     <head>
         <title>Pipeline status</title>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
-        <link rel="stylesheet" href="css/FSdateSelect.css" type="text/css">        
     </head>
     <body>
         <c:choose>

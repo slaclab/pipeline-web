@@ -5,10 +5,8 @@
 <html>
     <head>
         <title>Pipeline status</title>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
     </head>
     <body>
-    <c:import url="header.jsp"/>
     <h1>Release Notes - Pipeline Front End - Version 1.3</h1>
             
 <h2>Task</h2>

@@ -8,13 +8,9 @@
 
 <html>
     <head>
-        <title>Pipeline status</title>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
-        <link rel="stylesheet" href="css/FSdateSelect.css" type="text/css">        
+        <title>Pipeline status</title>  
     </head>
     <body>
-        <c:import url="header.jsp"/>
-
         <c:choose>
             <c:when test="${!empty param.submit}">  
                 <c:set var="taskFilter" value="${param.taskFilter}" scope="session"/>
@@ -53,13 +49,13 @@
             </c:if>
         </sql:query>    
 
-        <h2>Task Run Summary</h2>
+        <h2>Task Summary</h2>
 
-        <p>This is the web interface to the pipeline . This version includes support for viewing log files, sorting columns, and filtering of results. Feedback and suggestions
+        <p>This is the web interface to the pipeline. This version includes support for viewing log files, sorting columns, and filtering of results. Feedback and suggestions
         are welcome.</p>
         
         <form name="DateForm">
-            <table>
+            <table class="filterTable">
                 <tr valign="top">
                   <td>Task Filter: <input type="text" name="taskFilter" value="${taskFilter}"></td>
                   <td><select name="include">
@@ -74,11 +70,10 @@
         </form>       
         
         <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending">
-            <display:column property="Task" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="id"/>
-            <c:forEach var="row" items="${run_stats.rows}">
+           <display:column property="Task" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="id"/>
+             <c:forEach var="row" items="${run_stats.rows}">
                 <display:column property="${row.rsName}" title="${pl:prettyStatus(row.rsName)}" sortable="true" headerClass="sortable" />
             </c:forEach>
         </display:table>
-
     </body>
 </html>

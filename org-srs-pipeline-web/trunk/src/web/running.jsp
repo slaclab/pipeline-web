@@ -11,22 +11,9 @@
     <head>
         <title>Pipeline status</title>
         <script language="JavaScript" src="scripts/FSdateSelect-UTF8.js"></script>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
         <link rel="stylesheet" href="css/FSdateSelect.css" type="text/css">        
     </head>
-    <body>
-        <c:import url="header.jsp"/>
-        <sql:query var="name">
-            select TASKNAME from TASK where TASK_PK=?
-            <sql:param value="${param.task}"/>           
-        </sql:query>
-        <c:set var="taskName" value="${name.rowsByIndex[0][0]}"/>
-        
-        <div id="breadCrumb"> 
-            <a href="index.jsp">status</a> /
-            <a href="task.jsp?task=${param.task}">${taskName}</a> /
-        </div> 
-        
+    <body>        
         <h2>Running jobs for: ${taskName}</h2>
         
         <c:set var="runNumber" value="to_number(RUNNAME)"/>

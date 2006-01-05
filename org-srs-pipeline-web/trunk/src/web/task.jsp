@@ -8,18 +8,8 @@
 <html>
     <head>
         <title>Pipeline status</title>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
     </head>
     <body>
-        <c:import url="header.jsp"/>
-        <div id="breadCrumb"> 
-            <a href="index.jsp">status</a> /
-        </div> 
-    
-        <sql:query var="name">
-            select TASKNAME from TASK where TASK_PK=?
-            <sql:param value="${param.task}"/>           
-        </sql:query>
         
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS_PK "psPK", PROCESSINGSTATUSNAME "psName" from PROCESSINGSTATUS
@@ -28,6 +18,12 @@
         <sql:query var="run_stats">
             select RUNSTATUS_PK "rsPK", RUNSTATUSNAME "rsName" from RUNSTATUS
         </sql:query>
+        
+        <sql:query var="name">
+            select TASKNAME from TASK where TASK_PK=?
+            <sql:param value="${param.task}"/>           
+        </sql:query>
+        <c:set var="taskName" value="${name.rows[0].TASKNAME}"/>
         
         <sql:query var="summary">
             select            
@@ -39,7 +35,8 @@
             <sql:param value="${param.task}"/>           
         </sql:query> 
         
-        <h2>Run Summary: ${name.rowsByIndex[0][0]} XML: <a href="xml.jsp?xml=dump.jsp&task=${param.task}">(1.0)</a> <a href="xml.jsp?xml=dump11.jsp&task=${param.task}">(1.1)</a> <a href="xml.jsp?xml=catalog.jsp&task=${param.task}">(catalog)</a> </h2>
+        <h2>Task Summary: ${taskName}</h2> 
+        XML: <a href="xml.jsp?xml=dump.jsp&task=${param.task}">(1.0)</a> <a href="xml.jsp?xml=dump11.jsp&task=${param.task}">(1.1)</a> <a href="xml.jsp?xml=catalog.jsp&task=${param.task}">(catalog)</a>
 
         <c:choose>
             <c:when test="${empty summary.rows[0]['ALL']}">
@@ -49,12 +46,12 @@
                 <p>To filter by status click on the count in the status column. To see all runs click on the name in the Name column.</p>   
                 <p><b>*NEW*</b> <a href="running.jsp?task=${param.task}">Show running jobs</a> . <a href="stats.jsp?task=${param.task}">Show summary stats</a></p>
         
-                <p>Task Summary: 
+                <div class="taskSummary">Task Summary: 
                     <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
                         ${pl:prettyStatus(row.rsName)}:&nbsp;${summary.rowsByIndex[0][status.index]},
                     </c:forEach>
                     Total:&nbsp;${summary.rows[0]["ALL"]}
-                </p>
+                </div>
 
                 <sql:query var="test">select 
                     <c:forEach var="row" items="${proc_stats.rows}">

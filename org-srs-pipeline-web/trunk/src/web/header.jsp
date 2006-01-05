@@ -56,6 +56,6 @@
    <div class="breadCrumb"> 
       <a href="index.jsp">summary</a> 
       / <a href="task.jsp?task=${param.task}">${taskName}</a>
-      <c:if test="${!empty processName}">/ <a href="process.jsp?task=${param.task}&process=${param.process}&status=${param.status}">${processName}</a> </c:if>
+      <c:if test="${!empty processName}">/ <a href="process.jsp?task=${param.task}&process=${param.process}">${processName}</a> </c:if>
    </div> 
 </c:if>

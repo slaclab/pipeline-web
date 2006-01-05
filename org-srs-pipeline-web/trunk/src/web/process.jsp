@@ -30,19 +30,22 @@
         <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
         
         <c:choose>
-            <c:when test="${empty param.clear}">  
-                <c:set var="min" value="${param.min}"/>
-                <c:set var="max" value="${param.max}"/>
-                <c:set var="minDate" value="${param.minDate}"/>
-                <c:set var="maxDate" value="${param.maxDate}"/> 
-                <c:set var="status" value="${param.status}"/>
+            <c:when test="${!empty param.clear}">
+                <c:set var="min" value=""  scope="session"/>
+                <c:set var="max" value="" scope="session"/>
+                <c:set var="minDate" value="" scope="session"/>
+                <c:set var="maxDate" value="" scope="session"/> 
+                <c:set var="status" value="" scope="session"/>
+            </c:when>
+            <c:when test="${!empty param.submit}">
+                <c:set var="min" value="${param.min}" scope="session"/>
+                <c:set var="max" value="${param.max}" scope="session"/>
+                <c:set var="minDate" value="${param.minDate}" scope="session"/>
+                <c:set var="maxDate" value="${param.maxDate}" scope="session"/>
+                <c:set var="status" value="${param.status}" scope="session"/>
             </c:when>
             <c:otherwise>
-                <c:set var="min" value=""/>
-                <c:set var="max" value=""/>
-                <c:set var="minDate" value=""/>
-                <c:set var="maxDate" value=""/> 
-                <c:set var="status" value=""/>
+                <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == 0 ? '' : param.status}" scope="session"/></c:if>
             </c:otherwise>
         </c:choose>
                
@@ -78,7 +81,6 @@
                 %>
                 <sql:dateParam value="${maxDateUsed}" type="date"/> 
             </c:if>
-
         </sql:query>
 
         <form name="DateForm">
@@ -91,7 +93,7 @@
                 </select></td></tr>
                 <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"img/FSdateSelector/","US",false,true)</script></td>
                 <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"img/FSdateSelector/","US",false,true)</script></td>
-                <td><input type="submit" value="Filter">&nbsp;<input type="submit" value="Clear" name="clear">
+                <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                 <input type="hidden" name="task" value="${param.task}"> 
                 <input type="hidden" name="process" value="${param.process}"></td></tr>
                 <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all runs on one page</td></tr>

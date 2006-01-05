@@ -5,10 +5,8 @@
 <html>
     <head>
         <title>Job status</title>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
     </head>
     <body>   
-        <c:import url="header.jsp"/>
         <h1>Job ${param.id}</h1>
         <jc:status var="status" id="${param.id}"/>
         <c:choose>

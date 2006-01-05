@@ -11,32 +11,21 @@
     <head>
         <title>Pipeline status</title>
         <script language="JavaScript" src="scripts/FSdateSelect-UTF8.js"></script>
-        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
         <link rel="stylesheet" href="css/FSdateSelect.css" type="text/css">        
     </head>
     <body>
-        <c:import url="header.jsp"/>
-        <sql:query var="name">
-            select TASKNAME from TASK where TASK_PK=?
-            <sql:param value="${param.task}"/>           
-        </sql:query>
-        <c:set var="taskName" value="${name.rowsByIndex[0][0]}"/>
-        
-        <div id="breadCrumb"> 
-            <a href="index.jsp">status</a> /
-            <a href="task.jsp?task=${param.task}">${taskName}</a> /
-        </div> 
-        
-        <sql:query var="name">
-            select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?
-            <sql:param value="${param.process}"/>           
-        </sql:query>
         
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS_PK "psPK", PROCESSINGSTATUSNAME "psName" from PROCESSINGSTATUS
         </sql:query>
+ 
+        <sql:query var="name">
+            select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?
+            <sql:param value="${param.process}"/>           
+        </sql:query>  
+        <c:set var="processName" value="${name.rows[0].TASKPROCESSNAME}"/>
         
-        <h2>Individual Runs for: ${name.rowsByIndex[0][0]}</h2>
+        <h2>Runs for process: ${processName}</h2>
         
         <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
         
@@ -93,7 +82,7 @@
         </sql:query>
 
         <form name="DateForm">
-            <table><tr><th>Run</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
+            <table class="filterTable"><tr><th>Run</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
                 <td>Status: <select size="1" name="status">
                     <option value="">All</option>
                     <c:forEach var="row" items="${proc_stats.rows}">

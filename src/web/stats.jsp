@@ -7,22 +7,10 @@
 
 <html>
    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <title>Pipeline Statistics</title>
-      <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, print" />
    </head>
    <body>
-      <c:import url="header.jsp"/>
-      <sql:query var="name">
-         select TASKNAME from TASK where TASK_PK=?
-         <sql:param value="${param.task}"/>           
-      </sql:query>
-      <c:set var="taskName" value="${name.rowsByIndex[0][0]}"/>
-        
-      <div id="breadCrumb"> 
-         <a href="index.jsp">status</a> /
-         <a href="task.jsp?task=${param.task}">${taskName}</a> /
-      </div> 
+
       <h1>Pipeline Statistics</h1>
 
       <tab:tabs name="ProcessTabs" param="process">

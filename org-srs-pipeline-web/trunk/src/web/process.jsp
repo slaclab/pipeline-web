@@ -20,6 +20,12 @@
         </sql:query>
  
         <sql:query var="name">
+            select TASKNAME from TASK where TASK_PK=?
+            <sql:param value="${param.task}"/>           
+        </sql:query>
+        <c:set var="taskName" value="${name.rows[0].TASKNAME}"/>
+        
+        <sql:query var="name">
             select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?
             <sql:param value="${param.process}"/>           
         </sql:query>  
@@ -55,7 +61,7 @@
         </c:if>
 
         <sql:query var="test">select * from 
-               ( select rownum, TPINSTANCE_PK "Id", to_number(RUNNAME) "Run", PROCESSINGSTATUSNAME "Status", SUBMITTED "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
+               ( select rownum, TPINSTANCE_PK "Id", ${runNumber} "Run", PROCESSINGSTATUSNAME "Status", SUBMITTED "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
                  from TPINSTANCE i
                  join RUN r on (i.RUN_FK=r.RUN_PK)
                  join PROCESSINGSTATUS s on (i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK)

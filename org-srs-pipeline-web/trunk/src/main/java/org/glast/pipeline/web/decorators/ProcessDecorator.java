@@ -1,5 +1,8 @@
 package org.glast.pipeline.web.decorators;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.glast.jobcontrol.JobControlClient;
 import org.glast.jobcontrol.JobStatus;
 import org.glast.jobcontrol.NoSuchJobException;
@@ -17,6 +20,8 @@ public class ProcessDecorator extends TableDecorator
 {
    private JobControlClient jc = new JobControlClient();
    private JobStatus statusCache;
+   private Format dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+   
    /** Creates a new instance of ProcessDecorator */
    public ProcessDecorator()
    {
@@ -145,5 +150,17 @@ public class ProcessDecorator extends TableDecorator
       buffer.append(id);
 
       return "<a href=\"stats.jsp?"+buffer+"\">Stats</a>";
+   }
+   public String getLastActive()
+   {
+      Map map = (Map) getCurrentRowObject();
+      Date date = (Date) map.get("Last Active");
+      return date == null ? "-" : dateFormat.format(date);      
+   }
+   public String getSubmitted()
+   {
+      Map map = (Map) getCurrentRowObject();
+      Date date = (Date) map.get("Submitted");
+      return date == null ? "-" : dateFormat.format(date);      
    }
 }

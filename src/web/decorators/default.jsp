@@ -6,7 +6,7 @@
 <html>
    <head>
       <title><decorator:title default="Glast Pipeline" /></title>
-      <link href="${pageContext.request.contextPath}/css/screen.css" rel="stylesheet" type="text/css">
+      <link href="${pageContext.request.contextPath}/css/screen.jsp" rel="stylesheet" type="text/css">
       <decorator:head />
    </head>
    <body>

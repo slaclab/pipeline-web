@@ -20,7 +20,7 @@ public class ProcessDecorator extends TableDecorator
 {
    private JobControlClient jc = new JobControlClient();
    private JobStatus statusCache;
-   private Format dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+   private Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
    
    /** Creates a new instance of ProcessDecorator */
    public ProcessDecorator()

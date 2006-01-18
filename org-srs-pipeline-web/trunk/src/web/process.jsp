@@ -10,7 +10,7 @@
 <html>
     <head>
         <title>Pipeline status</title>
-        <script language="JavaScript" src="scripts/FSdateSelect-UTF8.js"></script>
+        <script language="JavaScript" src="scripts/FSdateSelect.jsp"></script>
         <link rel="stylesheet" href="css/FSdateSelect.css" type="text/css">        
     </head>
     <body>

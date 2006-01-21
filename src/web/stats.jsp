@@ -2,7 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
-<%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
+<%@taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib prefix="tab" uri="http://java.freehep.org/tabs-taglib" %>
 
 <html>
@@ -52,7 +52,7 @@
          <c:forEach var="row" items="${processes.rows}">
             <tab:tab name="${row.TASKPROCESSNAME}" href="stats.jsp?task=${param.task}" value="${row.TASKPROCESS_PK}">
                <sql:query var="data">
-                  select (STARTED-SUBMITTED)*24*60 "WaitTime", (ENDED-STARTED)*24*60*60 "WallClock", MEMORYBYTES/1000 "Bytes", CPUSECONDS/1000 "Cpu",CPUSECONDS/(ENDED-STARTED)/24/60/60/1000 "Ratio"  
+                  select (STARTED-SUBMITTED)*24*60 "WaitTime", (ENDED-STARTED)*24*60*60 "WallClock", MEMORYBYTES/1000 "Bytes", CPUSECONDS/1000 "Cpu",case when ended=started then null else CPUSECONDS/(ENDED-STARTED)/24/60/60/1000 end "Ratio"  
                   from TPINSTANCE i, PROCESSINGSTATUS s where TASKPROCESS_FK=? and PROCESSINGSTATUSNAME='END_SUCCESS'
                   and i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK  
                   <sql:param value="${row.TASKPROCESS_PK}"/>

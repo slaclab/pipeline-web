@@ -44,7 +44,7 @@
             </c:when>
             <c:otherwise>
                 <p>To filter by status click on the count in the status column. To see all runs click on the name in the Name column.</p>   
-                <p><b>*NEW*</b> <a href="running.jsp?task=${param.task}">Show running jobs</a> . <a href="stats.jsp?task=${param.task}">Show summary stats</a></p>
+                <p><b>*NEW*</b> <a href="running.jsp?task=${param.task}">Show running jobs</a> . <a href="stats.jsp?task=${param.task}&process=0">Show summary stats</a></p>
         
                 <div class="taskSummary">Task Summary: 
                     <c:forEach var="row" items="${run_stats.rows}" varStatus="status">

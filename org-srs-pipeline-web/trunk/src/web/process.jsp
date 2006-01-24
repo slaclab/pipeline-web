@@ -61,10 +61,10 @@
         </c:if>
 
         <sql:query var="test">select * from 
-               ( select rownum, TPINSTANCE_PK "Id", ${runNumber} "Run", PROCESSINGSTATUSNAME "Status", SUBMITTED "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
-                 from TPINSTANCE i
-                 join RUN r on (i.RUN_FK=r.RUN_PK)
-                 join PROCESSINGSTATUS s on (i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK)
+            ( select rownum, TPINSTANCE_PK "Id", ${runNumber} "Run", PROCESSINGSTATUSNAME "Status", SUBMITTED "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
+            from TPINSTANCE i
+            join RUN r on (i.RUN_FK=r.RUN_PK)
+            join PROCESSINGSTATUS s on (i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK)
             where TASKPROCESS_FK=?  
             <c:if test="${!empty status}">and PROCESSINGSTATUS_FK=?</c:if>
             ) where rownum>0
@@ -83,7 +83,7 @@
             <c:if test="${!empty maxDate && maxDate!='None'}"> 
                 <fmt:parseDate value="${maxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
                 <% java.util.Date d = (java.util.Date) pageContext.getAttribute("maxDateUsed"); 
-                     d.setTime(d.getTime()+24*60*60*1000);
+                    d.setTime(d.getTime()+24*60*60*1000);
                 %>
                 <sql:dateParam value="${maxDateUsed}" type="date"/> 
             </c:if>
@@ -106,15 +106,30 @@
             </table>
         </form>
         
-        <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-            <display:column property="Run" sortable="true" headerClass="sortable" />
-            <display:column property="status" sortable="true" headerClass="sortable"/>
-            <display:column property="submitted" sortable="true" headerClass="sortable"/>
-            <display:column property="bytes" title="Memory (MB)" sortable="true" headerClass="sortable"/>
-            <display:column property="cpu" title="CPU (secs)" sortable="true" headerClass="sortable"/>
-            <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
-            <display:column property="links" title="Links (<a href=help.html>?</a>)" />
-        </display:table>
-
+        <c:choose>
+            <c:when test="${param.mode=='run'}">
+                <pre><c:forEach var="row" items="${test.rows}">${row.run}<br></c:forEach></pre>
+            </c:when>
+            <c:when test="${param.mode=='id'}">
+                <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.PID}">${row.PID}<br></c:if></c:forEach></pre>
+            </c:when>
+            <c:otherwise>
+                <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+                    <display:column property="Run" sortable="true" headerClass="sortable" />
+                    <display:column property="status" sortable="true" headerClass="sortable"/>
+                    <display:column property="submitted" sortable="true" headerClass="sortable"/>
+                    <display:column property="bytes" title="Memory (MB)" sortable="true" headerClass="sortable"/>
+                    <display:column property="cpu" title="CPU (secs)" sortable="true" headerClass="sortable"/>
+                    <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
+                    <display:column property="links" title="Links (<a href=help.html>?</a>)" />
+                </display:table>
+                <c:if test="${test.rowCount>0}">
+                    <ul>
+                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&mode=run">Dump run list</a>.</li>
+                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&mode=id">Dump job id list</a>.</li>
+                    </ul>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </body>
 </html>

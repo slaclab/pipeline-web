@@ -3,21 +3,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<c:choose>
-   <c:when test="${param.mode=='prod'}">
-      <sql:setDataSource dataSource="jdbc/pipeline" scope="session"/>
-      <c:set var="mode" value="Prod" scope="session"/>
-   </c:when>
-   <c:when test="${param.mode=='dev'}">
-      <sql:setDataSource dataSource="jdbc/pipeline-dev" scope="session"/>
-      <c:set var="mode" value="Dev" scope="session"/>
-   </c:when>
-   <c:when test="${param.mode=='test'}">
-      <sql:setDataSource dataSource="jdbc/pipeline-test" scope="session"/>
-      <c:set var="mode" value="Test" scope="session"/>
-   </c:when>
-</c:choose>
-
 <table class="pageHeader">
    <tr>
       <td valign="top" rowspan="2">
@@ -38,21 +23,7 @@
    </tr>
 </table>
 
-<c:if test="${!empty param.task}">
-   <sql:query var="name">
-      select TASKNAME from TASK where TASK_PK=?
-      <sql:param value="${param.task}"/>           
-   </sql:query>
-   <c:set var="taskName" value="${name.rows[0].TASKNAME}"/>
-        
-   <c:if test="${!empty param.process}">
-      <sql:query var="name">
-         select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?
-         <sql:param value="${param.process}"/>           
-      </sql:query>  
-      <c:set var="processName" value="${name.rows[0].TASKPROCESSNAME}"/>
-   </c:if>
-        
+<c:if test="${!empty param.task}">   
    <div class="breadCrumb"> 
       <a href="index.jsp">summary</a> 
       / <a href="task.jsp?task=${param.task}">${taskName}</a>

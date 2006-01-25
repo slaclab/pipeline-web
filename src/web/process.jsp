@@ -18,18 +18,6 @@
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS_PK "psPK", PROCESSINGSTATUSNAME "psName" from PROCESSINGSTATUS
         </sql:query>
- 
-        <sql:query var="name">
-            select TASKNAME from TASK where TASK_PK=?
-            <sql:param value="${param.task}"/>           
-        </sql:query>
-        <c:set var="taskName" value="${name.rows[0].TASKNAME}"/>
-        
-        <sql:query var="name">
-            select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?
-            <sql:param value="${param.process}"/>           
-        </sql:query>  
-        <c:set var="processName" value="${name.rows[0].TASKPROCESSNAME}"/>
         
         <h2>Runs for process: ${processName}</h2>
         

@@ -19,12 +19,6 @@
             select RUNSTATUS_PK "rsPK", RUNSTATUSNAME "rsName" from RUNSTATUS
         </sql:query>
         
-        <sql:query var="name">
-            select TASKNAME from TASK where TASK_PK=?
-            <sql:param value="${param.task}"/>           
-        </sql:query>
-        <c:set var="taskName" value="${name.rows[0].TASKNAME}"/>
-        
         <sql:query var="summary">
             select            
             <c:forEach var="row" items="${run_stats.rows}" varStatus="status">

@@ -11,10 +11,10 @@
    <body>
 
       <sql:query var="name">
-         select RUNNAME,BATCHLOGFILEPATH,BATCHLOGFILENAME from TPINSTANCE,RUN where TPINSTANCE_PK=? and RUN_PK=RUN_FK
+         select BATCHLOGFILEPATH,BATCHLOGFILENAME from TPINSTANCE,RUN where TPINSTANCE_PK=? and RUN_PK=RUN_FK
          <sql:param value="${param.run}"/>           
       </sql:query>
-      <c:set var="logName" value="${name.rowsByIndex[0][1]}/${name.rowsByIndex[0][2]}"/>
+      <c:set var="logName" value="${name.rows[0]['BATCHLOGFILEPATH']}/${name.rows[0]['BATCHLOGFILENAME']}"/>
       <c:set var="logURL" value="${fn:replace(logName,'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
 
       <h2>Run: ${name.rowsByIndex[0][0]}</h2>

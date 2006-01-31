@@ -5,6 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 
 <html>
     <head>
@@ -41,7 +42,9 @@
             join TPInstance TPI on TP.TaskProcess_PK = TPI.TaskProcess_FK 
             group by T.Task_PK, T.TaskName
             ) TABLE_B 
-            on  TABLE_A."Id" = TABLE_B.Task_PK where "Id">0          
+            on  TABLE_A."Id" = TABLE_B.Task_PK 
+            left outer join HIDDENTASKS h on h.task_fk = TABLE_A."Id"
+            where "Id">0          
             <c:if test="${!empty taskFilter}">
                 and lower("Task") like lower('%${taskFilter}%')
             </c:if>
@@ -56,6 +59,9 @@
             </c:if>
             <c:if test="${include=='last30'}">
                 and SYSDATE-"Last Active"<30 
+            </c:if>
+            <c:if test="${!gm:isUserInGroup(userName,'DC2Admins')}">
+                and h.GROUPS is null
             </c:if>
         </sql:query>    
 

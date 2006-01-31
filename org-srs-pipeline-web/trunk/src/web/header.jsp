@@ -17,8 +17,18 @@
       </td>
    </tr>
    <tr>
-      <td align="right" valign="bottom"><p>Mode: <b><c:out value="${mode}" default="Prod"/></b> Switch to: [ <a href="index.jsp?mode=prod">Prod</a> | <a href="index.jsp?mode=dev">Dev</a> | <a href="index.jsp?mode=test">Test</a> ]</p>
-         <p>*NEW* <a href="upload.jsp">Upload configuration file</a></p> 
+      <td align="right" valign="bottom">
+         <c:choose>
+            <c:when test="${empty userName}">
+               <p><a href="?login=true">Login</a></p>
+            </c:when>
+
+            <c:otherwise>
+               <p>User: ${userName}&nbsp;.&nbsp;<a href="?login=false">Logout</a></p>
+            </c:otherwise>
+         </c:choose>
+         <p>Mode: <b><c:out value="${mode}" default="Prod"/></b> Switch to: [ <a href="index.jsp?mode=prod">Prod</a> | <a href="index.jsp?mode=dev">Dev</a> | <a href="index.jsp?mode=test">Test</a> ]</p>
+         <p><a href="upload.jsp">Upload configuration file</a></p> 
       </td>        
    </tr>
 </table>

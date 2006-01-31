@@ -7,6 +7,19 @@
         <title>Pipeline status</title>
     </head>
     <body>
+
+<h1>Release Notes - Pipeline Front End - Version 1.4.2</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='http://jira.slac.stanford.edu/browse/PFE-72'>PFE-72</a>] - Request for cut/paste run lists</li>
+</ul>
+            
+<h2>Improvement</h2>
+<ul>
+<li>[<a href='http://jira.slac.stanford.edu/browse/PFE-80'>PFE-80</a>] - Add ability to hide "secret" tasks</li>
+</ul>
+
 <h1>Release Notes - Pipeline Front End - Version 1.4.1</h1>
     
 <h2>Bug</h2>

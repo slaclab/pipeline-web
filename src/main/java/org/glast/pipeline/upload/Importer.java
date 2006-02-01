@@ -16,7 +16,7 @@ import org.jdom.input.SAXBuilder;
 /**
  * Imports an XML file into the pipeline database
  * @author tonyj
- * @version $Id: Importer.java,v 1.2 2006-02-01 21:49:22 tonyj Exp $
+ * @version $Id: Importer.java,v 1.1 2005-11-14 18:23:46 tonyj Exp $
  */
 public class Importer
 {
@@ -38,6 +38,7 @@ public class Importer
       {
          user_pk = dbu.createGlastUser(userName);
       }
+      System.out.println("user_pk = "+user_pk);
       
       Namespace ns = pipeline.getNamespace();
       

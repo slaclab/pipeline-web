@@ -39,65 +39,69 @@ public class PipelineFilter implements Filter
    {
       try
       {
-         String login = servletRequest.getParameter("login");
-         if ("true".equals(login) || "maybe".equals(login))
+         // FixMe: Need something better here!
+         if (!((HttpServletRequest) servletRequest).getRequestURL().toString().endsWith(".xsd"))
          {
-            doLogin((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse,login);
-         }
-         else if ("false".equals(login))
-         {
-            doLogout((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
-         }
-         else 
-         {
-            doCheckIfAlreadyLoggedIn((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
-         }
-         
-         HttpSession session = ((HttpServletRequest) servletRequest).getSession();
-         String mode = servletRequest.getParameter("mode");
-         
-         if (mode != null)
-         {
-            String modeString;
-            String dataSource;
+            String login = servletRequest.getParameter("login");
+            if ("true".equals(login) || "maybe".equals(login))
+            {
+               doLogin((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse,login);
+            }
+            else if ("false".equals(login))
+            {
+               doLogout((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+            }
+            else
+            {
+               doCheckIfAlreadyLoggedIn((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+            }
             
-            if ("dev".equals(mode))
+            HttpSession session = ((HttpServletRequest) servletRequest).getSession();
+            String mode = servletRequest.getParameter("mode");
+            
+            if (mode != null)
             {
-               dataSource = "jdbc/pipeline-dev";
-               modeString = "Dev";
+               String modeString;
+               String dataSource;
                
+               if ("dev".equals(mode))
+               {
+                  dataSource = "jdbc/pipeline-dev";
+                  modeString = "Dev";
+                  
+               }
+               else if ("test".equals(mode))
+               {
+                  dataSource = "jdbc/pipeline-test";
+                  modeString = "Test";
+               }
+               else // if ("prod".equals(mode))
+               {
+                  dataSource = "jdbc/pipeline";
+                  modeString = "Prod";
+               }
+               Config.set(session, Config.SQL_DATA_SOURCE, dataSource);
+               session.setAttribute("mode", modeString);
             }
-            else if ("test".equals(mode))
+            
+            String taskId = servletRequest.getParameter("task");
+            if (taskId != null)
             {
-               dataSource = "jdbc/pipeline-test";
-               modeString = "Test";
-            }
-            else // if ("prod".equals(mode))
-            {
-               dataSource = "jdbc/pipeline";
-               modeString = "Prod";
-            }
-            Config.set(session, Config.SQL_DATA_SOURCE, dataSource);
-            session.setAttribute("mode", modeString);
-         }
-         
-         String taskId = servletRequest.getParameter("task");
-         if (taskId != null)
-         {
-            Object dataSourceName = Config.get(session, Config.SQL_DATA_SOURCE);
-            if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");
-            DataSource dataSource = (DataSource) initialContext.lookup("java:comp/env/"+dataSourceName);
-            Connection connection = dataSource.getConnection();
-            try
-            {
-               servletRequest.setAttribute("taskName",idToName(connection,taskId,"select TASKNAME from TASK where TASK_PK=?"));
-               
-               String processId = servletRequest.getParameter("process");
-               if (processId != null && !processId.equals("0")) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
-            }
-            finally
-            {
-               connection.close();
+               Object dataSourceName = Config.get(session, Config.SQL_DATA_SOURCE);
+               if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");
+               DataSource dataSource = (DataSource) initialContext.lookup("java:comp/env/"+dataSourceName);
+               Connection connection = dataSource.getConnection();
+               try
+               {
+                  servletRequest.setAttribute("taskName",idToName(connection,taskId,"select TASKNAME from TASK where TASK_PK=?"));
+                  
+                  String processId = servletRequest.getParameter("process");
+                  if (processId != null && !processId.equals("0")) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
+               }
+               finally
+               {
+                  connection.close();
+               }
             }
          }
       }
@@ -139,7 +143,7 @@ public class PipelineFilter implements Filter
          
          /* contact CAS and validate */
          sv.validate();
-              
+         
          /* read the response */
          
          // Yes, this method is misspelled in this way

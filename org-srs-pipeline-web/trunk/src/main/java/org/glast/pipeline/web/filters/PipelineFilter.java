@@ -93,7 +93,7 @@ public class PipelineFilter implements Filter
                servletRequest.setAttribute("taskName",idToName(connection,taskId,"select TASKNAME from TASK where TASK_PK=?"));
                
                String processId = servletRequest.getParameter("process");
-               if (processId != null) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
+               if (processId != null && !processId.equals("0")) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
             }
             finally
             {

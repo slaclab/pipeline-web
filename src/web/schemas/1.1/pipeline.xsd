@@ -176,6 +176,7 @@
          <xs:enumeration value="log"/>
          <xs:enumeration value="ntuple"/>
          <xs:enumeration value="tree"/>
+         <xs:enumeration value="RetDef"/>
          <xs:enumeration value="RECON"/>
       </xs:restriction>
    </xs:simpleType>

@@ -30,25 +30,26 @@
    <c:set var= "n" value= "0"/>
 	   <c:forTokens items ="glastdata:glastgrp" delims=":" var="pkg">
 	  
-	 
    <sql:query var="data">
-         select TRUNC(PS.entered) as entered, BG.BATCHGROUPNAME,sum(PS.prepared) as prepared,
-SUM (PS.SUBMITTED) as submitted,
-SUM(PS.RUNNING) as running
- from processingstatistics PS , BATCHGROUP BG
-WHERE PS.BATCHGROUP_FK = BG.BATCHGROUP_PK
-and bg.batchgroupname = ? 
-AND trunc(ENTERED) between '12-feb-2006' and '15-feb-2006'
-GROUP BY TRUNC(PS.ENTERED), BG.BATCHGROUPNAME
-		  <sql:param value = "${pkg}"/>
+      select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
+	  min(ps.entered) jobtime,
+	  BG.BATCHGROUPNAME,
+	  sum(PS.prepared) as prepared,
+      SUM (PS.SUBMITTED) as submitted,
+      SUM(PS.RUNNING) as running
+      from processingstatistics PS , BATCHGROUP BG
+      WHERE PS.BATCHGROUP_FK = BG.BATCHGROUP_PK
+      and bg.batchgroupname = ?
+      and to_char(entered)  >= '14-feb-2006'
+      GROUP BY to_char(PS.ENTERED,'dd-mon-yyyy HH24'), BG.BATCHGROUPNAME
+   <sql:param value = "${pkg}"/>
    </sql:query>
-    
      
   
    <aida:tuple var="tuple" query="${data}" />        
-      <aida:datapointset var="prepared" tuple="${tuple}" yaxisColumn="PREPARED" xaxisColumn="ENTERED" />   
-      <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="ENTERED" />   
-      <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />   
+      <aida:datapointset var="prepared" tuple="${tuple}" yaxisColumn="PREPARED" xaxisColumn="JOBTIME" />   
+      <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="JOBTIME" />   
+      <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="JOBTIME" />   
 	  <aida:region title="Last ${datespan} days: ${pkg}">
 	    <aida:style>
 	 	   <aida:attribute name="showStatisticsBox" value="false"/>		        

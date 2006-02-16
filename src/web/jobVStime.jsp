@@ -38,7 +38,7 @@ SUM(PS.RUNNING) as running
  from processingstatistics PS , BATCHGROUP BG
 WHERE PS.BATCHGROUP_FK = BG.BATCHGROUP_PK
 and bg.batchgroupname = ? 
-AND trunc(ENTERED) between '12-feb-2006' and '15-feb-2006'
+AND trunc(ENTERED) >='14-feb-2006' 
 GROUP BY TRUNC(PS.ENTERED), BG.BATCHGROUPNAME
 		  <sql:param value = "${pkg}"/>
    </sql:query>

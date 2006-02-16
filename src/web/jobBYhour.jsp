@@ -18,25 +18,22 @@
       </style>
 </head>
    <body>  
-    <c:if test="${empty datespan }">
-       <c:set var="datespan" value="7"/>
+   <c:set var="datespan" value="FEB 14 to now"/>
+    <c:if test="${empty datespanX }">
+       <c:set var="datespanX" value="7"/>
    </c:if>  
-   <c:if test="${! empty param.datespan }">
-        <c:set var="datespan" value="${param.datespan}"/>    
+   <c:if test="${! empty param.datespanX }">
+        <c:set var="datespanX" value="${param.datespanX}"/>    
    </c:if>    
 	<% pageContext.setAttribute("now",System.currentTimeMillis()/1000.);  %>
-    <p> <span class="style1"><span class="style2">Pipeline Job Status  for the last ${datespan} days</span></span> </p>
+    <p> <span class="style1"><span class="style2">Pipeline Job Averages since Feb 14 2006 </span></span> </p>
     <aida:plotter nx="2" ny="6" height="1400"> 
-   <c:set var= "n" value= "0"/>
-	   <c:forTokens items ="glastdata:glastgrp" delims=":" var="pkg">
-	  
-   <sql:query var="data">
-      select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
+   <c:set var= "n" value= "0"/><c:forTokens items ="glastdata:glastgrp" delims=":" var="pkg"><sql:query var="data">select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
 	  min(ps.entered) jobtime,
 	  BG.BATCHGROUPNAME,
-	  sum(PS.prepared) as prepared,
-      SUM (PS.SUBMITTED) as submitted,
-      SUM(PS.RUNNING) as running
+	  avg(PS.prepared) as prepared,
+      avg(PS.SUBMITTED) as submitted,
+      avg(PS.RUNNING) as running
       from processingstatistics PS , BATCHGROUP BG
       WHERE PS.BATCHGROUP_FK = BG.BATCHGROUP_PK
       and bg.batchgroupname = ?
@@ -50,7 +47,7 @@
       <aida:datapointset var="prepared" tuple="${tuple}" yaxisColumn="PREPARED" xaxisColumn="JOBTIME" />   
       <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="JOBTIME" />   
       <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="JOBTIME" />   
-	  <aida:region title="Last ${datespan} days: ${pkg}">
+	  <aida:region title="${pkg} from ${datespan} ">
 	    <aida:style>
 	 	   <aida:attribute name="showStatisticsBox" value="false"/>		        
 	        <aida:style type="xAxis">

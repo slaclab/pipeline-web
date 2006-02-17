@@ -10,8 +10,8 @@
 <html>
     <head>
         <title>Pipeline status</title>
-        <script language="JavaScript" src="scripts/FSdateSelect.jsp"></script>
-        <link rel="stylesheet" href="css/FSdateSelect.css" type="text/css">        
+        <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
+        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
     </head>
     <body>
         
@@ -85,8 +85,8 @@
                         <option value="${row.psPK}" ${status==row.psPK ? "selected" : ""}>${pl:prettyStatus(row.psName)}</option>
                     </c:forEach>
                 </select></td></tr>
-                <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"img/FSdateSelector/","US",false,true)</script></td>
-                <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"img/FSdateSelector/","US",false,true)</script></td>
+                <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
+                <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
                 <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                 <input type="hidden" name="task" value="${param.task}"> 
                 <input type="hidden" name="process" value="${param.process}"></td></tr>

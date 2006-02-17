@@ -4,15 +4,15 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
-   <head>
-      <title><decorator:title default="Glast Pipeline" /></title>
-      <link href="${pageContext.request.contextPath}/css/screen.jsp" rel="stylesheet" type="text/css">
-      <decorator:head />
-   </head>
-   <body>
-      <c:import url="header.jsp"/>
-      <div class="pageBody">
-         <decorator:body />
-      </div>
-   </body>
+    <head>
+        <title><decorator:title default="Glast Pipeline" /></title>
+        <link href="http://glast-ground.slac.stanford.edu/Commons/css/glastCommons.jsp" rel="stylesheet" type="text/css">
+        <decorator:head />
+    </head>
+    <body>
+        <c:import url="header.jsp"/>
+        <div class="pageBody">
+            <decorator:body />
+        </div>
+    </body>
 </html>

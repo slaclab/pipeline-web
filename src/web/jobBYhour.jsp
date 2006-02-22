@@ -2,6 +2,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 
 <html>
@@ -18,17 +19,26 @@
       </style>
 </head>
    <body>  
-   <c:set var="datespan" value="FEB 14 to now"/>
-    <c:if test="${empty datespanX }">
-       <c:set var="datespanX" value="7"/>
+  
+    <c:if test="${empty param.datespan }">
+       <c:set var="datespan" value="1"/>
+	   <jsp:useBean id="starttime" class="java.util.Date" /> 
+    <jsp:setProperty name="starttime" property="time" value="${starttime.time -24*60*60*1000}" /> 
+   
+    <p> <span class="style1"><span class="style2">Pipeline Job Averages since  <fmt:formatDate value="${starttime}" pattern="yyyy-MMM-dd HH:mm"/>. </span></span> </p>
+   
    </c:if>  
-   <c:if test="${! empty param.datespanX }">
-        <c:set var="datespanX" value="${param.datespanX}"/>    
-   </c:if>    
-	<% pageContext.setAttribute("now",System.currentTimeMillis()/1000.);  %>
-    <p> <span class="style1"><span class="style2">Pipeline Job Averages since Feb 14 2006 </span></span> </p>
+   <c:if test="${! empty param.datespan }">
+        <c:set var="datespan" value="${param.datespan}"/> 
+		 <p> <span class="style1"><span class="style2">Pipeline Job Averages for last ${param.datespan} days   </span> </p>
+   </c:if>   
+ 
+   
+   
     <aida:plotter nx="2" ny="6" height="1400"> 
-   <c:set var= "n" value= "0"/><c:forTokens items ="glastdata:glastgrp" delims=":" var="pkg"><sql:query var="data">select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
+   <c:set var= "n" value= "0"/><c:forTokens items ="glastdata:glastgrp" delims=":" var="pkg">
+   <sql:query var="data">
+     select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
 	  min(ps.entered) jobtime,
 	  BG.BATCHGROUPNAME,
 	  avg(PS.prepared) as prepared,
@@ -37,7 +47,8 @@
       from processingstatistics PS , BATCHGROUP BG
       WHERE PS.BATCHGROUP_FK = BG.BATCHGROUP_PK
       and bg.batchgroupname = ?
-      and to_char(entered)  >= '14-feb-2006'
+ and entered >=
+sysdate  - interval '0 23:59:59'  day to second  
       GROUP BY to_char(PS.ENTERED,'dd-mon-yyyy HH24'), BG.BATCHGROUPNAME
    <sql:param value = "${pkg}"/>
    </sql:query>
@@ -47,7 +58,7 @@
       <aida:datapointset var="prepared" tuple="${tuple}" yaxisColumn="PREPARED" xaxisColumn="JOBTIME" />   
       <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="JOBTIME" />   
       <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="JOBTIME" />   
-	  <aida:region title="${pkg} from ${datespan} ">
+	  <aida:region title="${pkg}">
 	    <aida:style>
 	 	   <aida:attribute name="showStatisticsBox" value="false"/>		        
 	        <aida:style type="xAxis">

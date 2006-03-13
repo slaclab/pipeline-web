@@ -1,8 +1,6 @@
 package org.glast.pipeline.web.filters;
 
-import edu.yale.its.tp.cas.client.ServiceTicketValidator;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,23 +37,6 @@ public class PipelineFilter implements Filter
    {
       try
       {
-         // FixMe: Need something better here!
-         if (!((HttpServletRequest) servletRequest).getRequestURL().toString().endsWith(".xsd"))
-         {
-            String login = servletRequest.getParameter("login");
-            if ("true".equals(login) || "maybe".equals(login))
-            {
-               doLogin((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse,login);
-            }
-            else if ("false".equals(login))
-            {
-               doLogout((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
-            }
-            else
-            {
-               doCheckIfAlreadyLoggedIn((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
-            }
-            
             HttpSession session = ((HttpServletRequest) servletRequest).getSession();
             String mode = servletRequest.getParameter("mode");
             
@@ -103,7 +84,6 @@ public class PipelineFilter implements Filter
                   connection.close();
                }
             }
-         }
       }
       catch (Exception x)
       {
@@ -120,59 +100,6 @@ public class PipelineFilter implements Filter
       String name = rs.getString(1);
       rs.close();
       return name;
-   }
-   private void doLogin(HttpServletRequest request, HttpServletResponse response, String mode) throws IOException, SAXException, ParserConfigurationException, ServletException
-   {
-      String ticket = request.getParameter("ticket");
-      if (ticket == null)
-      {
-         if ("true".equals(mode))
-         {
-            String here = URLEncoder.encode(request.getRequestURL().toString()+"?login=true","UTF-8");
-            response.sendRedirect("https://glast-ground.slac.stanford.edu/cas/login?service="+here);
-         }
-      }
-      else
-      {
-         ServiceTicketValidator sv = new ServiceTicketValidator();
-         
-         /* set its parameters */
-         sv.setCasValidateUrl("https://glast-ground.slac.stanford.edu/cas/proxyValidate");
-         sv.setService(request.getRequestURL().toString()+"?login="+mode);
-         sv.setServiceTicket(ticket);
-         
-         /* contact CAS and validate */
-         sv.validate();
-         
-         /* read the response */
-         
-         // Yes, this method is misspelled in this way
-         // in the ServiceTicketValidator implementation.
-         // Sorry.
-         if(sv.isAuthenticationSuccesful())
-         {
-            request.getSession().setAttribute("userName", sv.getUser());
-         }
-         else
-         {
-            throw new ServletException("CAS Validation error: "+sv.getErrorCode()+" "+sv.getErrorMessage());
-         }
-      }
-   }
-   private void doLogout(HttpServletRequest request, HttpServletResponse response) throws IOException
-   {
-      request.getSession().removeAttribute("userName");
-      response.sendRedirect("https://glast-ground.slac.stanford.edu/cas/logout");
-   }
-   private void doCheckIfAlreadyLoggedIn(HttpServletRequest request, HttpServletResponse response) throws IOException
-   {
-      HttpSession session = request.getSession();
-      if (session.getAttribute("loginChecked") == null)
-      {
-         session.setAttribute("loginChecked","true");
-         String here = URLEncoder.encode(request.getRequestURL().toString()+"?login=maybe","UTF-8");
-         response.sendRedirect("https://glast-ground.slac.stanford.edu/cas/login?gateway=true&service="+here);
-      }
    }
    
    public void init(FilterConfig filterConfig) throws ServletException

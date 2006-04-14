@@ -1,3 +1,7 @@
+<%@page contentType="text/xml"%>
+<%@page pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema targetNamespace="http://glast-ground.slac.stanford.edu/pipeline" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://glast-ground.slac.stanford.edu/pipeline" elementFormDefault="qualified" version="1.1">
    <xs:element name="pipeline">
@@ -30,16 +34,10 @@
    </xs:simpleType>
    <xs:simpleType name="TaskType">
       <xs:restriction base="xs:NMTOKEN">
-         <xs:enumeration value="SimReconDigi"/>
-         <xs:enumeration value="test"/>
-         <xs:enumeration value="Analysis"/>
-         <xs:enumeration value="Reconstruction"/>
-         <xs:enumeration value="Digitization"/>
-         <xs:enumeration value="Report"/>
-         <xs:enumeration value="SystemTest"/>
-         <xs:enumeration value="Simulation"/>
-         <xs:enumeration value="Reprocessing"/>
-         <xs:enumeration value="Conversion"/>
+         <sql:query var="data">select TASKTYPENAME from TASKTYPE</sql:query>
+         <c:forEach var="row" items="${data.rows}">
+            <xs:enumeration value="${row.TASKTYPENAME}"/>
+         </c:forEach>   
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="BasePathType">
@@ -54,7 +52,7 @@
          <xs:maxLength value="200"/>
       </xs:restriction>
    </xs:simpleType>
-	<!-- Application -->
+   <!-- Application -->
    <xs:element name="executable" nillable="false">
       <xs:complexType>
          <xs:simpleContent>
@@ -109,20 +107,18 @@
    </xs:simpleType>
    <xs:simpleType name="BatchQueue">
       <xs:restriction base="xs:NMTOKEN">
-         <xs:enumeration value="ilcglastq"/>
-         <xs:enumeration value="long"/>
-         <xs:enumeration value="short"/>
-         <xs:enumeration value="xlong"/>
-         <xs:enumeration value="medium"/>
-         <xs:enumeration value="xxl"/>
-         <xs:enumeration value="express"/>
+         <sql:query var="data">select BATCHQUEUENAME from BATCHQUEUE</sql:query>
+         <c:forEach var="row" items="${data.rows}">
+            <xs:enumeration value="${row.BATCHQUEUENAME}"/>
+         </c:forEach>  
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="BatchGroup">
       <xs:restriction base="xs:NMTOKEN">
-         <xs:enumeration value="none"/>
-         <xs:enumeration value="glastgrp"/>
-         <xs:enumeration value="glastdata"/>
+         <sql:query var="data">select BATCHGROUPNAME from BATCHGROUP</sql:query>
+         <c:forEach var="row" items="${data.rows}">
+            <xs:enumeration value="${row.BATCHGROUPNAME}"/>
+         </c:forEach> 
       </xs:restriction>
    </xs:simpleType>
    <!-- Dataset -->
@@ -162,43 +158,18 @@
    </xs:simpleType>
    <xs:simpleType name="DatasetType">
       <xs:restriction base="xs:NMTOKEN">
-         <xs:enumeration value="MC"/>
-         <xs:enumeration value="Analysis"/>
-         <xs:enumeration value="text"/>
-         <xs:enumeration value="LDF"/>
-         <xs:enumeration value="DIGI"/>
-         <xs:enumeration value="RAW"/>
-         <xs:enumeration value="rcReport"/>
-         <xs:enumeration value="merit"/>
-         <xs:enumeration value="svac"/>
-         <xs:enumeration value="histogram"/>
-         <xs:enumeration value="script"/>
-         <xs:enumeration value="log"/>
-         <xs:enumeration value="ntuple"/>
-         <xs:enumeration value="tree"/>
-         <xs:enumeration value="RetDef"/>
-         <xs:enumeration value="FT1"/>
-         <xs:enumeration value="RECON"/>
+         <sql:query var="data">select DSTYPENAME from DSTYPE</sql:query>
+         <c:forEach var="row" items="${data.rows}">
+            <xs:enumeration value="${row.DSTYPENAME}"/>
+         </c:forEach> 
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="DatasetFileType">
       <xs:restriction base="xs:NMTOKEN">
-         <xs:enumeration value="jobOpt"/>
-         <xs:enumeration value="root"/>
-         <xs:enumeration value="txt"/>
-         <xs:enumeration value="fits"/>
-         <xs:enumeration value="pl"/>
-         <xs:enumeration value="csh"/>
-         <xs:enumeration value="tgz"/>
-         <xs:enumeration value="xml"/>
-         <xs:enumeration value="sh"/>
-         <xs:enumeration value="tar"/>
-         <xs:enumeration value="gz"/>
-         <xs:enumeration value="tar.gz"/>
-         <xs:enumeration value="pdf"/>
-         <xs:enumeration value="ps"/>
-         <xs:enumeration value="html"/>
-         <xs:enumeration value="tex"/>
+         <sql:query var="data">select DSFILETYPENAME from DSFILETYPE</sql:query>
+         <c:forEach var="row" items="${data.rows}">
+            <xs:enumeration value="${row.DSFILETYPENAME}"/>
+         </c:forEach> 
       </xs:restriction>
    </xs:simpleType>
    <xs:element name="processing-step">

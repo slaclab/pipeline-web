@@ -71,6 +71,12 @@
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>BlankLineFilter</filter-name>
+        <url-pattern>/schemas/1.1/pipeline.xsd</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
     <servlet>
         <servlet-name>aidaplot</servlet-name>
         <servlet-class>hep.aida.web.servlet.PlotServlet</servlet-class>
@@ -81,6 +87,11 @@
         <servlet-class>org.freehep.webutil.tabs.servlet.TabCornerServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>xsdServlet</servlet-name>
+        <jsp-file>/schemas/1.1/pipeline.jsp</jsp-file>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     <servlet-mapping>
         <servlet-name>aidaplot</servlet-name>
         <url-pattern>/aida_plot.jsp</url-pattern>
@@ -88,6 +99,10 @@
     <servlet-mapping>
         <servlet-name>tabCornerServlet</servlet-name>
         <url-pattern>/tabCornerServlet.jsp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>xsdServlet</servlet-name>
+        <url-pattern>/schemas/1.1/pipeline.xsd</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>

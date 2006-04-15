@@ -13,34 +13,14 @@
         <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
             <c:redirect url="noPermission.jsp"/>
         </c:if>
-        <%
-        if (FileUpload.isMultipartContent(request)) {
-            // Create a new file upload handler
-            DiskFileUpload upload = new DiskFileUpload();
-            java.util.Map param = new java.util.HashMap();
-            // Parse the request
-            java.util.List /* FileItem */ items = upload.parseRequest(request);
-            for (java.util.Iterator i = items.iterator(); i.hasNext(); ) {
-                FileItem item = (FileItem) i.next();
-                if (item.isFormField()) {
-                    String name = item.getFieldName();
-                    String value = item.getString();
-                    param.put(name, value);
-                } else {
-                    String file = item.getString();
-                    param.put(item.getFieldName(), file);
-                }
-            }
-            pageContext.setAttribute("params", param);
-        }
-        %>
+
         <h1>Pipeline: Upload</h1>
     
         <c:choose>
-            <c:when test="${!empty params.cancel}">
+            <c:when test="${!empty param.cancel}">
                 <c:redirect url="index.jsp"/>
             </c:when>
-            <c:when test="${empty params.submit}">
+            <c:when test="${empty param.submit}">
                 <form method="POST" enctype="multipart/form-data">
                     XML File: <input type="file" name="xml" value="" width="60" />
                     <input type="submit" value="Submit" name="submit">
@@ -49,7 +29,7 @@
             </c:when>
             <c:otherwise>
                 <c:catch var="error">
-                    <p:upload user="${userName}" xml="${params.xml}"/>
+                    <p:upload user="${userName}" xml="${param.xml}"/>
                 </c:catch>
                 <c:choose>
                     <c:when test="${empty error}">

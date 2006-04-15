@@ -3,7 +3,6 @@
 <%@page import="org.apache.commons.fileupload.*"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="p" uri="http://glast-ground.slac.stanford.edu/pipeline"%>
-<%@taglib prefix="cas" uri="http://www.yale.edu/its/tp/cas/version2"%>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 
 <html>
@@ -11,13 +10,6 @@
         <title>Pipeline: Upload</title>
     </head>
     <body>
-        <cas:auth var="userName" scope="session">
-            <cas:loginUrl>https://glast-ground.slac.stanford.edu/cas/login</cas:loginUrl>
-            <cas:validateUrl>https://glast-ground.slac.stanford.edu/cas/proxyValidate</cas:validateUrl>
-            <cas:service>
-                <c:url value="${pageContext.request.requestURL}"/>
-            </cas:service>
-        </cas:auth>
         <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
             <c:redirect url="noPermission.jsp"/>
         </c:if>

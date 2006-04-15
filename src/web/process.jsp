@@ -22,6 +22,27 @@
         <h2>Runs for process: ${processName}</h2>
         
         <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
+
+        <sql:query var="run_stats">
+            select RUNSTATUS_PK "rsPK", RUNSTATUSNAME "rsName" from RUNSTATUS
+        </sql:query>
+        
+        <sql:query var="summary">
+            select            
+            <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
+                SUM(case when RUNSTATUS_FK=${row.rsPK} then 1 else 0 end) "${row.rsName}",
+            </c:forEach>
+            SUM(1) "ALL"
+            from RUN r, TASK t WHERE t.TASK_PK=? and r.TASK_FK=t.TASK_PK GROUP BY TASK_FK
+            <sql:param value="${param.task}"/>           
+        </sql:query> 
+        
+        <div class="taskSummary">Task Summary: 
+           <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
+               ${pl:prettyStatus(row.rsName)}:&nbsp;${summary.rowsByIndex[0][status.index]},
+           </c:forEach>
+           Total:&nbsp;${summary.rows[0]["ALL"]}
+        </div>
         
         <c:choose>
             <c:when test="${!empty param.clear}">

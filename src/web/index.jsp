@@ -48,9 +48,11 @@
             where "Id">0          
             <c:if test="${!empty taskFilter && !regExp}">
                 and lower("Task") like lower(?)
+                <sql:param value="%${taskFilter}%"/>
             </c:if>
             <c:if test="${!empty taskFilter && regExp}">
                 and regexp_like("Task",?)
+                <sql:param value="${taskFilter}"/>
             </c:if>
             <c:if test="${include=='runs'}">
                 and "ALL">0
@@ -66,10 +68,7 @@
             </c:if>
             <c:if test="${!gm:isUserInGroup(userName,'DC2Admins')}">
                 and h.GROUPS is null
-            </c:if>
-             <c:if test="${!empty taskFilter}">
-                <sql:param value="${taskFilter}"/>
-            </c:if>           
+            </c:if>        
         </sql:query>    
 
         <h2>Task Summary</h2>

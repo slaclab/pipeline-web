@@ -2,13 +2,14 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <table class="pageHeader">
    <tr>
       <td valign="top" rowspan="2">
          <a href="index.jsp"><img src="img/pipeline.png"></a>
       </td>
-      <td align="right" valign="top">
+      <td align="right" valign="top">    
          <a href="releasenotes.jsp">Version 1.4.3</a>
          |
          <a href="http://jira.slac.stanford.edu/browse/PFE">Jira</a>
@@ -18,6 +19,8 @@
    </tr>
    <tr>
       <td align="right" valign="bottom">
+         <p><jsp:useBean id="now" class="java.util.Date" /> 
+         Updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy hh:mm:ss"/> </p>
          <c:choose>
             <c:when test="${empty userName}">
                <p><a href="?login=true">Login</a></p>
@@ -28,7 +31,7 @@
             </c:otherwise>
          </c:choose>
          <p>Mode: <b><c:out value="${mode}" default="Prod"/></b> Switch to: [ <a href="index.jsp?mode=prod">Prod</a> | <a href="index.jsp?mode=dev">Dev</a> | <a href="index.jsp?mode=test">Test</a> ]</p>
-         <p><a href="upload.jsp?login=true">Upload configuration file</a></p> 
+         <p><a href="upload.jsp?login=true">Upload configuration file</a></p>
       </td>        
    </tr>
 </table>

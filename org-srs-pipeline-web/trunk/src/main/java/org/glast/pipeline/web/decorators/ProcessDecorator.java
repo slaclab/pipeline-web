@@ -32,17 +32,17 @@ public class ProcessDecorator extends TableDecorator
       String status = map.get("Status").toString();
       return Util.prettyStatus(status);
    }
-   public String getCpu()
+   public Number getCpu()
    {
       Map map = (Map) getCurrentRowObject();
       Number cpu = (Number) map.get("Cpu");
-      return cpu == null ? null : String.valueOf(cpu.intValue()/1000);
+      return cpu == null ? null : Integer.valueOf(cpu.intValue()/1000);
    }
-   public String getBytes()
+   public Number getBytes()
    {
       Map map = (Map) getCurrentRowObject();
       Number bytes = (Number) map.get("Bytes");
-      return bytes == null ? null : String.valueOf(bytes.intValue()/1024);
+      return bytes == null ? null : Integer.valueOf(bytes.intValue()/1024);
    }
    public String getJob()
    {
@@ -78,22 +78,23 @@ public class ProcessDecorator extends TableDecorator
    public String getStarted()
    {
       JobStatus status = getJobStatus();
-      return status == null ? "?" : status.getStarted().toString();
+      Date date = status == null ? null : status.getStarted();
+      return date == null ? "-" : dateFormat.format(date);
    }
-   public String getCpuUsed()
+   public Number getCpuUsed()
    {
       JobStatus status = getJobStatus();
-      return status == null ? "?" : String.valueOf(status.getCpuUsed());
+      return status == null ? null : Integer.valueOf(status.getCpuUsed());
    }
-   public String getMemoryUsed()
+   public Number getMemoryUsed()
    {
       JobStatus status = getJobStatus();
-      return status == null ? "?" : String.valueOf(status.getMemoryUsed()/1024);
+      return status == null ? null : Integer.valueOf(status.getMemoryUsed()/1024);
    }
-   public String getSwapUsed()
+   public Number getSwapUsed()
    {
       JobStatus status = getJobStatus();
-      return status == null ? "?" : String.valueOf(status.getSwapUsed()/1024);
+      return status == null ? null : Integer.valueOf(status.getSwapUsed()/1024);
    }
    public String getLinks()
    {
@@ -155,12 +156,12 @@ public class ProcessDecorator extends TableDecorator
    {
       Map map = (Map) getCurrentRowObject();
       Date date = (Date) map.get("Last Active");
-      return date == null ? "-" : dateFormat.format(date);      
+      return date == null ? "-" : dateFormat.format(date);
    }
    public String getSubmitted()
    {
       Map map = (Map) getCurrentRowObject();
       Date date = (Date) map.get("Submitted");
-      return date == null ? "-" : dateFormat.format(date);      
+      return date == null ? "-" : dateFormat.format(date);
    }
 }

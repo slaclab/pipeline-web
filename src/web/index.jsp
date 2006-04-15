@@ -16,6 +16,7 @@
             <c:when test="${!empty param.submit}">  
                 <c:set var="taskFilter" value="${param.taskFilter}" scope="session"/>
                 <c:set var="include" value="${param.include}" scope="session"/>
+                <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
             </c:when>
             <c:when test="${!empty param.clear}">
                 <c:set var="taskFilter" value="" scope="session"/>
@@ -45,8 +46,11 @@
             on  TABLE_A."Id" = TABLE_B.Task_PK 
             left outer join HIDDENTASKS h on h.task_fk = TABLE_A."Id"
             where "Id">0          
-            <c:if test="${!empty taskFilter}">
-                and lower("Task") like lower('%${taskFilter}%')
+            <c:if test="${!empty taskFilter && !regExp}">
+                and lower("Task") like lower(?)
+            </c:if>
+            <c:if test="${!empty taskFilter && regExp}">
+                and regexp_like("Task",?)
             </c:if>
             <c:if test="${include=='runs'}">
                 and "ALL">0
@@ -63,6 +67,9 @@
             <c:if test="${!gm:isUserInGroup(userName,'DC2Admins')}">
                 and h.GROUPS is null
             </c:if>
+             <c:if test="${!empty taskFilter}">
+                <sql:param value="${taskFilter}"/>
+            </c:if>           
         </sql:query>    
 
         <h2>Task Summary</h2>
@@ -74,6 +81,7 @@
             <table class="filterTable">
                 <tr valign="top">
                   <td>Task Filter: <input type="text" name="taskFilter" value="${taskFilter}"></td>
+                  <td><input type="checkbox" name="regExp" ${regExp ? 'checked' : ''}> Regular Expression (<a href="http://www.oracle.com/technology/oramag/webcolumns/2003/techarticles/rischert_regexp_pt1.html">?</a>)</td>
                   <td><select name="include">
                       <option value="all" ${include=='all' ? "selected" : ""}>All tasks</option>
                       <option value="runs" ${include=='runs' ? "selected" : ""}>Tasks with Runs</option>

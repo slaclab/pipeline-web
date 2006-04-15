@@ -20,7 +20,7 @@
    <tr>
       <td align="right" valign="bottom">
          <p><jsp:useBean id="now" class="java.util.Date" /> 
-         Updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy hh:mm:ss"/> </p>
+         Updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> </p>
          <c:choose>
             <c:when test="${empty userName}">
                <p><a href="?login=true">Login</a></p>

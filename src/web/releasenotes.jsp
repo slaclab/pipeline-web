@@ -7,6 +7,30 @@
         <title>Pipeline status</title>
     </head>
     <body>
+    
+<h1>Release Notes - Pipeline Front End - Version 1.4.3</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-79'>PFE-79</a>] - summary plots for large tasks not working</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-83'>PFE-83</a>] - Links in e-mail dont work because of redirection to login</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-87'>PFE-87</a>] - CPU column not sorting numerically</li>
+</ul>
+    
+<h2>Improvement</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-86'>PFE-86</a>] - Summary block on run pages</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-88'>PFE-88</a>] - Task filter can't distinguish between digitization-v3r4p6 and digitization-v3r4p6muon</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-90'>PFE-90</a>] - More new dataset types</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-92'>PFE-92</a>] - Add time to task summary page</li>
+</ul>
+    
+<h2>New Feature</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-91'>PFE-91</a>] - 'OR' in Task Filter would be useful</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-93'>PFE-93</a>] - Enumerations in XML schema should be generated from database</li>
+</ul>
+    
 
 <h1>Release Notes - Pipeline Front End - Version 1.4.2</h1>
     

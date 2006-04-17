@@ -8,7 +8,7 @@
         <title><decorator:title default="Glast Pipeline" /></title>
         <link href="http://glast-ground.slac.stanford.edu/Commons/css/glastCommons.jsp" rel="stylesheet" type="text/css">
         <style type="text/css">
-           .pageHeader p { margin-top: 0; margin-bottom: 0; }
+           .pageHeader p { margin-top: .5em; margin-bottom: 0; }
         </style>
         <decorator:head />
     </head>

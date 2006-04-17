@@ -23,7 +23,7 @@
          Updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> </p>
          <c:choose>
             <c:when test="${empty userName}">
-               <p><a href="?login=true">Login</a></p>
+               <p><a href="?login=true${optionString}">Login</a></p>
             </c:when>
 
             <c:otherwise>

@@ -14,12 +14,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.sql.DataSource;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 /**
  * A filter which serves to perform preprocessing on all requests.
@@ -39,6 +36,7 @@ public class PipelineFilter implements Filter
       {
             HttpSession session = ((HttpServletRequest) servletRequest).getSession();
             String mode = servletRequest.getParameter("mode");
+            StringBuilder options = new StringBuilder();
             
             if (mode != null)
             {
@@ -68,6 +66,7 @@ public class PipelineFilter implements Filter
             String taskId = servletRequest.getParameter("task");
             if (taskId != null)
             {
+               options.append("&task=").append(taskId);
                Object dataSourceName = Config.get(session, Config.SQL_DATA_SOURCE);
                if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");
                DataSource dataSource = (DataSource) initialContext.lookup("java:comp/env/"+dataSourceName);
@@ -75,15 +74,21 @@ public class PipelineFilter implements Filter
                try
                {
                   servletRequest.setAttribute("taskName",idToName(connection,taskId,"select TASKNAME from TASK where TASK_PK=?"));
-                  
                   String processId = servletRequest.getParameter("process");
-                  if (processId != null && !processId.equals("0")) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
+
+                  if (processId != null)
+                  {
+                     options.append("&process=").append(processId);
+                     if (!"0".equals(processId)) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
+                  }
                }
                finally
                {
                   connection.close();
                }
             }
+            servletRequest.setAttribute("optionString",options.toString());
+            
       }
       catch (Exception x)
       {

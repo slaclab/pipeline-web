@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <artifactId>org-glast-pipeline-web</artifactId>
   <groupId>glast</groupId>
-  <currentVersion>1.4.3</currentVersion>
+  <currentVersion>1.4.4</currentVersion>
   <shortDescription>Pipeline Web Front End</shortDescription>
   <url>http://glast-ground.slac.stanford.edu/Pipeline/</url>
   <name>PipelineFrontEnd</name>
@@ -286,7 +286,7 @@
     <dependency>
       <groupId>org.freehep</groupId>
       <artifactId>freehep-webutil</artifactId>
-      <version>1.1.1</version>
+      <version>1.1.2</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -311,7 +311,7 @@
       <dependency>
         <groupId>glast</groupId>
         <artifactId>org-glast-base-web</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
         <type>jar</type>
         <properties>
           <war.bundle>true</war.bundle>

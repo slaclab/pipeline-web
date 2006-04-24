@@ -74,7 +74,7 @@
         <h2>Task Summary</h2>
 
         <p>This is the web interface to the pipeline. This version includes support for viewing log files, sorting columns, and filtering of results. Feedback and suggestions
-        are welcome. <a href="jobBYhour.jsp">Show summary job stats. </a></p>
+        are welcome.</p>
         
         <form name="DateForm">
             <table class="filterTable">

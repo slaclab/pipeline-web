@@ -8,6 +8,14 @@
     </head>
     <body>
     
+    
+<h1>Release Notes - Pipeline Front End - Version 1.4.4</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-82'>PFE-82</a>] - login/out doesnt work when called from non-index page</li>
+</ul>
+
 <h1>Release Notes - Pipeline Front End - Version 1.4.3</h1>
     
 <h2>Bug</h2>

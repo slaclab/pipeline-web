@@ -8,6 +8,12 @@
     </head>
     <body>
     
+<h1>Release Notes - Pipeline Front End - Version 1.4.5</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-95'>PFE-95</a>] - Null pointer exception when plotting</li>
+</ul>
     
 <h1>Release Notes - Pipeline Front End - Version 1.4.4</h1>
     

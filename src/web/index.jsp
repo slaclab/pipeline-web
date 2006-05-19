@@ -25,33 +25,29 @@
         </c:choose>
         
         <sql:query var="run_stats">
-            select RUNSTATUS_PK "rsPK", RUNSTATUSNAME "rsName" from RUNSTATUS
+            select PROCESSINGSTATUS from PROCESSINGSTATUS
         </sql:query>
         
         <sql:query var="test">
-            select * from (
-            select SUM(case when RUNSTATUS_FK!=0 then 1 else 0 end) "ALL",
-            <c:forEach var="row" items="${run_stats.rows}">
-                SUM(case when RUNSTATUS_FK=${row.rsPK} then 1 else 0 end) "${row.rsName}",
-            </c:forEach>
-            TASK_PK "Id", TASKNAME "Task"
-            from RUN r right outer join TASK t on r.TASK_FK=t.TASK_PK
-            GROUP BY TASK_PK, TASKNAME ) TABLE_A left outer join ( 
-            select T.Task_PK, GREATEST(MAX(TPI.Started), MAX(TPI.submitted), MAX(TPI.ended)) AS "Last Active" 
-            from Task T 
-            join TaskProcess TP on T.Task_PK = TP.Task_FK
-            join TPInstance TPI on TP.TaskProcess_PK = TPI.TaskProcess_FK 
-            group by T.Task_PK, T.TaskName
-            ) TABLE_B 
-            on  TABLE_A."Id" = TABLE_B.Task_PK 
-            left outer join HIDDENTASKS h on h.task_fk = TABLE_A."Id"
-            where "Id">0          
+           select * from (
+           select 
+              SUM(1) "ALL",
+              <c:forEach var="row" items="${run_stats.rows}">
+                SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
+             </c:forEach>
+           t.TASKNAME, t.TASK
+           from TASK t
+           join PROCESS p on p.TASK=t.TASK
+           join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
+           group by t.TASK, t.TASKNAME
+           )
+           where TASK>0 
             <c:if test="${!empty taskFilter && !regExp}">
-                and lower("Task") like lower(?)
+                and lower("TASKNAME") like lower(?)
                 <sql:param value="%${taskFilter}%"/>
             </c:if>
             <c:if test="${!empty taskFilter && regExp}">
-                and regexp_like("Task",?)
+                and regexp_like("TASKNAME",?)
                 <sql:param value="${taskFilter}"/>
             </c:if>
             <c:if test="${include=='runs'}">
@@ -61,14 +57,8 @@
                 and "ALL"=0
             </c:if>
             <c:if test="${include=='active'}">
-                and ("RUNNING">0 or "WAITING">0 or "FINALIZING">0)
-            </c:if>
-            <c:if test="${include=='last30'}">
-                and SYSDATE-"Last Active"<30 
-            </c:if>
-            <c:if test="${!gm:isUserInGroup(userName,'DC2Admins')}">
-                and h.GROUPS is null
-            </c:if>        
+                and ("RUNNING">0 or "WAITING">0 or "READY">0)
+            </c:if>     
         </sql:query>    
 
         <h2>Task Summary</h2>
@@ -95,9 +85,9 @@
         
         <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
            <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
-           <display:column property="Task" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="id"/>
+           <display:column property="taskname" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
              <c:forEach var="row" items="${run_stats.rows}">
-                <display:column property="${row.rsName}" title="${pl:prettyStatus(row.rsName)}" sortable="true" headerClass="sortable" />
+                <display:column property="${row.PROCESSINGSTATUS}" title="${pl:prettyStatus(row.PROCESSINGSTATUS)}" sortable="true" headerClass="sortable" />
             </c:forEach>
         </display:table>
     </body>

@@ -43,22 +43,24 @@ public class PipelineFilter implements Filter
                String modeString;
                String dataSource;
                
-               if ("dev".equals(mode))
-               {
-                  dataSource = "jdbc/pipeline-dev";
-                  modeString = "Dev";
-                  
-               }
-               else if ("test".equals(mode))
-               {
-                  dataSource = "jdbc/pipeline-test";
-                  modeString = "Test";
-               }
-               else // if ("prod".equals(mode))
-               {
-                  dataSource = "jdbc/pipeline";
-                  modeString = "Prod";
-               }
+//               if ("dev".equals(mode))
+//               {
+//                  dataSource = "jdbc/pipeline-dev";
+//                  modeString = "Dev";
+//                  
+//               }
+//               else if ("test".equals(mode))
+//               {
+//                  dataSource = "jdbc/pipeline-test";
+//                  modeString = "Test";
+//               }
+//               else // if ("prod".equals(mode))
+//               {
+//                  dataSource = "jdbc/pipeline";
+//                  modeString = "Prod";
+//               }
+               dataSource = "jdbc/pipeline-ii";
+               modeString = "Test";
                Config.set(session, Config.SQL_DATA_SOURCE, dataSource);
                session.setAttribute("mode", modeString);
             }
@@ -73,13 +75,13 @@ public class PipelineFilter implements Filter
                Connection connection = dataSource.getConnection();
                try
                {
-                  servletRequest.setAttribute("taskName",idToName(connection,taskId,"select TASKNAME from TASK where TASK_PK=?"));
+                  servletRequest.setAttribute("taskName",idToName(connection,taskId,"select TASKNAME from TASK where TASK=?"));
                   String processId = servletRequest.getParameter("process");
 
                   if (processId != null)
                   {
                      options.append("&process=").append(processId);
-                     if (!"0".equals(processId)) servletRequest.setAttribute("processName",idToName(connection,processId,"select TASKPROCESSNAME from TASKPROCESS where TASKPROCESS_PK=?"));
+                     if (!"0".equals(processId)) servletRequest.setAttribute("processName",idToName(connection,processId,"select PROCESSNAME from PROCESS where PROCESS=?"));
                   }
                }
                finally

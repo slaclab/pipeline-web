@@ -3,5 +3,6 @@
   <ResourceLink name="jdbc/pipeline" type="javax.sql.DataSource" global="jdbc/pipeline" /> 
   <ResourceLink name="jdbc/pipeline-dev" type="javax.sql.DataSource" global="jdbc/pipeline-dev" /> 
   <ResourceLink name="jdbc/pipeline-test" type="javax.sql.DataSource" global="jdbc/pipeline-test" /> 
+  <ResourceLink name="jdbc/pipeline-ii" type="javax.sql.DataSource" global="jdbc/pipeline-ii" /> 
   <Logger className="org.apache.catalina.logger.FileLogger" prefix="Pipeline." suffix=".log" timestamp="true" />
 </Context>

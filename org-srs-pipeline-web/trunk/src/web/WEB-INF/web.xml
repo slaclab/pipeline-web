@@ -10,7 +10,7 @@
             javax.servlet.jsp.jstl.sql.dataSource
         </param-name>
         <param-value>
-            jdbc/pipeline
+            jdbc/pipeline-ii
         </param-value>
     </context-param>
     <context-param>

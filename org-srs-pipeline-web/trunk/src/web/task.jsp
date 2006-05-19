@@ -12,20 +12,23 @@
     <body>
         
         <sql:query var="proc_stats">
-            select PROCESSINGSTATUS_PK "psPK", PROCESSINGSTATUSNAME "psName" from PROCESSINGSTATUS
+            select PROCESSINGSTATUS from PROCESSINGSTATUS
         </sql:query>
  
         <sql:query var="run_stats">
-            select RUNSTATUS_PK "rsPK", RUNSTATUSNAME "rsName" from RUNSTATUS
+            select PROCESSINGSTATUS from PROCESSINGSTATUS
         </sql:query>
         
         <sql:query var="summary">
             select            
             <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
-                SUM(case when RUNSTATUS_FK=${row.rsPK} then 1 else 0 end) "${row.rsName}",
+                SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
             </c:forEach>
             SUM(1) "ALL"
-            from RUN r, TASK t WHERE t.TASK_PK=? and r.TASK_FK=t.TASK_PK GROUP BY TASK_FK
+           from TASK t
+           join PROCESS p on p.TASK=t.TASK
+           join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
+           where t.TASK=?
             <sql:param value="${param.task}"/>           
         </sql:query> 
         
@@ -42,25 +45,28 @@
         
                 <div class="taskSummary">Task Summary: 
                     <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
-                        ${pl:prettyStatus(row.rsName)}:&nbsp;${summary.rowsByIndex[0][status.index]},
+                        ${pl:prettyStatus(row.PROCESSINGSTATUS)}:&nbsp;${summary.rowsByIndex[0][status.index]},
                     </c:forEach>
                     Total:&nbsp;${summary.rows[0]["ALL"]}
                 </div>
 
                 <sql:query var="test">select 
                     <c:forEach var="row" items="${proc_stats.rows}">
-                        SUM(case when PROCESSINGSTATUS_FK=${row.psPK} then 1 else 0 end) "${row.psName}",
+                        SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
                     </c:forEach>
-                    TASKPROCESS_PK "Id", MIN(TASKPROCESSNAME) "Name" , MIN(SEQUENCE) "Sequence"
-                    from TASKPROCESS, TPINSTANCE where TASK_FK=? and TASKPROCESS_PK=TASKPROCESS_FK GROUP BY TASKPROCESS_PK
+                    p.ProcessName, p.Process
+                    from TASK t
+                    join PROCESS p on p.TASK=t.TASK
+                    join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
+                    where t.TASK=?
+                    group by p.PROCESS, p.PROCESSNAME
                     <sql:param value="${param.task}"/>
                 </sql:query>
 
                 <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
-                    <display:column property="Sequence" title="#" sortable="true" headerClass="sortable"/>
-                    <display:column property="Name" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=0" paramId="process" paramProperty="Id"/>
+                    <display:column property="ProcessName" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=0" paramId="process" paramProperty="Process"/>
                     <c:forEach var="row" items="${proc_stats.rows}">
-                        <display:column property="${row.psName}" title="${pl:prettyStatus(row.psName)}" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=${row.psPK}" paramId="process" paramProperty="Id"/>
+                        <display:column property="${row.PROCESSINGSTATUS}" title="${pl:prettyStatus(row.PROCESSINGSTATUS)}" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
                     <display:column property="taskLinks" title="Links (<a href=help.html>?</a>)" />
                 </display:table>

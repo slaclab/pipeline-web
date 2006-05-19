@@ -16,7 +16,7 @@
     <body>
         
         <sql:query var="proc_stats">
-            select PROCESSINGSTATUS_PK "psPK", PROCESSINGSTATUSNAME "psName" from PROCESSINGSTATUS
+            select PROCESSINGSTATUS from PROCESSINGSTATUS
         </sql:query>
         
         <h2>Runs for process: ${processName}</h2>
@@ -24,22 +24,25 @@
         <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
 
         <sql:query var="run_stats">
-            select RUNSTATUS_PK "rsPK", RUNSTATUSNAME "rsName" from RUNSTATUS
+            select PROCESSINGSTATUS from PROCESSINGSTATUS
         </sql:query>
         
         <sql:query var="summary">
             select            
             <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
-                SUM(case when RUNSTATUS_FK=${row.rsPK} then 1 else 0 end) "${row.rsName}",
+                SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
             </c:forEach>
             SUM(1) "ALL"
-            from RUN r, TASK t WHERE t.TASK_PK=? and r.TASK_FK=t.TASK_PK GROUP BY TASK_FK
+           from TASK t
+           join PROCESS p on p.TASK=t.TASK
+           join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
+           where t.TASK=?
             <sql:param value="${param.task}"/>           
         </sql:query> 
         
         <div class="taskSummary">Task Summary: 
            <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
-               ${pl:prettyStatus(row.rsName)}:&nbsp;${summary.rowsByIndex[0][status.index]},
+               ${pl:prettyStatus(row.PROCESSINGSTATUS)}:&nbsp;${summary.rowsByIndex[0][status.index]},
            </c:forEach>
            Total:&nbsp;${summary.rows[0]["ALL"]}
         </div>
@@ -63,24 +66,17 @@
                 <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == 0 ? '' : param.status}" scope="session"/></c:if>
             </c:otherwise>
         </c:choose>
-               
-        <c:set var="runNumber" value="to_number(RUNNAME)"/>
-        <c:if test="${fn:contains(taskName,'b33')}">
-            <c:set var="runNumber" value="RUNNAME"/>
-        </c:if>
 
         <sql:query var="test">select * from 
-            ( select rownum, TPINSTANCE_PK "Id", ${runNumber} "Run", PROCESSINGSTATUSNAME "Status", SUBMITTED "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
-            from TPINSTANCE i
-            join RUN r on (i.RUN_FK=r.RUN_PK)
-            join PROCESSINGSTATUS s on (i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK)
-            where TASKPROCESS_FK=?  
-            <c:if test="${!empty status}">and PROCESSINGSTATUS_FK=?</c:if>
-            ) where rownum>0
-            <c:if test="${!empty min}">and "Run">=? </c:if>
-            <c:if test="${!empty max}">and "Run"<=? </c:if>
-            <c:if test="${!empty minDate && minDate!='None'}"> and "Submitted">=? </c:if>
-            <c:if test="${!empty maxDate && maxDate!='None'}"> and "Submitted"<=? </c:if>
+            ( select STREAMID,PROCESSINGSTATUS,CREATEDATE,SUBMITDATE,STARTDATE,ENDDATE from PROCESSINSTANCE p
+              join stream s on p.stream = s.stream
+              where PROCESS=?  
+              <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
+            ) where streamid>0
+            <c:if test="${!empty min}">and StreamId>=? </c:if>
+            <c:if test="${!empty max}">and StreamId<=? </c:if>
+            <c:if test="${!empty minDate && minDate!='None'}"> and CREATEDATE>=? </c:if>
+            <c:if test="${!empty maxDate && maxDate!='None'}"> and CREATEDATE<=? </c:if>
             <sql:param value="${param.process}"/>
             <c:if test="${!empty status}"><sql:param value="${status}"/></c:if>
             <c:if test="${!empty min}"><sql:param value="${min}"/></c:if>
@@ -103,7 +99,7 @@
                 <td>Status: <select size="1" name="status">
                     <option value="">All</option>
                     <c:forEach var="row" items="${proc_stats.rows}">
-                        <option value="${row.psPK}" ${status==row.psPK ? "selected" : ""}>${pl:prettyStatus(row.psName)}</option>
+                        <option value="${row.PROCESSINGSTATUS}" ${status==row.PROCESSINGSTATUS ? "selected" : ""}>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>
                     </c:forEach>
                 </select></td></tr>
                 <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
@@ -117,19 +113,19 @@
         
         <c:choose>
             <c:when test="${param.mode=='run'}">
-                <pre><c:forEach var="row" items="${test.rows}">${row.run}<br></c:forEach></pre>
+                <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
             </c:when>
             <c:when test="${param.mode=='id'}">
                 <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.PID}">${row.PID}<br></c:if></c:forEach></pre>
             </c:when>
             <c:otherwise>
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                    <display:column property="Run" sortable="true" headerClass="sortable" />
-                    <display:column property="status" sortable="true" headerClass="sortable"/>
-                    <display:column property="submitted" sortable="true" headerClass="sortable"/>
-                    <display:column property="bytes" title="Memory (MB)" sortable="true" headerClass="sortable"/>
-                    <display:column property="cpu" title="CPU (secs)" sortable="true" headerClass="sortable"/>
-                    <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
+                    <display:column property="StreamID" sortable="true" headerClass="sortable" />
+                    <display:column property="ProcessingStatus" sortable="true" headerClass="sortable"/>
+                    <display:column property="CreateDate" sortable="true" headerClass="sortable"/>
+                    <display:column property="SubmitDate" sortable="true" headerClass="sortable"/>
+                    <display:column property="StartDate"  sortable="true" headerClass="sortable"/>
+                    <display:column property="EndDate" sortable="true" headerClass="sortable"/>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>
                 <c:if test="${test.rowCount>0}">

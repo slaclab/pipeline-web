@@ -7,10 +7,10 @@
 <table class="pageHeader">
    <tr>
       <td valign="top" rowspan="2">
-         <a href="index.jsp"><img src="img/pipeline.png"></a>
+         <a href="index.jsp"><img src="http://glast-ground.slac.stanford.edu/Commons/logoServlet.jsp?title=Pipeline+II"/></a>
       </td>
       <td align="right" valign="top">    
-         <a href="releasenotes.jsp">Version 1.4.5</a>
+         <a href="releasenotes.jsp">Version 2.0.0</a>
          |
          <a href="http://jira.slac.stanford.edu/browse/PFE">Jira</a>
          |

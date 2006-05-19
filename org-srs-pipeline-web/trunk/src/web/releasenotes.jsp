@@ -8,6 +8,10 @@
     </head>
     <body>
     
+<h1>Release Notes - Pipeline Front End - Version 2.0.0</h1>
+
+First pipeline II release
+    
 <h1>Release Notes - Pipeline Front End - Version 1.4.5</h1>
     
 <h2>Bug</h2>

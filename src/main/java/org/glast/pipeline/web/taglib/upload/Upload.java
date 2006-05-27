@@ -1,13 +1,11 @@
 package org.glast.pipeline.web.taglib.upload;
 
-import org.glast.pipeline.upload.Importer;
-import org.glast.pipeline.web.util.ConnectionManager;
-import java.io.Reader;
-import java.io.StringReader;
 import java.sql.Connection;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import org.glast.pipeline.client.PipelineClient;
+import org.glast.pipeline.web.util.ConnectionManager;
 /**
  * A tag for uploading xml files to the pipeline database
  * @author tonyj
@@ -21,24 +19,15 @@ public class Upload extends SimpleTagSupport
    {
       try
       {
-         Connection connection = ConnectionManager.getConnection((PageContext) getJspContext(),null);
-         connection.setAutoCommit(false);
+         Connection conn = ConnectionManager.getConnection((PageContext) getJspContext(), null);
          try
          {
-            Importer importer = new Importer();
-            Reader in = new StringReader(xml);
-            importer.execute(connection,user,in);
-            connection.commit();
-         }
-         catch (Exception x)
-         {
-            connection.rollback();
-            throw x;
+            PipelineClient client = new PipelineClient(conn);
+            client.createTaskFromXML(xml,user);
          }
          finally
          {
-            connection.setAutoCommit(true);
-            connection.close();
+            conn.close();
          }
       }
       catch (Exception x)

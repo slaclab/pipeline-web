@@ -1,12 +1,3 @@
-/*
- * Connection.java
- *
- * Created on October 29, 2005, 5:37 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-
 package org.glast.pipeline.web.util;
 
 import java.sql.Connection;

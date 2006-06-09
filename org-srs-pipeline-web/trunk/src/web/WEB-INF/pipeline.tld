@@ -20,7 +20,24 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
-        <tag>
+    <tag>
+        <name>createStream</name>
+        <tag-class>org.glast.pipeline.web.taglib.admin.CreateStream</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>task</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>stream</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+    <tag>
         <name>reportError</name>
         <tag-class>org.glast.pipeline.web.taglib.upload.ReportError</tag-class>
         <body-content>empty</body-content>

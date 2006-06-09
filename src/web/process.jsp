@@ -68,7 +68,7 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select STREAMID,PROCESSINGSTATUS,TO_CHAR(CREATEDATE,'YYYY/MM/DD HH24:MI') CREATEDATE,TO_CHAR(SUBMITDATE,'YYYY/MM/DD HH24:MI') SUBMITDATE,TO_CHAR(STARTDATE,'YYYY/MM/DD HH24:MI') STARTDATE,TO_CHAR(ENDDATE,'YYYY/MM/DD HH24:MI') ENDDATE from PROCESSINSTANCE p
+            ( select STREAMID,PROCESSINGSTATUS,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
               join stream s on p.stream = s.stream
               where PROCESS=?  
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
@@ -95,7 +95,7 @@
         </sql:query>
 
         <form name="DateForm">
-            <table class="filterTable"><tr><th>Run</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
+            <table class="filterTable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
                 <td>Status: <select size="1" name="status">
                     <option value="">All</option>
                     <c:forEach var="row" items="${proc_stats.rows}">
@@ -120,11 +120,11 @@
             </c:when>
             <c:otherwise>
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                    <display:column property="StreamID" sortable="true" headerClass="sortable" />
+                    <display:column property="Stream" sortable="true" headerClass="sortable" />
                     <display:column property="ProcessingStatus" sortable="true" headerClass="sortable"/>
                     <display:column property="CreateDate" sortable="true" headerClass="sortable"/>
                     <display:column property="SubmitDate" sortable="true" headerClass="sortable"/>
-                    <display:column property="startDate"  sortable="true" headerClass="sortable"/>
+                    <display:column property="StartDate"  sortable="true" headerClass="sortable"/>
                     <display:column property="EndDate" sortable="true" headerClass="sortable"/>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>

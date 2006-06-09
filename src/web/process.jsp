@@ -120,12 +120,12 @@
             </c:when>
             <c:otherwise>
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                    <display:column property="Stream" sortable="true" headerClass="sortable" />
-                    <display:column property="ProcessingStatus" sortable="true" headerClass="sortable"/>
-                    <display:column property="CreateDate" sortable="true" headerClass="sortable"/>
-                    <display:column property="SubmitDate" sortable="true" headerClass="sortable"/>
-                    <display:column property="StartDate"  sortable="true" headerClass="sortable"/>
-                    <display:column property="EndDate" sortable="true" headerClass="sortable"/>
+                    <display:column property="StreamID" title="Stream" sortable="true" headerClass="sortable" />
+                    <display:column property="ProcessingStatus" title="Status" sortable="true" headerClass="sortable"/>
+                    <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable"/>
+                    <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable"/>
+                    <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable"/>
+                    <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable"/>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>
                 <c:if test="${test.rowCount>0}">

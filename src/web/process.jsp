@@ -63,12 +63,12 @@
                 <c:set var="status" value="${param.status}" scope="session"/>
             </c:when>
             <c:otherwise>
-                <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == 0 ? '' : param.status}" scope="session"/></c:if>
+                <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == '0' ? '' : param.status}" scope="session"/></c:if>
             </c:otherwise>
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select STREAMID,PROCESSINGSTATUS,CREATEDATE,SUBMITDATE,STARTDATE,ENDDATE from PROCESSINSTANCE p
+            ( select STREAMID,PROCESSINGSTATUS,TO_CHAR(CREATEDATE,'YYYY/MM/DD HH24:MI') CREATEDATE,TO_CHAR(SUBMITDATE,'YYYY/MM/DD HH24:MI') SUBMITDATE,TO_CHAR(STARTDATE,'YYYY/MM/DD HH24:MI') STARTDATE,TO_CHAR(ENDDATE,'YYYY/MM/DD HH24:MI') ENDDATE from PROCESSINSTANCE p
               join stream s on p.stream = s.stream
               where PROCESS=?  
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
@@ -124,7 +124,7 @@
                     <display:column property="ProcessingStatus" sortable="true" headerClass="sortable"/>
                     <display:column property="CreateDate" sortable="true" headerClass="sortable"/>
                     <display:column property="SubmitDate" sortable="true" headerClass="sortable"/>
-                    <display:column property="StartDate"  sortable="true" headerClass="sortable"/>
+                    <display:column property="startDate"  sortable="true" headerClass="sortable"/>
                     <display:column property="EndDate" sortable="true" headerClass="sortable"/>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>

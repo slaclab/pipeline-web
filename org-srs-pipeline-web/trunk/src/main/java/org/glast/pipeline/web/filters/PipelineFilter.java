@@ -43,24 +43,21 @@ public class PipelineFilter implements Filter
                String modeString;
                String dataSource;
                
-//               if ("dev".equals(mode))
-//               {
-//                  dataSource = "jdbc/pipeline-dev";
-//                  modeString = "Dev";
-//                  
-//               }
+               if ("dev".equals(mode))
+               {
+                  dataSource = "jdbc/pipeline-ii-dev";
+                  modeString = "Dev";
+               }
 //               else if ("test".equals(mode))
 //               {
 //                  dataSource = "jdbc/pipeline-test";
 //                  modeString = "Test";
 //               }
-//               else // if ("prod".equals(mode))
-//               {
-//                  dataSource = "jdbc/pipeline";
-//                  modeString = "Prod";
-//               }
-               dataSource = "jdbc/pipeline-ii";
-               modeString = "Test";
+               else // if ("prod".equals(mode))
+               {
+                  dataSource = "jdbc/pipeline-ii";
+                  modeString = "Prod";
+               }
                Config.set(session, Config.SQL_DATA_SOURCE, dataSource);
                session.setAttribute("mode", modeString);
             }

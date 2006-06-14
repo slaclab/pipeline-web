@@ -35,7 +35,6 @@ public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comp
          }
       }
       catch (SQLException x) { x.printStackTrace(); } 
-      System.out.println("class="+columnValue.getClass());
       return format.format(columnValue);
    }
 

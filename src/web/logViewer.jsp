@@ -48,11 +48,11 @@
         
       <sql:query var="log">
          select log_level, message, timeentered, streamid, processname, taskname
-         from log
-         left outer join processinstance  i on processinstance = threadid
+         from log l
+         left outer join processinstance i on l.processinstance = i.processinstance
          left outer join process p using (process)
          left outer join stream s  using (stream)
-         left outer join task  t on t.task=p.task
+         left outer join task t on t.task=p.task
          where log_level > 0 
          <c:if test="${!empty minDate && minDate!='None'}"> and timeentered>=? </c:if>
          <c:if test="${!empty maxDate && maxDate!='None'}"> and timeentered<=? </c:if>

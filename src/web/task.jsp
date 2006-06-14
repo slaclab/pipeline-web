@@ -35,6 +35,18 @@
         <h2>Task Summary: ${taskName}</h2> 
         XML: <a href="xml.jsp?xml=dump.jsp&task=${param.task}">(1.0)</a> <a href="xml.jsp?xml=dump11.jsp&task=${param.task}">(1.1)</a> <a href="xml.jsp?xml=catalog.jsp&task=${param.task}">(catalog)</a>
 
+        <sql:query var="subtasks">
+           select task, taskname from task where parenttask=?
+           <sql:param value="${param.task}"/>
+        </sql:query>
+
+        <c:if test="${subtasks.rowCount>0}">
+           Subtasks: 
+           <c:forEach var="row" items="${subtasks.rows}">
+              <a href="task.jsp?task=${row['task']}">${row["taskname"]}</a>
+           </c:forEach>
+        </c:if>
+        
         <c:choose>
             <c:when test="${empty summary.rows[0]['ALL']}">
                 <p> No runs in this task.</p>

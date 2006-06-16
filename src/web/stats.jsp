@@ -7,11 +7,11 @@
 
 <html>
    <head>
-      <title>Pipeline Statistics</title>
+      <title>Performance Plots</title>
    </head>
    <body>
 
-      <h1>Pipeline Statistics</h1>
+      <h1>Performance Plots</h1>
 
       <tab:tabs name="ProcessTabs" param="process">
          <tab:tab name="Summary" value="0" href="stats.jsp?task=${param.task}">

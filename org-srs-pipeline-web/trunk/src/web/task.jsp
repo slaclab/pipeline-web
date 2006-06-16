@@ -47,6 +47,8 @@
            </c:forEach>
         </c:if>
         
+        <!-- <p><img src="TaskImageServlet?task=${param.task}"/></p> -->
+        
         <c:choose>
             <c:when test="${empty summary.rows[0]['ALL']}">
                 <p> No runs in this task.</p>

@@ -3,7 +3,7 @@
   <pomVersion>3</pomVersion>
   <artifactId>org-glast-pipeline-web</artifactId>
   <groupId>glast</groupId>
-  <currentVersion>1.4.5</currentVersion>
+  <currentVersion>1.4.6</currentVersion>
   <shortDescription>Pipeline Web Front End</shortDescription>
   <url>http://glast-ground.slac.stanford.edu/Pipeline/</url>
   <name>PipelineFrontEnd</name>

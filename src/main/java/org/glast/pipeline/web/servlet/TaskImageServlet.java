@@ -3,7 +3,6 @@ package org.glast.pipeline.web.servlet;
 import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -11,11 +10,13 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.sql.DataSource;
+import org.glast.pipeline.web.util.Task;
+import org.glast.pipeline.web.util.GraphViz;
 
 /**
  * A servlet to create pictures of tasks
  * @author tonyj, dflath
- * @version $Id: TaskImageServlet.java,v 1.1 2006-06-16 00:05:12 tonyj Exp $
+ * @version $Id: TaskImageServlet.java,v 1.2 2006-06-20 05:52:41 dflath Exp $
  */
 public class TaskImageServlet extends HttpServlet
 {
@@ -120,8 +121,30 @@ public class TaskImageServlet extends HttpServlet
       }
    }
 
-   private InputStream createTaskImage(int task_id, Connection connection)
+   private InputStream createTaskImage(int task_id, Connection connection) throws Exception, ServletException
    {
-      return null;
+      InputStream is = null;
+      try {
+         Task t = new Task(task_id, connection);
+         GraphViz gv = new GraphViz();
+         StringWriter sw = new StringWriter();
+         t.draw(sw);
+         System.out.println(sw.toString());
+         System.out.println(sw.toString());
+//         throw new ServletException(sw.toString());
+         byte[] graphData = gv.getGraph(sw.toString());
+         System.out.print("graph data (length=" + graphData.length + ") is [");
+         for (byte _b: graphData) {
+            Byte b = new Byte(_b);
+            System.out.print(b.toString() + ",");
+         }
+         System.out.println("]");
+         return new ByteArrayInputStream(graphData);
+      } catch (Exception ex) {
+         System.out.println("exception in creatTaskImage");
+         ex.printStackTrace();
+//         throw ex;
+         return null;
+      }
    }
 }

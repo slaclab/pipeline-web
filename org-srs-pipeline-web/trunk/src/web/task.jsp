@@ -47,7 +47,7 @@
            </c:forEach>
         </c:if>
         
-        <!-- <p><img src="TaskImageServlet?task=${param.task}"/></p> -->
+        <p><img src="TaskImageServlet?task=${param.task}"/></p>
         
         <c:choose>
             <c:when test="${empty summary.rows[0]['ALL']}">

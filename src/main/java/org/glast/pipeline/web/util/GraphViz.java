@@ -1,6 +1,6 @@
 // GraphViz.java - a simple API to call dot from Java programs
 
-/*$Id: GraphViz.java,v 1.1 2006-06-20 05:52:41 dflath Exp $*/
+/*$Id: GraphViz.java,v 1.2 2006-06-21 06:26:27 tonyj Exp $*/
 /*
  ******************************************************************************
  *                                                                            *
@@ -56,9 +56,16 @@ import java.io.*;
  */
 public class GraphViz
 {
-   private static String DOT = new String(System.getenv("DOT_HOME") + "dot");
+   private String dotCommand = "dot";
 
-   public GraphViz() {
+   public GraphViz(String dotCommand) {
+      String dotHome = System.getenv("DOT_HOME");
+      if (dotHome != null) {
+         this.dotCommand = dotHome+File.pathSeparator+"dot";
+      }
+      else if (dotCommand != null) {
+         this.dotCommand = dotCommand;
+      }
    }
    
    public byte[] getDotImage(String dotSource) throws java.io.IOException {
@@ -178,9 +185,9 @@ public class GraphViz
          
          // dot doesn't like long filenames (with spaces) so quote on windows:
          if (System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS"))
-            cmd = DOT + " -Tgif \""+ dotFile.getAbsolutePath() + "\" -o\"" + imgFile.getAbsolutePath() + "\"";
+            cmd = dotCommand + " -Tgif \""+ dotFile.getAbsolutePath() + "\" -o\"" + imgFile.getAbsolutePath() + "\"";
          else   
-            cmd = DOT + " -Tgif "+ dotFile.getAbsolutePath() + " -o" + imgFile.getAbsolutePath() + "";
+            cmd = dotCommand + " -Tgif "+ dotFile.getAbsolutePath() + " -o" + imgFile.getAbsolutePath() + "";
          
          System.out.println("executing[" + cmd + "]");
          java.lang.Process p = rt.exec(cmd);

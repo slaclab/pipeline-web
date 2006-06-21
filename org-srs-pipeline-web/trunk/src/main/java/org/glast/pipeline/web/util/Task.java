@@ -268,7 +268,7 @@ public class Task
          System.out.println(sw.toString()); // print StringWriter to stdout
          System.out.println(sw.toString());
          
-         GraphViz gv = new GraphViz();
+         GraphViz gv = new GraphViz(null);
 //         byte[] buf = gv.get_img_stream(new File("c:\\test.dot"));
          byte[] buf = gv.getGraph(sw.toString());
          FileOutputStream fos = new FileOutputStream("c:\\test.gif");

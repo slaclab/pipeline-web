@@ -16,12 +16,13 @@ import org.glast.pipeline.web.util.GraphViz;
 /**
  * A servlet to create pictures of tasks
  * @author tonyj, dflath
- * @version $Id: TaskImageServlet.java,v 1.2 2006-06-20 05:52:41 dflath Exp $
+ * @version $Id: TaskImageServlet.java,v 1.3 2006-06-21 06:26:27 tonyj Exp $
  */
 public class TaskImageServlet extends HttpServlet
 {
    
    private InitialContext initialContext;
+   private String dotCommand;
    
    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
     * @param request servlet request
@@ -95,9 +96,11 @@ public class TaskImageServlet extends HttpServlet
    }
    // </editor-fold>
    
-   public void init() throws ServletException
+ 
+   public void init(ServletConfig config) throws ServletException
    {
-      super.init();
+      super.init(config);
+      dotCommand = config.getInitParameter("dotCommand");
       try
       {
          initialContext = new InitialContext();
@@ -126,7 +129,7 @@ public class TaskImageServlet extends HttpServlet
       InputStream is = null;
       try {
          Task t = new Task(task_id, connection);
-         GraphViz gv = new GraphViz();
+         GraphViz gv = new GraphViz(dotCommand);
          StringWriter sw = new StringWriter();
          t.draw(sw);
          System.out.println(sw.toString());

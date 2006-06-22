@@ -39,6 +39,7 @@
            from TASK t
            join PROCESS p on p.TASK=t.TASK
            join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
+           where t.PARENTTASK is null
            group by t.TASK, t.TASKNAME
            )
            where TASK>0 

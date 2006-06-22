@@ -16,7 +16,7 @@ import org.glast.pipeline.web.util.GraphViz;
 /**
  * A servlet to create pictures of tasks
  * @author tonyj, dflath
- * @version $Id: TaskImageServlet.java,v 1.3 2006-06-21 06:26:27 tonyj Exp $
+ * @version $Id: TaskImageServlet.java,v 1.4 2006-06-22 21:12:24 dflath Exp $
  */
 public class TaskImageServlet extends HttpServlet
 {
@@ -132,21 +132,11 @@ public class TaskImageServlet extends HttpServlet
          GraphViz gv = new GraphViz(dotCommand);
          StringWriter sw = new StringWriter();
          t.draw(sw);
-         System.out.println(sw.toString());
-         System.out.println(sw.toString());
-//         throw new ServletException(sw.toString());
          byte[] graphData = gv.getGraph(sw.toString());
-         System.out.print("graph data (length=" + graphData.length + ") is [");
-         for (byte _b: graphData) {
-            Byte b = new Byte(_b);
-            System.out.print(b.toString() + ",");
-         }
-         System.out.println("]");
          return new ByteArrayInputStream(graphData);
       } catch (Exception ex) {
-         System.out.println("exception in creatTaskImage");
+         System.err.println("exception in creatTaskImage");
          ex.printStackTrace();
-//         throw ex;
          return null;
       }
    }

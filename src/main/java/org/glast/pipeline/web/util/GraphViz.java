@@ -1,6 +1,6 @@
 // GraphViz.java - a simple API to call dot from Java programs
 
-/*$Id: GraphViz.java,v 1.2 2006-06-21 06:26:27 tonyj Exp $*/
+/*$Id: GraphViz.java,v 1.3 2006-06-22 21:12:24 dflath Exp $*/
 /*
  ******************************************************************************
  *                                                                            *
@@ -41,7 +41,7 @@ import java.io.*;
  *    gv.addln("A -> B;");
  *    gv.addln("A -> C;");
  *    gv.addln(gv.end_graph());
- *    System.out.println(gv.getDotSource());
+ *    System.err.println(gv.getDotSource());
  * 
  *    File out = new File("out.gif");
  *    gv.writeGraphToFile(gv.getGraph(gv.getDotSource()), out);
@@ -77,7 +77,7 @@ public class GraphViz
          fout.write(dotSource);
          fout.close();
       } catch (Exception e) {
-         System.out.println("Error: I/O error while writing the dot source to temp file!");
+         System.err.println("Error: I/O error while writing the dot source to temp file!");
          e.printStackTrace();
          return null;
       }
@@ -100,7 +100,7 @@ public class GraphViz
          fout.write(str);
          fout.close();
       } catch (Exception e) {
-         System.out.println("Error: I/O error while writing the dot source to temp file!");
+         System.err.println("Error: I/O error while writing the dot source to temp file!");
          e.printStackTrace();
          return null;
       }
@@ -119,12 +119,11 @@ public class GraphViz
    
       try {
          dot = writeDotSourceToFile(dot_source);
-         System.out.println("-->[" + dot.getAbsolutePath() + "]");
          if (dot != null)
          {
             img_stream = get_img_stream(dot);
-//            if (dot.delete() == false) 
-//               System.out.println("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
+            if (dot.delete() == false) 
+               System.err.println("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
             return img_stream;
          }
          return null;
@@ -189,20 +188,15 @@ public class GraphViz
          else   
             cmd = dotCommand + " -Tgif "+ dotFile.getAbsolutePath() + " -o" + imgFile.getAbsolutePath() + "";
          
-         System.out.println("executing[" + cmd + "]");
          java.lang.Process p = rt.exec(cmd);
          p.waitFor();
-         System.out.println(p.getOutputStream().toString());
-         System.out.println(p.getErrorStream().toString());         
-         System.out.println("-->[" + imgFile.getAbsolutePath() + "]\n");
          FileInputStream imgInputStream = new FileInputStream(imgFile.getAbsolutePath());
-//         System.out.println("-->[" + imgInputStream.available() + "]\n");
          imgBuffer = new byte[imgInputStream.available()];
          imgInputStream.read(imgBuffer);
          imgInputStream.close();
 
-//         if (!imgFile.delete()) 
-//            System.out.println("Warning: " + imgFile.getAbsolutePath() + " could not be deleted!");
+         if (!imgFile.delete()) 
+            System.err.println("Warning: " + imgFile.getAbsolutePath() + " could not be deleted!");
       }
       catch (java.io.IOException ioe) {
          ioe.printStackTrace();

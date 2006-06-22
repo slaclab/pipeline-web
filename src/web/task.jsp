@@ -68,17 +68,18 @@
                     <c:forEach var="row" items="${proc_stats.rows}">
                         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
                     </c:forEach>
-                    p.ProcessName, p.Process
+                    p.ProcessName, p.Process, Initcap(p.ProcessType) type
                     from TASK t
                     join PROCESS p on p.TASK=t.TASK
                     join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
                     where t.TASK=?
-                    group by p.PROCESS, p.PROCESSNAME
+                    group by p.PROCESS, p.PROCESSNAME, p.PROCESSTYPE
                     <sql:param value="${param.task}"/>
                 </sql:query>
 
                 <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
-                    <display:column property="ProcessName" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=0" paramId="process" paramProperty="Process"/>
+                    <display:column property="ProcessName" title="Name" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=0" paramId="process" paramProperty="Process"/>
+                    <display:column property="Type" sortable="true" headerClass="sortable" href="script.jsp?task=${param.task}" paramId="process" paramProperty="Process"/>
                     <c:forEach var="row" items="${proc_stats.rows}">
                         <display:column property="${row.PROCESSINGSTATUS}" title="${pl:prettyStatus(row.PROCESSINGSTATUS)}" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>

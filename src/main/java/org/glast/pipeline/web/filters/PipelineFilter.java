@@ -48,11 +48,11 @@ public class PipelineFilter implements Filter
                   dataSource = "jdbc/pipeline-ii-dev";
                   modeString = "Dev";
                }
-//               else if ("test".equals(mode))
-//               {
-//                  dataSource = "jdbc/pipeline-test";
-//                  modeString = "Test";
-//               }
+               else if ("test".equals(mode))
+               {
+                  dataSource = "jdbc/pipeline-ii-test";
+                  modeString = "Test";
+               }
                else // if ("prod".equals(mode))
                {
                   dataSource = "jdbc/pipeline-ii";

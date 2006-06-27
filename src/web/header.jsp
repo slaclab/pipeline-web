@@ -12,7 +12,7 @@
       <td align="right" valign="top">    
          <a href="releasenotes.jsp">Version 2.0.0</a>
          |
-         <a href="http://jira.slac.stanford.edu/browse/PFE">Jira</a>
+         Jira <a href="http://jira.slac.stanford.edu/browse/PFE">(Front-End)</a> <a href="http://jira.slac.stanford.edu/browse/PII">(Server)</a>
          |
          <a href="help.html">Help</a>
       </td>

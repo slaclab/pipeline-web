@@ -11,13 +11,13 @@
    <body>
 
       <sql:query var="code">
-         select processcode from scriptprocess where process=?     
-         <sql:param value="${param.process}"/>           
+         select exception from log where log=?
+         <sql:param value="${param.log}"/>
       </sql:query>
 
-      <h2>Script ${processName}</h2>
-       
-      <pre class="log"><c:out value="${code.rows[0]['processcode'].characterStream}" escapeXml="true"/></pre>
+      <h2>Log detail</h2>
+      
+      <pre class="log"><c:out value="${code.rows[0]['exception'].characterStream}" escapeXml="true"/></pre>
 
    </body>
 </html>

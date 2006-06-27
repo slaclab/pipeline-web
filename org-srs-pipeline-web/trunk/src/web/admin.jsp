@@ -25,6 +25,7 @@
             </c:when>
          </c:choose>
       </c:catch>
+      
       <c:choose>
          <c:when test="${empty error && !empty param.submit}">
             ${param.submit} successful!

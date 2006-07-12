@@ -30,7 +30,6 @@ public class Process
    private int taskPK;
    private String name;
    private String type;
-   private String code;
  
    // high-level constructs:
    private Task task;
@@ -46,7 +45,6 @@ public class Process
          taskPK = rs.getInt("TASK");
          name = rs.getString("PROCESSNAME");
          type = rs.getString("PROCESSTYPE");
-         code = rs.getString("PROCESSCODE");
          
          task = _task;
       } finally {};
@@ -86,7 +84,6 @@ public class Process
    public Task getTask() { return task; }
    public String getType() { return type; }
    public String getName() { return name; }
-   public String getCode() { return code; }
    public int getProcessPK() { return processPK; }
    public Map<Process, String> getProcessDependencyMap() { return processDependencyMap; }
    public List<Task> getSubTaskCreationList() { return subTaskCreationList; }
@@ -99,13 +96,6 @@ public class Process
       System.out.println(indent + "Process(" + getName() + ") is:");
       indent += "  ";
       System.out.println(indent + "Type(" + getType().toString() + ")");
-      
-      // format and print process code:
-      System.out.println(indent + "{");
-      String prettyCode = indent + "  " + getCode();  // first line
-      prettyCode = prettyCode.replace("\n", "\n" + indent + "  "); // subsequent lines
-      System.out.println(prettyCode);
-      System.out.println(indent + "}");
       
       // list dependencies:
       for (Map.Entry<Process,String> e : getProcessDependencyMap().entrySet()) {

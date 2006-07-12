@@ -61,7 +61,7 @@ public class Task
          subTaskList.add(new Task(rs,conn));
       
       // create processes:
-      PreparedStatement stmt = conn.prepareStatement("select * from Process, ScriptProcess where Task = ? and Process.Process = ScriptProcess.Process");
+      PreparedStatement stmt = conn.prepareStatement("select * from Process where Task = ?");
       try {
          stmt.setInt(1, taskPK);
          ResultSet processCursor = stmt.executeQuery();

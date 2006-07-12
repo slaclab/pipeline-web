@@ -68,7 +68,7 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select STREAMID,Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
+            ( select PROCESSINSTANCE, STREAMID, JOBID pid, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
               join stream s on p.stream = s.stream
               where PROCESS=?  
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
@@ -107,15 +107,15 @@
                 <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                 <input type="hidden" name="task" value="${param.task}"> 
                 <input type="hidden" name="process" value="${param.process}"></td></tr>
-                <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all runs on one page</td></tr>
+                <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
             </table>
         </form>
         
         <c:choose>
-            <c:when test="${param.mode=='run'}">
+            <c:when test="${param.format=='stream'}">
                 <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
             </c:when>
-            <c:when test="${param.mode=='id'}">
+            <c:when test="${param.format=='id'}">
                 <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.PID}">${row.PID}<br></c:if></c:forEach></pre>
             </c:when>
             <c:otherwise>
@@ -126,12 +126,13 @@
                     <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable"/>
                     <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable"/>
                     <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable"/>
+                    <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>
                 <c:if test="${test.rowCount>0}">
                     <ul>
-                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&mode=run">Dump run list</a>.</li>
-                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&mode=id">Dump job id list</a>.</li>
+                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&format=stream">Dump stream id list</a>.</li>
+                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&format=id">Dump job id list</a>.</li>
                     </ul>
                 </c:if>
             </c:otherwise>

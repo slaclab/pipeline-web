@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
 <%@taglib prefix="p" uri="http://glast-ground.slac.stanford.edu/pipeline"%>
+<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 
 <html>
@@ -42,18 +43,10 @@
          XML File: <input type="file" name="xml" value="" width="60" />
          <input type="submit" value="Upload" name="submit">
       </form>
-
-      <sql:query var="tasks">
-      select taskname from task where parenttask is null order by taskname
-      </sql:query>
       
       <h2>Create Stream</h2>
       <form method="POST">
-         Task: <select size="1" name="streamTask">
-                    <c:forEach var="row" items="${tasks.rows}">
-                        <option value="${row.TASKNAME}" ${param.streamTask==row.TASKNAME ? "selected" : ""}>${row.TASKNAME}</option>
-                    </c:forEach>
-                </select>
+         Task: <pt:taskChooser name="streamTask" selected="${param.streamTask}"/> 
          Stream: <input type="text" name="stream" value="" width="40" />
          <input type="submit" value="Create Stream" name="submit">
       </form>        

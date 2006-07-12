@@ -15,13 +15,12 @@
     </head>
     <body>        
         <h2>Running jobs for: ${taskName}</h2>
-        
-        <c:set var="runNumber" value="to_number(RUNNAME)"/>
-        <c:if test="${fn:contains(taskName,'b33')}">
-            <c:set var="runNumber" value="RUNNAME"/>
-        </c:if>
 
-        <sql:query var="test">select TPINSTANCE_PK "Id", ${runNumber} "Run", i.PID, t.TASKPROCESSNAME "Process",t.TASKPROCESS_PK "ProcessID", t.TASKPROCESSNAME "Process"from TPINSTANCE i, RUN r, PROCESSINGSTATUS s, TASKPROCESS t where t.TASK_FK=? and s.PROCESSINGSTATUSNAME='RUNNING' and i.RUN_FK=r.RUN_PK and i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK and t.TASKPROCESS_PK=i.TASKPROCESS_FK 
+        <sql:query var="test">
+                    select jobid from processinstance
+                                 join process using (process)
+                                 join task using (task)
+                                 where processingstatus='RUNNING' and task=? 
             <sql:param value="${param.task}"/>
         </sql:query>  
         

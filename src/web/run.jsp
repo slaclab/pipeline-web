@@ -11,10 +11,10 @@
    <body>
 
       <sql:query var="name">
-         select RUNNAME,BATCHLOGFILEPATH from TPINSTANCE,RUN where TPINSTANCE_PK=? and RUN_PK=RUN_FK
-         <sql:param value="${param.run}"/>           
+         select WORKINGDIR from PROCESSINSTANCE where PROCESSINSTANCE=?
+         <sql:param value="${param.pi}"/>           
       </sql:query>
-      <c:set var="logURL" value="${fn:replace(name.rowsByIndex[0][1],'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
+      <c:set var="logURL" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
       <c:redirect url="${logURL}"/>
 
    </body>

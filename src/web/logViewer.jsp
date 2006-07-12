@@ -6,6 +6,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 
 <html>
    <head>
@@ -19,26 +20,29 @@
 
       <c:choose>
          <c:when test="${!empty param.clear}">
-            <c:set var="minDate" value="" scope="session"/>
-            <c:set var="maxDate" value="" scope="session"/> 
+            <c:set var="logMinDate" value="" scope="session"/>
+            <c:set var="logMaxDate" value="" scope="session"/> 
          </c:when>
          <c:when test="${!empty param.submit}">
-            <c:set var="minDate" value="${param.minDate}" scope="session"/>
-            <c:set var="maxDate" value="${param.maxDate}" scope="session"/>
+            <c:set var="logMinDate" value="${param.minDate}" scope="session"/>
+            <c:set var="logMaxDate" value="${param.maxDate}" scope="session"/>
          </c:when>
       </c:choose>
       
       <form name="DateForm">
          <table class="filterTable">
             <tr>
+              <td>Task:</td><td><pt:taskChooser name="logTask" selected="${param.logTask}" allowNone="true" useKey="true"/> </td>
+            </tr>
+            <tr>
                <th>Date</th>
                <td>Start</td>
                <td>
-                  <script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script>
+                  <script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty logMinDate ? 'None' : logMinDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script>
                </td>
                <td>End</td>
                <td>
-                  <script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script>
+                  <script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty logMaxDate ? 'None' : logMaxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script>
                </td>
                <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
             </tr>
@@ -57,11 +61,11 @@
          <c:if test="${!empty minDate && minDate!='None'}"> and timeentered>=? </c:if>
          <c:if test="${!empty maxDate && maxDate!='None'}"> and timeentered<=? </c:if>
          <c:if test="${!empty minDate && minDate!='None'}"> 
-            <fmt:parseDate value="${minDate}" pattern="MM/dd/yyyy" var="minDateUsed"/>
+            <fmt:parseDate value="${logMinDate}" pattern="MM/dd/yyyy" var="minDateUsed"/>
             <sql:dateParam value="${minDateUsed}" type="date"/> 
          </c:if>
-         <c:if test="${!empty maxDate && maxDate!='None'}"> 
-            <fmt:parseDate value="${maxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
+         <c:if test="${!empty logMaxDate && logMaxDate!='None'}"> 
+            <fmt:parseDate value="${logMaxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
             <% java.util.Date d = (java.util.Date) pageContext.getAttribute("maxDateUsed"); 
                d.setTime(d.getTime()+24*60*60*1000);
             %>

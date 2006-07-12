@@ -11,20 +11,16 @@
    <body>
 
       <sql:query var="name">
-         select BATCHLOGFILEPATH,BATCHLOGFILENAME from TPINSTANCE,RUN where TPINSTANCE_PK=? and RUN_PK=RUN_FK
-         <sql:param value="${param.run}"/>           
+         select LOGFILE,STREAMID from PROCESSINSTANCE join STREAM using (STREAM) where PROCESSINSTANCE=?
+         <sql:param value="${param.pi}"/>           
       </sql:query>
-      <c:set var="logName" value="${name.rows[0]['BATCHLOGFILEPATH']}/${name.rows[0]['BATCHLOGFILENAME']}"/>
+      <c:set var="logName" value="${name.rows[0]['LOGFILE']}"/>
       <c:set var="logURL" value="${fn:replace(logName,'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
 
-      <h2>Run: ${name.rowsByIndex[0][0]}</h2>
-       
+      <h2>Stream ${name.rows[0]['STREAMID']}</h2>
 
       <b>Log file:</b> <font class="logFile">${logName}</font> (<a href="${logURL}">download</a>)
-      <pre class="log">
-         <c:import url="${logURL}" var="logFile"/>
-         <c:out value="${logFile}" escapeXml="true"/>
-      </pre>
-
+      <c:import url="${logURL}" var="logFile"/>
+      <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
    </body>
 </html>

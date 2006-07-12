@@ -4,6 +4,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.glast.jobcontrol.JobControlClient;
+import org.glast.jobcontrol.JobControlException;
 import org.glast.jobcontrol.JobStatus;
 import org.glast.jobcontrol.NoSuchJobException;
 import org.glast.pipeline.web.util.Util;
@@ -50,7 +51,7 @@ public class ProcessDecorator extends TableDecorator
       Object pid = map.get("PID");
       return pid == null ? null : "<a href=\"job.jsp?id="+pid+"\">"+pid+"</a>";
    }
-   private JobStatus getJobStatus()
+   private JobStatus getJobStatus() throws JobControlException
    {
       Map map = (Map) getCurrentRowObject();
       Object pid = map.get("PID");
@@ -70,28 +71,28 @@ public class ProcessDecorator extends TableDecorator
       }
       else return null;     
    }
-   public String getHost()
+   public String getHost() throws JobControlException
    {
       JobStatus status = getJobStatus();
       return status == null ? "?" : status.getHost();
    }
-   public String getStarted()
+   public String getStarted() throws JobControlException
    {
       JobStatus status = getJobStatus();
       Date date = status == null ? null : status.getStarted();
       return date == null ? "-" : dateFormat.format(date);
    }
-   public Number getCpuUsed()
+   public Number getCpuUsed() throws JobControlException
    {
       JobStatus status = getJobStatus();
       return status == null ? null : Integer.valueOf(status.getCpuUsed());
    }
-   public Number getMemoryUsed()
+   public Number getMemoryUsed() throws JobControlException
    {
       JobStatus status = getJobStatus();
       return status == null ? null : Integer.valueOf(status.getMemoryUsed()/1024);
    }
-   public Number getSwapUsed()
+   public Number getSwapUsed() throws JobControlException
    {
       JobStatus status = getJobStatus();
       return status == null ? null : Integer.valueOf(status.getSwapUsed()/1024);
@@ -114,19 +115,11 @@ public class ProcessDecorator extends TableDecorator
          }
       }
       Map map = (Map) getCurrentRowObject();
-      Object run = map.get("id");
-      Object process = map.get("processId");
-      buffer.append("run=");
-      buffer.append(run);
-      if (process != null)
-      {
-         buffer.append("&process=");
-         buffer.append(process);
-      }
+      Object processinstance = map.get("processinstance");
+      buffer.append("pi=");
+      buffer.append(processinstance);
       return "<a href=\"log.jsp?"+buffer+"\">Log</a>&nbsp;:&nbsp;"+
-             "<a href=\"run.jsp?"+buffer+"\">Files</a>&nbsp;:&nbsp;"+
-             "<a href=\"outerr.jsp?"+buffer+"&type=out\">Out</a>&nbsp;:&nbsp;"+
-             "<a href=\"outerr.jsp?"+buffer+"&type=err\">Err</a>";
+             "<a href=\"run.jsp?"+buffer+"\">Files</a>";
    }
    public String getTaskLinks()
    {

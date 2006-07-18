@@ -67,7 +67,7 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select PROCESSINSTANCE, streamid, STREAMPATH, JOBID pid, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
+            ( select PROCESSINSTANCE, streamid, STREAMPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
               join streampath sp on p.stream = sp.stream
               join stream s on p.stream = s.stream
               where PROCESS=?  
@@ -116,7 +116,7 @@
                 <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
             </c:when>
             <c:when test="${param.format=='id'}">
-                <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.PID}">${row.PID}<br></c:if></c:forEach></pre>
+                <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
             </c:when>
             <c:otherwise>
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >

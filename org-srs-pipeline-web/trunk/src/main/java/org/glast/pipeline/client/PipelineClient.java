@@ -118,6 +118,27 @@ public class PipelineClient
          throw new PipelineException("Error calling createStream",x);
       }      
    }
+
+   public void restartServer() throws PipelineException
+   {
+      try
+      {
+         JMXConnector c = connect();
+         try
+         {
+            MBeanServerConnection connection = c.getMBeanServerConnection();
+            connection.invoke(name,"restart",null,null);
+         }
+         finally
+         {
+            c.close();
+         }
+      }
+      catch (Exception x)
+      {
+         throw new PipelineException("Error calling restart",x);
+      } 
+   }
    
    public class PipelineServerNotRunningException extends PipelineException
    {

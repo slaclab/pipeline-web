@@ -44,6 +44,22 @@
         </attribute>
     </tag>
     <tag>
+        <name>restartServer</name>
+        <tag-class>org.glast.pipeline.web.taglib.admin.RestartServer</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    <tag>
+        <name>serverInfo</name>
+        <tag-class>org.glast.pipeline.web.taglib.admin.ServerInfo</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
         <name>reportError</name>
         <tag-class>org.glast.pipeline.web.taglib.upload.ReportError</tag-class>
         <body-content>empty</body-content>

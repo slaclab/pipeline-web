@@ -68,6 +68,10 @@ public class PipelineClient
    {
       return version;
    }
+   public Timestamp getStartTime()
+   {
+      return started;
+   }
    
    private JMXConnector connect() throws IOException
    {
@@ -93,7 +97,7 @@ public class PipelineClient
          throw new PipelineException("Error calling createTaskFromXML",x);
       }
    }
-   public void createStream(String task, int stream) throws PipelineException
+   public int createStream(String task, int stream, String env) throws PipelineException
    {
       try
       {
@@ -101,7 +105,8 @@ public class PipelineClient
          try
          {
             MBeanServerConnection connection = c.getMBeanServerConnection();
-            connection.invoke(name,"createStream",new Object[]{task,stream},new String[]{"java.lang.String","int"});
+            Object result = connection.invoke(name,"createStream",new Object[]{task,stream,env},new String[]{"java.lang.String","int","java.lang.String"});
+            return ((Number) result).intValue();
          }
          finally
          {
@@ -129,3 +134,4 @@ public class PipelineClient
       }
    }
 }
+

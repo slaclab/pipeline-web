@@ -24,21 +24,20 @@
             </c:when>
         </c:choose>
         
-        <sql:query var="run_stats">
-            select PROCESSINGSTATUS from PROCESSINGSTATUS
+        <sql:query var="stream_stats">
+            select STREAMSTATUS from STREAMSTATUS
         </sql:query>
         
         <sql:query var="test">
            select * from (
            select 
               SUM(1) "ALL",
-              <c:forEach var="row" items="${run_stats.rows}">
-                SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
+              <c:forEach var="row" items="${stream_stats.rows}">
+                SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
              </c:forEach>
            t.TASKNAME, t.TASK
            from TASK t
-           join PROCESS p on p.TASK=t.TASK
-           join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
+           join STREAM s on s.TASK=t.TASK
            where t.PARENTTASK is null
            group by t.TASK, t.TASKNAME
            )
@@ -58,7 +57,7 @@
                 and "ALL"=0
             </c:if>
             <c:if test="${include=='active'}">
-                and ("RUNNING">0 or "WAITING">0 or "READY">0)
+                and ("RUNNING">0 or "QUEUED">0 or "WAITING">0)
             </c:if>     
         </sql:query>    
 
@@ -87,8 +86,8 @@
         <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
            <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
            <display:column property="taskname" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
-             <c:forEach var="row" items="${run_stats.rows}">
-                <display:column property="${row.PROCESSINGSTATUS}" title="${pl:prettyStatus(row.PROCESSINGSTATUS)}" sortable="true" headerClass="sortable" />
+             <c:forEach var="row" items="${stream_stats.rows}">
+                <display:column property="${row.STREAMSTATUS}" title="${pl:prettyStatus(row.STREAMSTATUS)}" sortable="true" headerClass="sortable" />
             </c:forEach>
         </display:table>
     </body>

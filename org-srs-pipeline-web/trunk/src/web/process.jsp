@@ -23,26 +23,25 @@
         
         <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
 
-        <sql:query var="run_stats">
-            select PROCESSINGSTATUS from PROCESSINGSTATUS
+        <sql:query var="stream_stats">
+            select STREAMSTATUS from STREAMSTATUS
         </sql:query>
         
         <sql:query var="summary">
             select            
-            <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
-                SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
+            <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
+                SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
             </c:forEach>
             SUM(1) "ALL"
-           from TASK t
-           join PROCESS p on p.TASK=t.TASK
-           join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
-           where t.TASK=?
+            from TASK t
+            join STREAM s on s.TASK=t.TASK
+            where t.TASK=?
             <sql:param value="${param.task}"/>           
         </sql:query> 
         
         <div class="taskSummary">Task Summary: 
-           <c:forEach var="row" items="${run_stats.rows}" varStatus="status">
-               ${pl:prettyStatus(row.PROCESSINGSTATUS)}:&nbsp;${summary.rowsByIndex[0][status.index]},
+           <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
+               ${pl:prettyStatus(row.STREAMSTATUS)}:&nbsp;${summary.rowsByIndex[0][status.index]},
            </c:forEach>
            Total:&nbsp;${summary.rows[0]["ALL"]}
         </div>

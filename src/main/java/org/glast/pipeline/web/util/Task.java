@@ -232,6 +232,7 @@ public class Task
          // write the header:
          writer.write("digraph G {\n");
          writer.write(indent + "compound=true;\n");
+         writer.write(indent + "rankdir=\"LR\";\n");
 
          // enter the recursive drawing routine:
          Map<Task, Process> subTaskCreatorMap = new HashMap<Task, Process>();

@@ -5,18 +5,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.glast.pipeline.client.PipelineClient;
-import org.glast.pipeline.web.util.*;
 import org.glast.pipeline.web.util.ConnectionManager;
 /**
  * A tag for uploading xml files to the pipeline database
  * @author tonyj
  */
-public class CreateStream extends SimpleTagSupport
+public class ServerInfo extends SimpleTagSupport
 {
-   private String task;
-   private String args;
-   private int stream;
-   
+   private String var;
    public void doTag() throws JspException
    {
       try
@@ -25,7 +21,7 @@ public class CreateStream extends SimpleTagSupport
          try
          {
             PipelineClient client = new PipelineClient(conn);
-            client.createStream(task,stream,args);
+            getJspContext().setAttribute(var,client);
          }
          finally
          {
@@ -34,19 +30,11 @@ public class CreateStream extends SimpleTagSupport
       }
       catch (Exception x)
       {
-         throw new JspException("Create stream failed",x);
+         getJspContext().setAttribute(var,null);
       }
    }
-   public void setTask(String task)
+   public void setVar(String var)
    {
-      this.task = task;
-   }
-   public void setStream(int stream)
-   {
-      this.stream = stream;
-   }
-   public void setArgs(String args)
-   {
-      this.args = args;
+      this.var = var;
    }
 }

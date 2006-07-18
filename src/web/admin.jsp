@@ -16,40 +16,58 @@
          <c:redirect url="noPermission.jsp"/>
       </c:if>
       
-      <c:catch var="error">
+      <p:serverInfo var="info"/>
+      
+      <c:if test="${empty info}">
+         <p class="error">Server not running!</p>
+      </c:if>      
+      <c:if test="${!empty info}">
+         <p class="info">Server version ${info.serverVersion} running on ${info.serverHost} since ${info.startTime}</p>
+      
+         <c:catch var="error">
+            <c:choose>
+               <c:when test="${param.submit=='Upload'}">
+                  <p:upload user="${userName}" xml="${param.xml}"/>
+               </c:when>
+               <c:when test="${param.submit=='Create Stream'}">
+                  <p:createStream task="${param.streamTask}" stream="${param.stream}" args="${param.args}"/>
+               </c:when>
+               <c:when test="${param.submit=='Restart Server'}">
+                  <p:restartServer/>
+               </c:when>
+            </c:choose>
+         </c:catch>
+      
          <c:choose>
-            <c:when test="${param.submit=='Upload'}">
-               <p:upload user="${userName}" xml="${param.xml}"/>
+            <c:when test="${empty error && !empty param.submit}">
+               <p class="message">${param.submit} successful!</p>
             </c:when>
-            <c:when test="${param.submit=='Create Stream'}">
-               <p:createStream task="${param.streamTask}" stream="${param.stream}" args="${param.args}"/>
+            <c:when test="${!empty error}">
+               <p class="error">${param.submit} failed!
+               <p:reportError error="${error}"/></p>
             </c:when>
-         </c:choose>
-      </c:catch>
-      
-      <c:choose>
-         <c:when test="${empty error && !empty param.submit}">
-            ${param.submit} successful!
-         </c:when>
-         <c:when test="${!empty error}">
-            ${param.submit} failed!
-            <p:reportError error="${error}"/>
-         </c:when>
-      </c:choose>        
+         </c:choose>        
         
-      <h2>Upload</h2>
+         <h2>Upload</h2>
 
-      <form method="POST" enctype="multipart/form-data">
-         XML File: <input type="file" name="xml" value="" width="60" />
-         <input type="submit" value="Upload" name="submit">
-      </form>
+         <form method="POST" enctype="multipart/form-data">
+            XML File: <input type="file" name="xml" value="" size="60" />
+            <input type="submit" value="Upload" name="submit">
+         </form>
       
-      <h2>Create Stream</h2>
-      <form method="POST">
-         Task: <pt:taskChooser name="streamTask" selected="${param.streamTask}"/> 
-         Stream: <input type="text" name="stream" value="" width="40" />
-         Args: <input type="text" name="args" value="" width="40" />
-         <input type="submit" value="Create Stream" name="submit">
-      </form>        
+         <h2>Create Stream</h2>
+         <form method="POST">
+            Task:&nbsp;<pt:taskChooser name="streamTask" selected="${param.streamTask}"/> 
+            Stream:&nbsp;<input type="text" name="stream" value="" size="10" />
+            Args:&nbsp;<input type="text" name="args" value="" size="50" />
+            <input type="submit" value="Create Stream" name="submit">
+         </form>    
+    
+         <h2>Restart Server</h2>
+         <form method="POST">
+            <input type="submit" value="Restart Server" name="submit">
+         </form>    
+      </c:if>
+      
    </body>
 </html>

@@ -11,11 +11,8 @@ import org.glast.pipeline.web.util.ConnectionManager;
  * A tag for uploading xml files to the pipeline database
  * @author tonyj
  */
-public class CreateStream extends SimpleTagSupport
+public class RestartServer extends SimpleTagSupport
 {
-   private String task;
-   private String args;
-   private int stream;
    
    public void doTag() throws JspException
    {
@@ -25,7 +22,7 @@ public class CreateStream extends SimpleTagSupport
          try
          {
             PipelineClient client = new PipelineClient(conn);
-            client.createStream(task,stream,args);
+            client.restartServer();
          }
          finally
          {
@@ -34,19 +31,7 @@ public class CreateStream extends SimpleTagSupport
       }
       catch (Exception x)
       {
-         throw new JspException("Create stream failed",x);
+         throw new JspException("Restart server failed",x);
       }
-   }
-   public void setTask(String task)
-   {
-      this.task = task;
-   }
-   public void setStream(int stream)
-   {
-      this.stream = stream;
-   }
-   public void setArgs(String args)
-   {
-      this.args = args;
    }
 }

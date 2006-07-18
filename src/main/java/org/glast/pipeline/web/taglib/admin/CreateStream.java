@@ -14,6 +14,7 @@ import org.glast.pipeline.web.util.ConnectionManager;
 public class CreateStream extends SimpleTagSupport
 {
    private String task;
+   private String args;
    private int stream;
    
    public void doTag() throws JspException
@@ -24,7 +25,7 @@ public class CreateStream extends SimpleTagSupport
          try
          {
             PipelineClient client = new PipelineClient(conn);
-            client.createStream(task,stream);
+            client.createStream(task,stream,args);
          }
          finally
          {
@@ -43,5 +44,9 @@ public class CreateStream extends SimpleTagSupport
    public void setStream(int stream)
    {
       this.stream = stream;
+   }
+   public void setArgs(String args)
+   {
+      this.args = args;
    }
 }

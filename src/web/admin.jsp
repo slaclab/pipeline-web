@@ -22,7 +22,7 @@
                <p:upload user="${userName}" xml="${param.xml}"/>
             </c:when>
             <c:when test="${param.submit=='Create Stream'}">
-               <p:createStream task="${param.streamTask}" stream="${param.stream}"/>
+               <p:createStream task="${param.streamTask}" stream="${param.stream}" args="${param.args}"/>
             </c:when>
          </c:choose>
       </c:catch>
@@ -48,6 +48,7 @@
       <form method="POST">
          Task: <pt:taskChooser name="streamTask" selected="${param.streamTask}"/> 
          Stream: <input type="text" name="stream" value="" width="40" />
+         Args: <input type="text" name="args" value="" width="40" />
          <input type="submit" value="Create Stream" name="submit">
       </form>        
    </body>

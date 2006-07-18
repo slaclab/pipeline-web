@@ -67,7 +67,8 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select PROCESSINSTANCE, STREAMID, JOBID pid, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
+            ( select PROCESSINSTANCE, streamid, STREAMPATH, JOBID pid, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
+              join streampath sp on p.stream = sp.stream
               join stream s on p.stream = s.stream
               where PROCESS=?  
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
@@ -119,7 +120,7 @@
             </c:when>
             <c:otherwise>
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                    <display:column property="StreamID" title="Stream" sortable="true" headerClass="sortable" />
+                    <display:column property="StreamPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" />
                     <display:column property="Status" sortable="true" headerClass="sortable"/>
                     <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable"/>
                     <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable"/>

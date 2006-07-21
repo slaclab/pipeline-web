@@ -19,20 +19,35 @@
       <h2>Log Viewer</h2>
 
       <c:choose>
-         <c:when test="${!empty param.clear}">
-            <c:set var="logMinDate" value="" scope="session"/>
-            <c:set var="logMaxDate" value="" scope="session"/> 
-         </c:when>
          <c:when test="${!empty param.submit}">
             <c:set var="logMinDate" value="${param.minDate}" scope="session"/>
             <c:set var="logMaxDate" value="${param.maxDate}" scope="session"/>
+            <c:set var="severity" value="${param.severity}" scope="session"/> 
+            <c:set var="logTask" value="${param.logTask}" scope="session"/>
+         </c:when>
+         <c:when test="${!empty param.clear || empty severity}">
+            <% pageContext.setAttribute("now",new java.util.Date()); %> 
+            <fmt:formatDate var="today" pattern="MM/dd/yyyy" value="${now}"/>
+            <c:set var="logMinDate" value="${today}" scope="session"/>
+            <c:set var="logMaxDate" value="" scope="session"/> 
+            <c:set var="severity" value="800" scope="session"/> 
+            <c:set var="logTask" value="" scope="session"/>
          </c:when>
       </c:choose>
       
       <form name="DateForm">
          <table class="filterTable">
             <tr>
-              <td>Task:</td><td><pt:taskChooser name="logTask" selected="${param.logTask}" allowNone="true" useKey="true"/> </td>
+              <td>Task:</td><td><pt:taskChooser name="logTask" selected="${logTask}" allowNone="true" useKey="true"/> </td>
+              <td>Severity:</td><td><select name="severity">
+                 <option value="0">-</option>
+                 <option ${severity==1000 ? 'selected' : ''} value="1000">SEVERE</option>
+                 <option ${severity==900 ? 'selected' : ''} value="900">WARNING</option>
+                 <option ${severity==800 ? 'selected' : ''} value="800">INFO</option>
+                 <option ${severity==500 ? 'selected' : ''} value="500">FINE</option>
+                 <option ${severity==400 ? 'selected' : ''} value="400">FINER</option>
+                 <option ${severity==300 ? 'selected' : ''} value="300">FINEST</option>
+              </select>
             </tr>
             <tr>
                <th>Date</th>
@@ -58,13 +73,14 @@
          left outer join streampath s using (stream)
          left outer join taskpath t on t.task=p.task
          where log_level > 0 
-         <c:if test="${!empty minDate && minDate!='None'}"> and timeentered>=? </c:if>
-         <c:if test="${!empty maxDate && maxDate!='None'}"> and timeentered<=? </c:if>
-         <c:if test="${!empty minDate && minDate!='None'}"> 
+         <c:if test="${!empty severity}"> and log_level>=? 
+           <sql:param value="${severity}"/>
+         </c:if>
+         <c:if test="${!empty logMinDate && logMinDate!='None'}"> and timeentered>=? 
             <fmt:parseDate value="${logMinDate}" pattern="MM/dd/yyyy" var="minDateUsed"/>
             <sql:dateParam value="${minDateUsed}" type="date"/> 
          </c:if>
-         <c:if test="${!empty logMaxDate && logMaxDate!='None'}"> 
+         <c:if test="${!empty logMaxDate && logMaxDate!='None'}"> and timeentered<=?
             <fmt:parseDate value="${logMaxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
             <% java.util.Date d = (java.util.Date) pageContext.getAttribute("maxDateUsed"); 
                d.setTime(d.getTime()+24*60*60*1000);

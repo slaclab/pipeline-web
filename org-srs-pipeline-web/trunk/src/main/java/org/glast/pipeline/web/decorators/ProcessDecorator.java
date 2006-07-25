@@ -99,51 +99,16 @@ public class ProcessDecorator extends TableDecorator
    }
    public String getLinks()
    {
-      ServletRequest request = getPageContext().getRequest();
-      StringBuffer buffer = new StringBuffer();
-      Map param = request.getParameterMap();
-      for (Iterator i = param.entrySet().iterator(); i.hasNext(); )
-      {
-         Map.Entry entry = (Map.Entry) i.next();
-         String[] values = (String[]) entry.getValue();
-         for (int j=0; j<values.length; j++)
-         {
-            buffer.append(entry.getKey().toString());
-            buffer.append('=');
-            buffer.append(values[j]);
-            buffer.append('&');
-         }
-      }
       Map map = (Map) getCurrentRowObject();
       Object processinstance = map.get("processinstance");
-      buffer.append("pi=");
-      buffer.append(processinstance);
-      return "<a href=\"log.jsp?"+buffer+"\">Log</a>&nbsp;:&nbsp;"+
-             "<a href=\"run.jsp?"+buffer+"\">Files</a>";
+      return "<a href=\"log.jsp?pi="+processinstance+"\">Log</a>&nbsp;:&nbsp;"+
+             "<a href=\"run.jsp?pi="+processinstance+"\">Files</a>";
    }
    public String getTaskLinks()
    {
-      ServletRequest request = getPageContext().getRequest();
-      StringBuffer buffer = new StringBuffer();
-      Map param = request.getParameterMap();
-      for (Iterator i = param.entrySet().iterator(); i.hasNext(); )
-      {
-         Map.Entry entry = (Map.Entry) i.next();
-         String[] values = (String[]) entry.getValue();
-         for (int j=0; j<values.length; j++)
-         {
-            buffer.append(entry.getKey().toString());
-            buffer.append('=');
-            buffer.append(values[j]);
-            buffer.append('&');
-         }
-      }
       Map map = (Map) getCurrentRowObject();
       Object id = map.get("id");
-      buffer.append("process=");
-      buffer.append(id);
-
-      return "<a href=\"stats.jsp?"+buffer+"\">Stats</a>";
+      return "<a href=\"stats.jsp?process="+id+"\">Stats</a>";
    }
    public String getLastActive()
    {

@@ -28,15 +28,15 @@
            from TASK t
            join STREAM s on s.TASK=t.TASK
            where t.TASK=?
-            <sql:param value="${param.task}"/>           
+            <sql:param value="${task}"/>           
         </sql:query> 
         
-        <h2>Task Summary: ${taskName}</h2> 
-        XML: <a href="xml.jsp?xml=dump.jsp&task=${param.task}">(1.0)</a> <a href="xml.jsp?xml=dump11.jsp&task=${param.task}">(1.1)</a> <a href="xml.jsp?xml=catalog.jsp&task=${param.task}">(catalog)</a>
+        <h2>Task Summary: ${taskNamePath}</h2> 
+        XML: <a href="xml.jsp?xml=dump.jsp&task=${task}">(1.0)</a> <a href="xml.jsp?xml=dump11.jsp&task=${task}">(1.1)</a> <a href="xml.jsp?xml=catalog.jsp&task=${task}">(catalog)</a>
 
         <sql:query var="subtasks">
            select task, taskname from task where parenttask=?
-           <sql:param value="${param.task}"/>
+           <sql:param value="${task}"/>
         </sql:query>
 
         <c:if test="${subtasks.rowCount>0}">
@@ -46,7 +46,7 @@
            </c:forEach>
         </c:if>
         
-        <p><img src="TaskImageServlet?task=${param.task}"/></p>
+        <p><img src="TaskImageServlet?task=${task}"/></p>
         
         <c:choose>
             <c:when test="${empty summary.rows[0]['ALL']}">
@@ -54,7 +54,7 @@
             </c:when>
             <c:otherwise>
                 <p>To filter by status click on the count in the status column. To see all runs click on the name in the Name column.</p>   
-                <p><b>*NEW*</b> <a href="running.jsp?task=${param.task}">Show running jobs</a> . <a href="stats.jsp?task=${param.task}&process=0">Show summary stats</a></p>
+                <p><b>*NEW*</b> <a href="running.jsp?task=${task}">Show running jobs</a> . <a href="stats.jsp?task=${task}&process=0">Show summary stats</a></p>
         
                 <div class="taskSummary">Task Summary: 
                     <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
@@ -73,14 +73,14 @@
                     join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
                     where t.TASK=?
                     group by p.PROCESS, p.PROCESSNAME, p.PROCESSTYPE
-                    <sql:param value="${param.task}"/>
+                    <sql:param value="${task}"/>
                 </sql:query>
 
                 <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
-                    <display:column property="ProcessName" title="Name" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=0" paramId="process" paramProperty="Process"/>
-                    <display:column property="Type" sortable="true" headerClass="sortable" href="script.jsp?task=${param.task}" paramId="process" paramProperty="Process"/>
+                    <display:column property="ProcessName" title="Name" sortable="true" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
+                    <display:column property="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
                     <c:forEach var="row" items="${proc_stats.rows}">
-                        <display:column property="${row.PROCESSINGSTATUS}" title="${pl:prettyStatus(row.PROCESSINGSTATUS)}" sortable="true" headerClass="sortable" href="process.jsp?task=${param.task}&status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
+                        <display:column property="${row.PROCESSINGSTATUS}" title="${pl:prettyStatus(row.PROCESSINGSTATUS)}" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
                     <display:column property="taskLinks" title="Links (<a href=help.html>?</a>)" />
                 </display:table>

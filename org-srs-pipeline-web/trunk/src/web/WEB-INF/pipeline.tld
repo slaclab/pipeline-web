@@ -77,4 +77,11 @@
         </function-class>
         <function-signature>java.lang.String prettyStatus(java.lang.String)</function-signature>
     </function>
+    <function>
+        <description>Convert a task path to a set of links</description>
+        <name>linkToTasks</name>
+        <function-class>org.glast.pipeline.web.util.Util
+        </function-class>
+        <function-signature>java.lang.String linkToTasks(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
 </taglib>

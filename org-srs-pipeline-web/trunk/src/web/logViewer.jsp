@@ -66,12 +66,12 @@
         
         
       <sql:query var="log">
-         select log, log_level, message, timeentered, streampath, processname, taskpath, case when exception is null then 0 else 1 end hasException 
+         select log, log_level, message, timeentered, processInstance, streamIdPath, process, processname, taskPath, taskNamePath, case when exception is null then 0 else 1 end hasException 
          from log l
-         left outer join processinstance i on l.processinstance = i.processinstance
+         left outer join processinstance i using (processinstance)
          left outer join process p using (process)
-         left outer join streampath s using (stream)
-         left outer join taskpath t on t.task=p.task
+         left outer join streampath2 s using (stream)
+         left outer join taskpath2 t using (task)
          where log_level > 0 
          <c:if test="${!empty severity}"> and log_level>=? 
            <sql:param value="${severity}"/>
@@ -92,9 +92,9 @@
       <display:table class="dataTable" name="${log.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
          <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />
          <display:column property="log_level" decorator="org.glast.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" sortable="true" headerClass="sortable" />
-         <display:column property="taskpath" title="Task" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.TaskPathComparator"/>
-         <display:column property="processname" title="Process" sortable="true" headerClass="sortable"/>
-         <display:column property="streampath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" />
+         <display:column property="taskLinkPath" title="Task" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.TaskPathComparator"/>
+         <display:column property="processname" title="Process" sortable="true" headerClass="sortable" href="process.jsp" paramId="process" paramProperty="process"/>
+         <display:column property="streamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance" />
          <display:column property="message" title="Message" class="leftAligned" />
          <display:column property="exception" title="Detail" class="leftAligned" />
       </display:table>

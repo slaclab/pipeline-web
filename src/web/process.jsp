@@ -21,7 +21,7 @@
         
         <h2>Runs for process: ${processName}</h2>
         
-        <p><b>*NEW*</b> <a href="stats.jsp?task=${param.task}&process=${param.process}">Show processing statistics</a></p>
+        <p><b>*NEW*</b> <a href="stats.jsp?process=${process}">Show processing statistics</a></p>
 
         <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS
@@ -36,7 +36,7 @@
             from TASK t
             join STREAM s on s.TASK=t.TASK
             where t.TASK=?
-            <sql:param value="${param.task}"/>           
+            <sql:param value="${task}"/>           
         </sql:query> 
         
         <div class="taskSummary">Task Summary: 
@@ -67,8 +67,8 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select PROCESSINSTANCE, streamid, STREAMPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
-              join streampath sp on p.stream = sp.stream
+            ( select PROCESSINSTANCE, streamid, STREAMIDPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
+              join streampath2 sp on p.stream = sp.stream
               join stream s on p.stream = s.stream
               where PROCESS=?  
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
@@ -105,8 +105,7 @@
                 <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
                 <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
                 <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
-                <input type="hidden" name="task" value="${param.task}"> 
-                <input type="hidden" name="process" value="${param.process}"></td></tr>
+                <input type="hidden" name="process" value="${process}"></td></tr>
                 <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
             </table>
         </form>
@@ -120,7 +119,7 @@
             </c:when>
             <c:otherwise>
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                    <display:column property="StreamPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" />
+                    <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                     <display:column property="Status" sortable="true" headerClass="sortable"/>
                     <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable"/>
                     <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable"/>
@@ -131,8 +130,8 @@
                 </display:table>
                 <c:if test="${test.rowCount>0}">
                     <ul>
-                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&format=stream">Dump stream id list</a>.</li>
-                    <li><a href="process.jsp?process=${param.process}&task=${param.task}&format=id">Dump job id list</a>.</li>
+                    <li><a href="process.jsp?process=${process}&format=stream">Dump stream id list</a>.</li>
+                    <li><a href="process.jsp?process=${process}&format=id">Dump job id list</a>.</li>
                     </ul>
                 </c:if>
             </c:otherwise>

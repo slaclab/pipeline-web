@@ -12,7 +12,7 @@
 
       <sql:query var="name">
          select LOGFILE,STREAMID from PROCESSINSTANCE join STREAM using (STREAM) where PROCESSINSTANCE=?
-         <sql:param value="${param.pi}"/>           
+         <sql:param value="${pi}"/>           
       </sql:query>
       <c:set var="logName" value="${name.rows[0]['LOGFILE']}"/>
       <c:set var="logURL" value="${fn:replace(logName,'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>

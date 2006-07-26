@@ -6,6 +6,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 
 <html>
     <head>
@@ -22,29 +23,8 @@
         <h2>Runs for process: ${processName}</h2>
         
         <p><b>*NEW*</b> <a href="stats.jsp?process=${process}">Show processing statistics</a></p>
-
-        <sql:query var="stream_stats">
-            select STREAMSTATUS from STREAMSTATUS
-        </sql:query>
         
-        <sql:query var="summary">
-            select            
-            <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
-                SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
-            </c:forEach>
-            SUM(1) "ALL"
-            from TASK t
-            join STREAM s on s.TASK=t.TASK
-            where t.TASK=?
-            <sql:param value="${task}"/>           
-        </sql:query> 
-        
-        <div class="taskSummary">Task Summary: 
-           <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
-               ${pl:prettyStatus(row.STREAMSTATUS)}:&nbsp;${summary.rowsByIndex[0][status.index]},
-           </c:forEach>
-           Total:&nbsp;${summary.rows[0]["ALL"]}
-        </div>
+        <pt:taskSummary streamCount="runCount"/>
         
         <c:choose>
             <c:when test="${!empty param.clear}">
@@ -67,9 +47,10 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select PROCESSINSTANCE, streamid, STREAMIDPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE from PROCESSINSTANCE p
-              join streampath2 sp on p.stream = sp.stream
-              join stream s on p.stream = s.stream
+            ( select PROCESSINSTANCE, streamid, STREAMIDPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE 
+              from PROCESSINSTANCE
+              join streampath2 using (stream)
+              join stream using (stream)
               where PROCESS=?  
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
             ) where streamid>0

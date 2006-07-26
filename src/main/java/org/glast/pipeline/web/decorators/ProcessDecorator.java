@@ -19,9 +19,9 @@ import org.displaytag.decorator.TableDecorator;
  */
 public class ProcessDecorator extends TableDecorator
 {
-   private JobControlClient jc = new JobControlClient();
+   private final JobControlClient jc = new JobControlClient();
    private JobStatus statusCache;
-   private Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+   private final Format dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
    
    /** Creates a new instance of ProcessDecorator */
    public ProcessDecorator()
@@ -110,6 +110,12 @@ public class ProcessDecorator extends TableDecorator
       Object id = map.get("id");
       return "<a href=\"stats.jsp?process="+id+"\">Stats</a>";
    }
+   
+   public TaskWithVersion getTaskWithVersion()
+   {
+      Map map = (Map) getCurrentRowObject();
+      return new TaskWithVersion(map.get("taskName"),map.get("version"),map.get("revision"));
+   }
    public String getLastActive()
    {
       Map map = (Map) getCurrentRowObject();
@@ -121,5 +127,33 @@ public class ProcessDecorator extends TableDecorator
       Map map = (Map) getCurrentRowObject();
       Date date = (Date) map.get("Submitted");
       return date == null ? "-" : dateFormat.format(date);
+   }
+   private class TaskWithVersion implements Comparable
+   {
+      private final String name;
+      private int major = 0;
+      private int minor = 0;
+      TaskWithVersion(Object name, Object version, Object revision)
+      {
+         this.name = name.toString();
+         if (version != null) major = ((Number) version).intValue();
+         if (revision != null) minor = ((Number) revision).intValue();
+      }
+      public String toString()
+      {
+         if (major == 0 && minor == 0) return name;
+         else return name + "("+major+"."+minor+")";
+      }
+
+      public int compareTo(Object o)
+      {
+         TaskWithVersion that = (TaskWithVersion) o;
+         int rc = this.name.compareTo(that.name);
+         if (rc != 0) return rc;
+         rc = this.major - that.major;
+         if (rc != 0) return rc;
+         rc = this.minor - that.minor;
+         return rc;
+      }
    }
 }

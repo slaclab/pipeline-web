@@ -24,6 +24,8 @@
             </c:when>
         </c:choose>
         
+        <c:set var="mergeVersions" value="${!empty param.mergeChanged ? !empty param.merge : empty mergeVersions ? true : mergeVersions}" scope="session"/>
+        
         <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS
         </sql:query>
@@ -35,11 +37,11 @@
               <c:forEach var="row" items="${stream_stats.rows}">
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
              </c:forEach>
-           t.TASKNAME, t.TASK
-           from TASK t
-           join STREAM s on s.TASK=t.TASK
-           where t.PARENTTASK is null
-           group by t.TASK, t.TASKNAME
+              TASKNAME, ${ mergeVersions ? "Max(TASK) Task" : "TASK,VERSION,REVISION" }
+              from TASK t
+              left outer join STREAM s using (TASK)
+              where PARENTTASK is null
+              group by TASKNAME ${mergeVersions ? "" : ",TASK,VERSION,REVISION"}
            )
            where TASK>0 
             <c:if test="${!empty taskFilter && !regExp}">
@@ -62,9 +64,6 @@
         </sql:query>    
 
         <h2>Task Summary</h2>
-
-        <p>This is the web interface to the pipeline. This version includes support for viewing log files, sorting columns, and filtering of results. Feedback and suggestions
-        are welcome.</p>
         
         <form name="DateForm">
             <table class="filterTable">
@@ -81,11 +80,17 @@
                   <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"></td>
                 </tr>
             </table>
-        </form>       
+        </form>      
+ 
+        <script type="text/javascript" language="JavaScript">function DoSubmission() { document.mergeForm.submit(); }</script>
+        <form name="mergeForm" target="_self"> 
+        <input type="hidden" name="mergeChanged" value="true">
+        <input type="checkbox" name="merge" onClick="DoSubmission();" value="true" ${mergeVersions ? "checked" : ""}> Merge task versions
+        <noscript><input type="submit" value="Update"></noscript></form>
         
         <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
            <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
-           <display:column property="taskname" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
+           <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
              <c:forEach var="row" items="${stream_stats.rows}">
                 <display:column property="${row.STREAMSTATUS}" title="${pl:prettyStatus(row.STREAMSTATUS)}" sortable="true" headerClass="sortable" />
             </c:forEach>

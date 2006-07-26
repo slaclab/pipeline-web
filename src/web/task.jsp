@@ -4,6 +4,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
+<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 
 <html>
     <head>
@@ -14,26 +15,22 @@
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS
         </sql:query>
- 
-        <sql:query var="stream_stats">
-            select STREAMSTATUS from STREAMSTATUS 
-        </sql:query>
-        
-        <sql:query var="summary">
-            select            
-            <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
-                SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
-            </c:forEach>
-            SUM(1) "ALL"
-           from TASK t
-           join STREAM s on s.TASK=t.TASK
-           where t.TASK=?
-            <sql:param value="${task}"/>           
-        </sql:query> 
         
         <h2>Task Summary: ${taskNamePath}</h2> 
-        XML: <a href="xml.jsp?xml=dump.jsp&task=${task}">(1.0)</a> <a href="xml.jsp?xml=dump11.jsp&task=${task}">(1.1)</a> <a href="xml.jsp?xml=catalog.jsp&task=${task}">(catalog)</a>
+        
+        <sql:query var="versions">
+           select task, version, revision from task where taskName=? and task<>?
+           <sql:param value="${taskName}"/>
+           <sql:param value="${task}"/>
+        </sql:query>        
 
+        <c:if test="${versions.rowCount>0}">
+           Other versions:  
+           <c:forEach var="row" items="${versions.rows}">
+              <a href="task.jsp?task=${row['task']}">(${row["version"]}.${row["revision"]})</a>
+           </c:forEach>
+        </c:if>
+        
         <sql:query var="subtasks">
            select task, taskname from task where parenttask=?
            <sql:param value="${task}"/>
@@ -48,31 +45,25 @@
         
         <p><img src="TaskImageServlet?task=${task}"/></p>
         
+        <pt:taskSummary streamCount="count"/>
+        
         <c:choose>
-            <c:when test="${empty summary.rows[0]['ALL']}">
+            <c:when test="${count == 0}">
                 <p> No runs in this task.</p>
             </c:when>
             <c:otherwise>
                 <p>To filter by status click on the count in the status column. To see all runs click on the name in the Name column.</p>   
                 <p><b>*NEW*</b> <a href="running.jsp?task=${task}">Show running jobs</a> . <a href="stats.jsp?task=${task}&process=0">Show summary stats</a></p>
-        
-                <div class="taskSummary">Task Summary: 
-                    <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
-                        ${pl:prettyStatus(row.STREAMSTATUS)}:&nbsp;${summary.rowsByIndex[0][status.index]},
-                    </c:forEach>
-                    Total:&nbsp;${summary.rows[0]["ALL"]}
-                </div>
-
+                
                 <sql:query var="test">select 
                     <c:forEach var="row" items="${proc_stats.rows}">
                         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
                     </c:forEach>
-                    p.ProcessName, p.Process, Initcap(p.ProcessType) type
-                    from TASK t
-                    join PROCESS p on p.TASK=t.TASK
-                    join PROCESSINSTANCE i on i.PROCESS = p.PROCESS 
-                    where t.TASK=?
-                    group by p.PROCESS, p.PROCESSNAME, p.PROCESSTYPE
+                    ProcessName,Process, Initcap(ProcessType) type
+                    from PROCESS
+                    join PROCESSINSTANCE using (PROCESS) 
+                    where TASK=?
+                    group by PROCESS, PROCESSNAME, PROCESSTYPE
                     <sql:param value="${task}"/>
                 </sql:query>
 

@@ -9,7 +9,7 @@
 
 package org.glast.pipeline.web.util;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -271,11 +271,9 @@ public class Task
          
          GraphViz gv = new GraphViz(null);
 //         byte[] buf = gv.get_img_stream(new File("c:\\test.dot"));
-         byte[] buf = gv.getGraph(sw.toString());
+         ByteArrayOutputStream bytes = gv.getGraph(sw.toString());
          FileOutputStream fos = new FileOutputStream("c:\\test.gif");
-//         File f = new File("c:\\test.gif");
-//         gv.writeGraphToFile(buf, f);
-         fos.write(buf);
+         bytes.writeTo(fos);
          fos.close();
       } finally {}
    }

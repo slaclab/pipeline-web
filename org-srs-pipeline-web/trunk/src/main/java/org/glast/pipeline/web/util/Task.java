@@ -1,12 +1,3 @@
-/*
- * Task.java
- *
- * Created on June 9, 2006, 1:09 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-
 package org.glast.pipeline.web.util;
 
 import java.io.ByteArrayOutputStream;
@@ -77,7 +68,7 @@ public class Task
    }
    
    /** Creates a new instance of Task */
-   public Task(int task_pk, Connection conn) throws Exception, SQLException
+   public Task(int task_pk, Connection conn) throws SQLException
    {
       PreparedStatement stmt = conn.prepareStatement("select * from Task start with Task=? connect by prior Task = ParentTask");
       try {
@@ -86,7 +77,7 @@ public class Task
          if (rs.next()) {
            init(rs, conn);
          } else {
-            throw(new Exception("Invalid task primary key[" + task_pk + "]!"));
+            throw(new RuntimeException("Invalid task primary key[" + task_pk + "]!"));
          }
                   
          // Create Dependencies...
@@ -193,11 +184,12 @@ public class Task
       writer.write(indentIn + "subgraph cluster" + cluster + " {\n"); // header (subgraph id)
       writer.write(indent + "label=\"" + getName() + "\";\n"); // title
       writer.write(indent + "color=blue;\n"); // for the border
+      writer.write(indent + "URL=\"task.jsp?task="+taskPK+"\";\n");
       
       // draw processes:
       for (Process p : getProcessList()) {
          // name and label the node:
-         writer.write(indent + p.getProcessPK() + " [label=\"" + p.getName() + "\"];\n");
+         writer.write(indent + p.getProcessPK() + " [label=\"" + p.getName() + "\", URL=\"process.jsp?process="+p.getProcessPK()+"\" ];\n");
          // connect, with edges, processes we depend upon:
          for (Map.Entry<Process, String> e: p.getProcessDependencyMap().entrySet()) {
             Process dp = e.getKey();
@@ -246,36 +238,36 @@ public class Task
    }
    
    public static void main(String args[]) throws Exception, SQLException, IOException {
-      try {
-         OracleDataSource ds = new OracleDataSource();
-         ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
-         String user = System.getProperty("db.username","GLAST_DP_TEST");
-         String password = System.getProperty("db.username","BT33%Q9]MU");
-         Connection conn =  ds.getConnection(user,password);
-         conn.setAutoCommit(false);
-         
-         Task testTask = new Task(267, conn);
-         
-         // print it:
-         testTask.print();
-         
-         // draw it to a file:
-         FileWriter fw = new FileWriter("c:\\test.dot");
-         testTask.draw(fw);
-         
-         // draw it to a string:
-         StringWriter sw = new StringWriter();
-         testTask.draw(sw);
-         System.out.println(sw.toString()); // print StringWriter to stdout
-         System.out.println(sw.toString());
-         
-         GraphViz gv = new GraphViz(null);
-//         byte[] buf = gv.get_img_stream(new File("c:\\test.dot"));
-         ByteArrayOutputStream bytes = gv.getGraph(sw.toString());
-         FileOutputStream fos = new FileOutputStream("c:\\test.gif");
-         bytes.writeTo(fos);
-         fos.close();
-      } finally {}
+     OracleDataSource ds = new OracleDataSource();
+     ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
+     String user = System.getProperty("db.username","GLAST_DP_TEST");
+     String password = System.getProperty("db.username","BT33%Q9]MU");
+     Connection conn =  ds.getConnection(user,password);
+     conn.setAutoCommit(false);
+
+     Task testTask = new Task(2857, conn);
+
+     // print it:
+     testTask.print();
+
+     // draw it to a file:
+     FileWriter fw = new FileWriter("c:\\test.dot");
+     testTask.draw(fw);
+
+     // draw it to a string:
+     StringWriter sw = new StringWriter();
+     testTask.draw(sw);
+     System.out.println(sw.toString()); // print StringWriter to stdout
+     System.out.println(sw.toString());
+
+     GraphViz gv = new GraphViz(null);
+     ByteArrayOutputStream bytes = gv.getGraph(sw.toString());
+     FileOutputStream fos = new FileOutputStream("c:\\test.gif");
+     bytes.writeTo(fos);
+     fos.close();
+     bytes = gv.getGraph(sw.toString(),GraphViz.Format.CMAP);
+     fos = new FileOutputStream("c:\\test.map");
+     bytes.writeTo(fos);
+     fos.close();
    }
-   
 }

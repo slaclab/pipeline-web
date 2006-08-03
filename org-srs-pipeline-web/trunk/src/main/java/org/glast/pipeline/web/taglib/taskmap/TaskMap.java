@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpSession;
@@ -22,6 +24,7 @@ import org.glast.pipeline.web.util.*;
 public class TaskMap extends SimpleTagSupport
 {
     private int task;
+    private static final Logger logger = Logger.getLogger(TaskMap.class.getPackage().getName());
     
     public void doTag() throws JspException, IOException
     {
@@ -35,17 +38,22 @@ public class TaskMap extends SimpleTagSupport
             Connection connection = dataSource.getConnection();
             try
             {
-                JspWriter writer = getJspContext().getOut();
-                writer.println("<map name=\"taskMap"+task+"\">");
                 Task t = new Task(task, connection);
                 String dotCommand = session.getServletContext().getInitParameter("dotCommand");
                 GraphViz gv = new GraphViz(dotCommand);
                 StringWriter sw = new StringWriter();
                 t.draw(sw);
                 ByteArrayOutputStream bytes = gv.getGraph(sw.toString(),GraphViz.Format.CMAP);
+                JspWriter writer = getJspContext().getOut();
+                writer.println("<map name=\"taskMap"+task+"\">");
                 writer.println(bytes.toString());
                 writer.println("</map>");
                 writer.println("<img src=\"TaskImageServlet?task="+task+"\" usemap=\"taskMap"+task+"\"/>");
+            }
+            catch (IOException x)
+            {
+                // Can happen if GraphViz is not installed, so just log and ignore
+                logger.log(Level.SEVERE,"Error while creating task image map",x);
             }
             finally
             {

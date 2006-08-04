@@ -43,7 +43,7 @@
            </c:forEach>
         </c:if>
         
-        <p><pl:taskMap task="${task}"/></p>
+        <p><img src="TaskImageServlet?task=${task}"/></p>
         
         <pt:taskSummary streamCount="count"/>
         

@@ -1,6 +1,6 @@
 // GraphViz.java - a simple API to call dot from Java programs
 
-/*$Id: GraphViz.java,v 1.5 2006-08-03 20:24:23 tonyj Exp $*/
+/*$Id: GraphViz.java,v 1.4 2006-08-02 21:00:00 tonyj Exp $*/
 /*
  ******************************************************************************
  *                                                                            *
@@ -41,29 +41,30 @@ import java.io.Writer;
  * <dt>Description:
  * <dd> With this Java class you can simply call dot
  *      from your Java programs
+ * <dt>Example usage:
+ * <dd>
+ * <pre>
+ *    GraphViz gv = new GraphViz();
+ *    gv.addln(gv.start_graph());
+ *    gv.addln("A -> B;");
+ *    gv.addln("A -> C;");
+ *    gv.addln(gv.end_graph());
+ *    System.err.println(gv.getDotSource());
+ *
+ *    File out = new File("out.gif");
+ *    gv.writeGraphToFile(gv.getGraph(gv.getDotSource()), out);
+ * </pre>
+ * </dd>
+ *
  * </dl>
  *
  *
  * @author Laszlo Szathmary (<a href="szathml@delfin.unideb.hu">szathml@delfin.unideb.hu</a>)
- * @author Modified for glast by Dan Falth, Tony Johnson
- * @version $Id: GraphViz.java,v 1.5 2006-08-03 20:24:23 tonyj Exp $
+ * @version v0.1, 2003/12/04 (Decembre)
  */
 public class GraphViz
 {
     private String dotCommand = "dot";
-    public enum Format 
-    { 
-        GIF("-Tgif"), IMAP("-Timap"), ISMAP("-Tismap"), CMAP("-Tcmap"),;
-        private String option;
-        Format(String option)
-        {
-            this.option = option;
-        }
-        String getOption()
-        {
-            return option;
-        }
-    };
     
     public GraphViz(String dotCommand)
     {
@@ -86,29 +87,20 @@ public class GraphViz
      */
     public ByteArrayOutputStream getGraph(String dotFile) throws IOException
     {
-        return getGraph(dotFile, Format.GIF);
-    }
-    public ByteArrayOutputStream getGraph(String dotFile, Format format) throws IOException
-    {
         try
         {
-            ProcessBuilder builder = new ProcessBuilder(dotCommand, format.getOption());
+            ProcessBuilder builder = new ProcessBuilder(dotCommand, "-Tgif");
             java.lang.Process process = builder.start();
             PushThread push = new PushThread(dotFile,process.getOutputStream());
             push.start();
             PullThread pull = new PullThread(process.getInputStream());
             pull.start();
-            PullThread error = new PullThread(process.getErrorStream());
-            error.start();
             int rc = process.waitFor();
-            pull.join();
-            error.join();
-            push.join();
-            if (error.getData().size() > 0) throw new IOException("Error from dot: "+new String(error.getData().toByteArray()));
-            error.reportException();
-            pull.reportException();
-            push.reportException();
             if (rc != 0) throw new IOException("Unexpected return code from dot "+rc);
+            pull.join();
+            pull.reportException();
+            push.join();
+            push.reportException();
             return pull.getData();
         }
         catch (InterruptedException x)

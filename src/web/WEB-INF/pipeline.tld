@@ -70,17 +70,6 @@
             <type>java.lang.Throwable</type>
         </attribute>
     </tag>
-    <tag>
-        <name>taskMap</name>
-        <tag-class>org.glast.pipeline.web.taglib.taskmap.TaskMap</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>task</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-    </tag>
     <function>
         <description>Convert a RUN or PROCESS status to pretty format</description>
         <name>prettyStatus</name>

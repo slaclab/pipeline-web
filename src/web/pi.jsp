@@ -10,7 +10,7 @@
    </head>
    <body>
 
-      <h2>Task ${taskName} Process ${processName} Stream ${streamPath}</h2>
+      <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 
    </body>
 </html>

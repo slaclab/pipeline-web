@@ -7,15 +7,23 @@
 <%@attribute name="selected" %>
 <%@attribute name="allowNone" type="java.lang.Boolean" %>
 <%@attribute name="useKey" type="java.lang.Boolean" %>
+<%@attribute name="showAllVersions" type="java.lang.Boolean" %>
 
 <sql:query var="tasks">
-   select task,taskname from task where parenttask is null order by taskname
+    <c:choose>
+        <c:when test="${showAllVersions}">
+            select taskname||'('||version||'.'||revision||')' taskname,task from task where parenttask is null order by taskname,version desc,revision desc
+        </c:when>
+        <c:otherwise>
+            select taskname,max(task) task from task where parenttask is null group by taskname order by taskname
+        </c:otherwise>
+    </c:choose>
 </sql:query>
 <select size="1" name="${name}">
-   <c:if test="${allowNone}">
-      <option value="" ${empty selected ? "selected" : ""}>--</option>
-   </c:if>
-   <c:forEach var="row" items="${tasks.rows}">
-      <option value="${useKey ? row.TASK : row.TASKNAME}" ${(useKey ? row.TASK : row.TASKNAME)==selected ? "selected" : ""}>${row.TASKNAME}</option>
-   </c:forEach>
+    <c:if test="${allowNone}">
+        <option value="" ${empty selected ? "selected" : ""}>--</option>
+    </c:if>
+    <c:forEach var="row" items="${tasks.rows}">
+        <option value="${useKey ? row.TASK : row.TASKNAME}" ${(useKey ? row.TASK : row.TASKNAME)==selected ? "selected" : ""}>${row.TASKNAME}</option>
+    </c:forEach>
 </select>

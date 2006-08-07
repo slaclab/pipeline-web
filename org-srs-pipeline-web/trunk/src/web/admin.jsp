@@ -15,15 +15,15 @@
       <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
          <c:redirect url="noPermission.jsp"/>
       </c:if>
-      
+
       <p:serverInfo var="info"/>
-      
+
       <c:if test="${empty info}">
          <p class="error">Server not running!</p>
-      </c:if>      
+      </c:if>
       <c:if test="${!empty info}">
          <p class="info">Server version ${info.serverVersion} running on ${info.serverHost} since ${info.startTime}</p>
-      
+
          <c:catch var="error">
             <c:choose>
                <c:when test="${param.submit=='Upload'}">
@@ -37,7 +37,7 @@
                </c:when>
             </c:choose>
          </c:catch>
-      
+
          <c:choose>
             <c:when test="${empty error && !empty param.submit}">
                <p class="message">${param.submit} successful!</p>
@@ -46,28 +46,30 @@
                <p class="error">${param.submit} failed!
                <p:reportError error="${error}"/></p>
             </c:when>
-         </c:choose>        
-        
+         </c:choose>
+
          <h2>Upload</h2>
 
          <form method="POST" enctype="multipart/form-data">
             XML File: <input type="file" name="xml" value="" size="60" />
             <input type="submit" value="Upload" name="submit">
          </form>
-      
+
          <h2>Create Stream</h2>
+         <c:set var="showAllVersions" value="${!empty param.showAllVersionsChanged ? !empty param.showAllVersions : empty showAllVersions ? true : showAllVersions}" scope="session"/>
+         <pt:autoCheckBox name="showAllVersions" value="${showAllVersions}">Show all versions</pt:autoCheckBox>
          <form method="POST">
-            Task:&nbsp;<pt:taskChooser name="streamTask" selected="${param.streamTask}"/> 
+            Task:&nbsp;<pt:taskChooser name="streamTask" selected="${param.streamTask}" showAllVersions="${showAllVersions}"/>
             Stream:&nbsp;<input type="text" name="stream" value="" size="10" />
             Args:&nbsp;<input type="text" name="args" value="" size="50" />
             <input type="submit" value="Create Stream" name="submit">
-         </form>    
-    
+         </form>
+
          <h2>Restart Server</h2>
          <form method="POST">
             <input type="submit" value="Restart Server" name="submit">
-         </form>    
+         </form>
       </c:if>
-      
+
    </body>
 </html>

@@ -6,6 +6,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 
 <html>
     <head>
@@ -24,7 +25,7 @@
             </c:when>
         </c:choose>
         
-        <c:set var="mergeVersions" value="${!empty param.mergeChanged ? !empty param.merge : empty mergeVersions ? true : mergeVersions}" scope="session"/>
+        <c:set var="mergeVersions" value="${!empty param.mergeVersionsChanged ? !empty param.mergeVersions : empty mergeVersions ? true : mergeVersions}" scope="session"/>
         
         <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS
@@ -82,11 +83,7 @@
             </table>
         </form>      
  
-        <script type="text/javascript" language="JavaScript">function DoSubmission() { document.mergeForm.submit(); }</script>
-        <form name="mergeForm" target="_self"> 
-        <input type="hidden" name="mergeChanged" value="true">
-        <input type="checkbox" name="merge" onClick="DoSubmission();" value="true" ${mergeVersions ? "checked" : ""}> Merge task versions
-        <noscript><input type="submit" value="Update"></noscript></form>
+        <pt:autoCheckBox name="mergeVersions" value="${mergeVersions}">Merge task versions</pt:autoCheckBox>
         
         <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
            <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />

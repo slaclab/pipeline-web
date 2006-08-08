@@ -2,6 +2,7 @@ package org.glast.pipeline.web.taglib.sql;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.sql.SQLExecutionTag;
@@ -12,34 +13,28 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
  * Result tag for use with Call tag
  * @author tonyj
  */
-public class Param extends SimpleTagSupport
+public class DateParam extends SimpleTagSupport
 {
-   private Object value;
+   private Date value;
+   private String type;
    
    public void doTag() throws JspException, IOException
-   {
-      StringWriter writer = new StringWriter();
-      JspFragment fragment = getJspBody();
-      if (fragment != null) fragment.invoke(writer);
-      
-      if (value == null) 
-      {
-         String body = writer.toString().trim();
-         if (body.length() == 0) body = null;
-         value = body;
-      }
-      
+   {    
       SQLExecutionTag parent = (SQLExecutionTag) findAncestorWithClass(this, SQLExecutionTag.class);
       if (parent == null)
       {
-         throw new JspTagException("Invalid use of Param tag");
+         throw new JspTagException("Invalid use of DateParam tag");
       }
        
-      parent.addSQLParameter(value);
+      parent.addSQLParameter(new java.sql.Date(value.getTime()));
    }
 
-   public void setValue(Object value)
+   public void setValue(Date value)
    {
       this.value = value;
+   }
+   public void setType(String type)
+   {
+      this.type = type;
    }
 }

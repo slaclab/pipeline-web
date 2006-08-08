@@ -22,7 +22,7 @@ public class Result extends SimpleTagSupport
       Call parent = (Call) findAncestorWithClass(this, Call.class);
       if (parent == null)
       {
-         throw new JspTagException("Invalid use or Result tag output Call tag");
+         throw new JspTagException("Invalid use or Result tag");
       }
        
       parent.addResult(varName, scopeName, typeName);

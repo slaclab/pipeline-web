@@ -26,13 +26,13 @@
       <name>maxRows</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.Integer</type>
+      <type>int</type>
     </attribute>
     <attribute>
       <name>startRow</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.Integer</type>
+      <type>int</type>
     </attribute>
   </tag>
   <tag>
@@ -67,6 +67,76 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <type>java.lang.Object</type>
+    </attribute>
+  </tag>
+  <tag>
+    <name>dateParam</name>
+    <tag-class>org.glast.pipeline.web.taglib.sql.DateParam</tag-class>  
+    <body-content>empty</body-content>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.util.Date</type>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+  <tag>
+    <name>query</name>
+    <tag-class>org.glast.pipeline.web.taglib.pagination.Query</tag-class>
+    <body-content>scriptless</body-content>
+    <attribute>
+      <name>sql</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>dataSource</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+    <attribute>
+      <name>pageSize</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>int</type>
+    </attribute>
+    <attribute>
+      <name>pageNumber</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>int</type>
+    </attribute>
+    <attribute>
+      <name>sortColumn</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>defaultSortColumn</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>ascending</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
+    <attribute>
+      <name>var</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>java.lang.String</type>
     </attribute>
   </tag>
 </taglib>

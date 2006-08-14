@@ -41,7 +41,6 @@
               TASKNAME, ${ mergeVersions ? "Max(TASK) Task" : "TASK,VERSION,REVISION" }
               from TASK t
               left outer join STREAM s using (TASK)
-<!--              where PARENTTASK is null-->
               where PARENTTASK = 0
               group by TASKNAME ${mergeVersions ? "" : ",TASK,VERSION,REVISION"}
            )

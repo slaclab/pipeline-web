@@ -12,11 +12,9 @@
 <sql:query var="tasks">
     <c:choose>
         <c:when test="${showAllVersions}">
-<!--            select taskname||'('||version||'.'||revision||')' taskname,task from task where parenttask is null order by taskname,version desc,revision desc-->
             select taskname||'('||version||'.'||revision||')' taskname,task from task where parenttask = 0 order by taskname,version desc,revision desc
         </c:when>
         <c:otherwise>
-<!--            select taskname,max(task) task from task where parenttask is null group by taskname order by taskname-->
             select taskname,max(task) task from task where parenttask = 0 group by taskname order by taskname
         </c:otherwise>
     </c:choose>

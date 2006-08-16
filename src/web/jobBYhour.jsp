@@ -22,43 +22,71 @@
       </style>
 </head>
    <body>  
+   
+ <c:set var="filter" value="${param.filter}"/>  
+ <c:set var="selectedHours" value="${param.selectedHours}"/>    
+ <c:if test="${empty filter}">
+ 	<c:set var="filter" value="Hours"/>
+	<c:set var="timeIntervalSet" value="false"/>
+	<c:set var="selectedHours" value=""/>
+  </c:if>
  
-        <c:set var="dateStart" value="${empty param.dateStart ? 'None' : param.dateStart}"/>
-		<c:set var="dateEnd" value="${empty param.dateEnd ? 'None' : param.dateEnd}"/>
+<c:if test="${filter == 'Dates'}">
+	<c:set var="dateStart" value="${empty param.dateStart ? 'None' : param.dateStart}"/>
+	<c:set var="dateEnd" value="${empty param.dateEnd ? 'None' : param.dateEnd}"/>
 		
-		<c:if test="${param.filter=='Last 24 Hrs'}"> 
-	   <c:set var="dateStart" value="None" />
-	   <c:set var="dateEnd" value="None" />
-	 </c:if> 
-		
-        <form name="DateForm">
-            <table width="630" cellpadding="5" cellspacing="5" class="filterTable">
-                <tr>
-                    <th width="180">Show Data from:</th>
-                    <td width="60"> 
-                    <script language="JavaScript">
+	<c:if test="${dateStart != 'None'}">
+		<c:set var="timeIntervalSet" value="true"/>
+		<c:set var="selectedHours" value=""/>
+	</c:if>
+</c:if>		
+<c:if test="${filter == 'Hours'}">
+	<c:set var="dateStart" value="None" />
+	<c:set var="dateEnd" value="None" />
+	<c:if test="${! empty selectedHours}"> 
+		<c:set var="selectedHours" value="${selectedHours}"/>
+	</c:if> 
+	<c:if test="${empty selectedHours}"> 
+		<c:set var="selectedHours" value="6"/>
+	</c:if>	
+</c:if>				
+<form name="DateForm">
+	<table width="630" cellpadding="5" cellspacing="5" class="filterTable">
+    <tr>
+    <th width="180" bgcolor="#FFFFFF">Show Data from:</th>
+    <td width="60">
+    <script language="JavaScript">
                         FSfncWriteFieldHTML("DateForm","dateStart","${dateStart}",100,
                         "http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)
-                     </script> </td>
-					 <th width="20">To</th>
-					 <td width="60">  
-					   <script language="JavaScript">
+    </script>
+    </td>
+    <th width="20" bordercolor="#0000FF" bgcolor="#FFFFFF">To</th>
+    <td width="60">
+                <script language="JavaScript">
                         FSfncWriteFieldHTML("DateForm","dateEnd","${dateEnd}",100,
                         "http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)
                     </script>
-					</td>
-					<th width="95"><input type="submit" value="Submit" name="filter"></th>
-					<th width="93"><input type="submit" value="Last 24 Hrs" name="filter"></th>
-                </tr>
-          </table>
-        </form>
+     </td>
+     <th width="95"><input type="submit" value="Dates" name="filter"></th>
+     <th width="20">or</th>
+      </tr>
+      <tr>
+      <th width="180">Last</th>
+      <td width="60">
+         <input type="text" value="${selectedHours}" name="selectedHours">
+      </td>
+      <th width="20">Hours</th>
+      <th width="95"><input name="filter" type="submit" value="Hours"></th>
+      </tr>
+   </table>
+</form>
 		
    <%-- <P>Data date range:  ${dateStart} ${dateEnd}</P> --%>
 	
 	<jsp:useBean id="endtime" class="java.util.Date" />
 	<c:set var="endRange" value="${endtime}"/>
     <jsp:useBean id="starttime" class="java.util.Date" /> 
-    <jsp:setProperty name="starttime" property="time" value="${starttime.time -24*60*60*1000}" /> 
+    <jsp:setProperty name="starttime" property="time" value="${starttime.time -selectedHours*60*60*1000}" /> 
     <c:set var="startRange" value="${starttime}" />
 
 	<c:if test="${dateStart!='None'}"> 
@@ -67,18 +95,44 @@
 	<c:if test="${dateEnd!='None'}">
 	   <fmt:parseDate value="${dateEnd}" var="endRange" pattern="MM/dd/yyyy" />
 	</c:if>
-
+ <c:if test="${filter == 'Dates'}"> 
  	<P class="style1"> Starting Date Range: ${startRange} </P>
-	<P class="style1"> Ending   Date Range: ${endRange} </P> 
+	<P class="style1"> Ending   Date Range: ${endRange} </P>
+</c:if>
+ <c:if test="${filter == 'Hours'}"> 	
+    <P class="style1">  Last ${selectedHours} Hours <br>
+ </c:if>
  <%--
 	<p> <span class="style1"><span class="style2">Pipeline Job Averages since  <fmt:formatDate value="${starttime}" pattern="yyyy-MMM-dd HH:mm"/>. </span></span> </p>
  --%>
   
-   
     <aida:plotter nx="1" ny="2" height="600"> 
    <c:set var= "n" value= "0"/>
    <c:forTokens items ="glastdata:glastgrp" delims=":" var="pkg">
-   <sql:query var="data">
+    <c:if test="${filter == 'Hours'}"> 
+
+ 
+   <sql:query var="data" dataSource="jdbc/pipeline" >
+     select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
+	  ps.entered jobtime,
+	  BG.BATCHGROUPNAME,
+	  PS.prepared as prepared,
+      PS.SUBMITTED as submitted,
+      PS.RUNNING as running
+      from processingstatistics PS , BATCHGROUP BG
+      WHERE PS.BATCHGROUP_FK = BG.BATCHGROUP_PK
+      and bg.batchgroupname = ?
+      and entered >= ? 
+      and entered <  ? 
+    	   <sql:param value = "${pkg}"/>
+   <sql:dateParam value = "${startRange}" />
+   <sql:dateParam value = "${endRange}" />
+	</sql:query>
+ </c:if>
+
+ <c:if test="${filter == 'Dates'}"> 
+ 
+ <sql:query var="data" dataSource="jdbc/pipeline" >
      select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
 	  min(ps.entered) jobtime,
 	  BG.BATCHGROUPNAME,
@@ -91,10 +145,11 @@
       and entered >= ? 
       and entered <  ? 
 	  GROUP BY to_char(PS.ENTERED,'dd-mon-yyyy HH24'), BG.BATCHGROUPNAME
-   <sql:param value = "${pkg}"/>
+	   <sql:param value = "${pkg}"/>
    <sql:dateParam value = "${startRange}" />
    <sql:dateParam value = "${endRange}" />
-   </sql:query>
+</sql:query>
+   </c:if>
      
   
    <aida:tuple var="tuple" query="${data}" />        
@@ -105,7 +160,8 @@
 	    <aida:style>
 	 	   <aida:attribute name="showStatisticsBox" value="false"/>		        
 	        <aida:style type="xAxis">
-		 	   <aida:attribute name="label" value="DAYS"/>
+			
+		 	   <aida:attribute name="label" value="${filter}"/>
 		 	   <aida:attribute name="type" value="date"/>
  	        </aida:style>
 	        <aida:style type="data">

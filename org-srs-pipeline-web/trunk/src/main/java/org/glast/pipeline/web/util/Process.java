@@ -33,7 +33,8 @@ public class Process
  
    // high-level constructs:
    private Task task;
-   private Map<Process, String> processDependencyMap = new HashMap<Process, String>();
+   private Map<Process, String> processStatusDependencyMap = new HashMap<Process, String>();
+   private List<Process> processCompletionDependencyList = new ArrayList<Process>();
    private List<Task> subTaskCreationList = new ArrayList<Task>();
    
    
@@ -50,7 +51,7 @@ public class Process
       } finally {};
    }
 
-   public void buildDependencyList(Connection conn) throws SQLException {
+   public void buildProcessStatusDependencyList(Connection conn) throws SQLException {
       PreparedStatement stmt = conn.prepareStatement("select Process, ProcessingStatus from ProcessStatusCondition where DependentProcess = ?");
       try {
          stmt.setInt(1, getProcessPK());
@@ -58,7 +59,22 @@ public class Process
          while (rs.next()) {
             Process p = getTask().findProcess(rs.getInt("PROCESS"));
             if (p != null)
-               processDependencyMap.put(p, rs.getString("PROCESSINGSTATUS"));
+               processStatusDependencyMap.put(p, rs.getString("PROCESSINGSTATUS"));
+         }
+      } finally {
+         stmt.close();
+      }
+   }
+   
+   public void buildProcessCompletionDependencyList(Connection conn) throws SQLException {
+      PreparedStatement stmt = conn.prepareStatement("select Process from ProcessCompletionCondition where DependentProcess = ?");
+      try {
+         stmt.setInt(1, getProcessPK());
+         ResultSet rs = stmt.executeQuery();
+         while (rs.next()) {
+            Process p = getTask().findProcess(rs.getInt("PROCESS"));
+            if (p != null)
+               processCompletionDependencyList.add(p);
          }
       } finally {
          stmt.close();
@@ -85,7 +101,8 @@ public class Process
    public String getType() { return type; }
    public String getName() { return name; }
    public int getProcessPK() { return processPK; }
-   public Map<Process, String> getProcessDependencyMap() { return processDependencyMap; }
+   public Map<Process, String> getProcessStatusDependencyMap() { return processStatusDependencyMap; }
+   public List<Process> getProcessCompletionDependencyList() { return processCompletionDependencyList; }
    public List<Task> getSubTaskCreationList() { return subTaskCreationList; }
       
    public void print(int depth) {
@@ -97,9 +114,14 @@ public class Process
       indent += "  ";
       System.out.println(indent + "Type(" + getType().toString() + ")");
       
-      // list dependencies:
-      for (Map.Entry<Process,String> e : getProcessDependencyMap().entrySet()) {
+      // list processing status dependencies:
+      for (Map.Entry<Process,String> e : getProcessStatusDependencyMap().entrySet()) {
          System.out.println(indent + "Requires " + e.getKey().getTask().getName() + "." + e.getKey().getName() + " " + e.getValue());
+      }
+
+      // list processing status dependencies:
+      for (Process p : getProcessCompletionDependencyList()) { 
+         System.out.println(indent + "Requires completion of all " + p.getTask().getName() + "." + p.getName());
       }
       
       // list SubTasks we can create:

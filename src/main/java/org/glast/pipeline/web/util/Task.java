@@ -137,7 +137,8 @@ public class Task
       try {
          // find process dependencies:
          for (Process p : getProcessList()) {
-            p.buildDependencyList(conn);
+            p.buildProcessStatusDependencyList(conn);
+            p.buildProcessCompletionDependencyList(conn);
             p.buildSubTaskCreationList(conn);
          }
       } finally {}
@@ -191,10 +192,14 @@ public class Task
          // name and label the node:
          writer.write(indent + p.getProcessPK() + " [label=\"" + p.getName() + "\", URL=\"process.jsp?process="+p.getProcessPK()+"\" ];\n");
          // connect, with edges, processes we depend upon:
-         for (Map.Entry<Process, String> e: p.getProcessDependencyMap().entrySet()) {
+         for (Map.Entry<Process, String> e: p.getProcessStatusDependencyMap().entrySet()) {
             Process dp = e.getKey();
-            writer.write(indent + dp.getProcessPK() + "->" + p.getProcessPK() + " [label=\"" + e.getValue() + "\"];\n");
+            writer.write(indent + dp.getProcessPK() + "->" + p.getProcessPK() + " [label=\"" + e.getValue() + "\",fontsize=8];\n");
          }
+         // connect, with edges, processes we depend on the completion of:
+         for (Process dp : p.getProcessCompletionDependencyList()) {
+            writer.write(indent + dp.getProcessPK() + "->" + p.getProcessPK() + " [label=\"ALL DONE\",fontsize=8];\n");
+         }      
          
          // add a map entry for eatch SubTask this process can create streams for:
          for (Task t : p.getSubTaskCreationList()) {

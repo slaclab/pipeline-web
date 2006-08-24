@@ -51,7 +51,8 @@
               from PROCESSINSTANCE
               join streampath2 using (stream)
               join stream using (stream)
-              where PROCESS=?  
+              where PROCESS=?
+              and Stream.IsLatest = 1
               <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
             ) where streamid>0
             <c:if test="${!empty min}">and StreamId>=? </c:if>

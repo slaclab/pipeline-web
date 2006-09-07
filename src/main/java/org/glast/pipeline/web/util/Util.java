@@ -1,11 +1,18 @@
 package org.glast.pipeline.web.util;
 
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  *
  * @author tonyj
  */
 public class Util
 {
+   private static final DateFormat format = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss.SSS",Locale.US);
+   
    public static String prettyStatus(String status)
    {
       String result = status;
@@ -36,5 +43,9 @@ public class Util
          result.append(separator);
       }
       return result.toString();
+   }
+   public static String formatTimestamp(oracle.sql.TIMESTAMP timestamp) throws SQLException
+   {
+      return timestamp == null ? "" : format.format(timestamp.timestampValue());
    }
 }

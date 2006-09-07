@@ -95,4 +95,11 @@
         </function-class>
         <function-signature>java.lang.String linkToTasks(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
     </function>
+    <function>
+        <description>Format an (oracle) timestamp</description>
+        <name>formatTimestamp</name>
+        <function-class>org.glast.pipeline.web.util.Util
+        </function-class>
+        <function-signature>java.lang.String formatTimestamp(oracle.sql.TIMESTAMP)</function-signature>
+    </function>
 </taglib>

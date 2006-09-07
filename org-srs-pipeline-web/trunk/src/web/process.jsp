@@ -47,8 +47,8 @@
         </c:choose>
 
         <sql:query var="test">select * from 
-            ( select PROCESSINSTANCE, streamid, STREAMIDPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(CREATEDATE as DATE) CREATEDATE,CAST(SUBMITDATE as DATE) SUBMITDATE,CAST(STARTDATE as DATE) STARTDATE,CAST(ENDDATE as DATE) ENDDATE 
-              from PROCESSINSTANCE
+            ( select PROCESSINSTANCE, streamid, STREAMIDPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(p.CREATEDATE as DATE) CREATEDATE,CAST(p.SUBMITDATE as DATE) SUBMITDATE,CAST(p.STARTDATE as DATE) STARTDATE,CAST(p.ENDDATE as DATE) ENDDATE 
+              from PROCESSINSTANCE p
               join streampath2 using (stream)
               join stream using (stream)
               where PROCESS=?

@@ -1,3 +1,7 @@
+/*
+ * Task.java
+ */
+
 package org.glast.pipeline.web.util;
 
 import java.io.ByteArrayOutputStream;
@@ -38,7 +42,7 @@ public class Task
    private List<Task> subTaskList = new ArrayList<Task>();
    private List<Process> processList = new ArrayList<Process>();
 
-   protected void init(ResultSet rs, Connection conn) throws SQLException {
+   protected void init(ResultSet rs, Connection conn, Task parentTask) throws SQLException {
       taskPK = rs.getInt("TASK");
       parentTaskPK = rs.getInt("PARENTTASK");
       name = rs.getString("TASKNAME");
@@ -47,9 +51,11 @@ public class Task
       type = rs.getString("TASKTYPE");
       status = rs.getString("TASKSTATUS");
       
+      this.parentTask = parentTask;
+      
       // create sub-tasks:
       while(rs.next())
-         subTaskList.add(new Task(rs,conn));
+         subTaskList.add(new Task(rs,conn,this));
       
       // create processes:
       PreparedStatement stmt = conn.prepareStatement("select * from Process where Task = ?");
@@ -63,8 +69,8 @@ public class Task
       }
    }
    
-   protected Task(ResultSet rs, Connection conn) throws SQLException {
-      init(rs, conn);
+   protected Task(ResultSet rs, Connection conn, Task parentTask) throws SQLException {
+      init(rs, conn, parentTask);
    }
    
    /** Creates a new instance of Task */
@@ -75,7 +81,7 @@ public class Task
          stmt.setInt(1, task_pk);
          ResultSet rs = stmt.executeQuery();
          if (rs.next()) {
-           init(rs, conn);
+           init(rs, conn, null);
          } else {
             throw(new RuntimeException("Invalid task primary key[" + task_pk + "]!"));
          }
@@ -96,6 +102,7 @@ public class Task
    public List<Task> getSubTaskList() { return subTaskList; } // TODO:  Should this return an iterator?
    public List<Process> getProcessList() { return processList; } // TODO:  Should this return an iterator?
    public int getDbTask() { return taskPK; }
+   public int getDbParentTask() { return parentTaskPK; }
    
    public Task findTask(int _dbTask) {
       // check if it's me:

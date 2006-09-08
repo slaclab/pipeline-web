@@ -52,8 +52,13 @@ public class Stream
       this.parentStream = parentStream;
       
       // create sub-streams:
-      while(rs.next())
-         subStreamList.add(new Stream(rs,conn,this));
+      while(rs.next()) {
+//         if (rs.getInt("PARENTSTREAM") == this.streamPK)
+            subStreamList.add(new Stream(rs,conn,this));
+//         else {
+//            parentStream.getSubStreamList().add(new Stream(rs,conn,this));
+//         }
+      }
 
       // create processes:
       PreparedStatement stmt = conn.prepareStatement("select PI.ProcessInstance, PI.Stream, PI.ProcessingStatus, P.Process, P.ProcessName, P.ProcessType from ProcessInstance PI, Process P where PI.Stream = ? and PI.Process = P.Process");
@@ -151,8 +156,8 @@ public class Stream
       } finally {}
             
       // recurse down subStream chain:
-      for (Stream t : getSubStreamList())
-         t.calculateDependencies(conn);
+      for (Stream s : getSubStreamList())
+         s.calculateDependencies(conn);
    }
    
    public void print() { print(0); }
@@ -181,35 +186,36 @@ public class Stream
          }
       }
    }
-   /*
-   int draw(Writer writer, String indent, int cluster, Map<Stream, Process> subStreamCreatorMap) throws IOException 
+
+   int draw(Writer writer, String indent, int cluster, Map<Stream, ProcessInstance> subStreamCreatorMap) throws IOException 
    {
       String indentIn = indent; // save original indent for header and footer
       indent += "\t"; // indent body of this subgraph one more tab
 
       // draw stream:
       writer.write(indentIn + "subgraph cluster" + cluster + " {\n"); // header (subgraph id)
-      writer.write(indent + "label=\"" + getId() + "\";\n"); // title
+      writer.write(indent + "label=\"" + getName() + "\";\n"); // title
       writer.write(indent + "color=blue;\n"); // for the border
-      writer.write(indent + "URL=\"stream.jsp?stream="+streamPK+"\";\n");
+//      writer.write(indent + "URL=\"stream.jsp?stream="+streamPK+"\";\n");
       
       // draw processes:
       for (ProcessInstance pi : getProcessInstanceList()) {
          // name and label the node:
-         writer.write(indent + pi.getProcessInstancePK() + " [label=\"" + pi.getId() + "\", URL=\"process.jsp?process="+pi.getProcessInstancePK()+"\" ];\n");
+//         writer.write(indent + pi.getProcessInstancePK() + " [label=\"" + pi.getName() + "\", URL=\"process.jsp?process="+pi.getProcessInstancePK()+"\" ];\n");
+         writer.write(indent + pi.getProcessInstancePK() + " [label=\"" + pi.getName() + "\"];\n");
          // connect, with edges, processes we depend upon:
-         for (Map.Entry<Process, String> e: pi.getProcessInstanceStatusDependencyMap().entrySet()) {
-            Process dp = e.getKey();
-            writer.write(indent + dp.getProcessInstancePK() + "->" + pi.getProcessInstancePK() + " [label=\"" + e.getValue() + "\",fontsize=8];\n");
+         for (Map.Entry<ProcessInstance, String> e: pi.getProcessInstanceStatusDependencyMap().entrySet()) {
+            ProcessInstance dpi = e.getKey();
+            writer.write(indent + dpi.getProcessInstancePK() + "->" + pi.getProcessInstancePK() + " [label=\"" + e.getValue() + "\",fontsize=8];\n");
          }
          // connect, with edges, processes we depend on the completion of:
-         for (Process dp : pi.getProcessInstanceCompletionDependencyList()) {
-            writer.write(indent + dp.getProcessInstancePK() + "->" + pi.getProcessInstancePK() + " [label=\"ALL DONE\",fontsize=8];\n");
+         for (ProcessInstance dpi : pi.getProcessInstanceCompletionDependencyList()) {
+            writer.write(indent + dpi.getProcessInstancePK() + "->" + pi.getProcessInstancePK() + " [label=\"DONE\",fontsize=8];\n");
          }      
          
          // add a map entry for eatch SubStream this process can create streams for:
-         for (Stream t : pi.getSubStreamCreationList()) {
-            subStreamCreatorMap.put(t, pi);
+         for (Stream s : pi.getSubStreamCreationList()) {
+            subStreamCreatorMap.put(s, pi);
          }
       }
 
@@ -220,8 +226,8 @@ public class Stream
                         
       writer.write(indentIn + "}\n"); // footer
       if (subStreamCreatorMap.containsKey(this)) {
-         int someProc = getProcessList().get(0).getProcessPK();
-         writer.write(indentIn + subStreamCreatorMap.get(this).getProcessPK() + " -> " + someProc + "[lhead=cluster"+ cluster +", style=dashed, color=red];\n");
+         int someProcInst = getProcessInstanceList().get(0).getProcessInstancePK();
+         writer.write(indentIn + subStreamCreatorMap.get(this).getProcessInstancePK() + " -> " + someProcInst + "[lhead=cluster"+ cluster +", style=dashed, color=red];\n");
          subStreamCreatorMap.remove(this);
       }
 
@@ -238,7 +244,7 @@ public class Stream
 //         writer.write(indent + "rankdir=\"LR\";\n");
 
          // enter the recursive drawing routine:
-         Map<Stream, Process> subStreamCreatorMap = new HashMap<Stream, Process>();
+         Map<Stream, ProcessInstance> subStreamCreatorMap = new HashMap<Stream, ProcessInstance>();
          draw(writer, indent, 0, subStreamCreatorMap);
 
          // write the footer:
@@ -249,41 +255,6 @@ public class Stream
    }
    
    public static void main(String args[]) throws Exception, SQLException, IOException {
-     OracleDataSource ds = new OracleDataSource();
-     ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
-     String user = System.getProperty("db.username","GLAST_DP_TEST");
-     String password = System.getProperty("db.username","BT33%Q9]MU");
-     Connection conn =  ds.getConnection(user,password);
-     conn.setAutoCommit(false);
-
-     Stream testStream = new Stream(2857, conn);
-
-     // print it:
-     testStream.print();
-
-     // draw it to a file:
-     FileWriter fw = new FileWriter("c:\\test.dot");
-     testStream.draw(fw);
-
-     // draw it to a string:
-     StringWriter sw = new StringWriter();
-     testStream.draw(sw);
-     System.out.println(sw.toString()); // print StringWriter to stdout
-     System.out.println(sw.toString());
-
-     GraphViz gv = new GraphViz(null);
-     ByteArrayOutputStream bytes = gv.getGraph(sw.toString());
-     FileOutputStream fos = new FileOutputStream("c:\\test.gif");
-     bytes.writeTo(fos);
-     fos.close();
-     bytes = gv.getGraph(sw.toString(),GraphViz.Format.CMAP);
-     fos = new FileOutputStream("c:\\test.map");
-     bytes.writeTo(fos);
-     fos.close();
-   }
-*/
-
-   public static void main(String args[]) throws Exception, SQLException, IOException {
       OracleDataSource ds = new OracleDataSource();
       ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
       String user = System.getProperty("db.username","GLAST_DP_TEST");
@@ -292,8 +263,13 @@ public class Stream
       conn.setAutoCommit(false);
 
       Stream testStream = new Stream(276, conn);
-
+      
       // print it:
       testStream.print();
+      
+      FileWriter fw = new FileWriter("c:\\testStream.dot");
+      
+      testStream.draw(fw);
+      fw.close();
    }
 }

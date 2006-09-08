@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/Pipeline" antiJARLocking="true" antiResourceLocking="true">
+  <ResourceLink name="jdbc/pipeline" type="javax.sql.DataSource" global="jdbc/pipeline" /> 
+  <ResourceLink name="jdbc/pipeline-ii-dev" type="javax.sql.DataSource" global="jdbc/pipeline-ii-dev" /> 
+  <ResourceLink name="jdbc/pipeline-ii-test" type="javax.sql.DataSource" global="jdbc/pipeline-ii-test" /> 
+  <ResourceLink name="jdbc/pipeline-ii" type="javax.sql.DataSource" global="jdbc/pipeline-ii" /> 
+  <Logger className="org.apache.catalina.logger.FileLogger" prefix="Pipeline." suffix=".log" timestamp="true" />
+</Context>

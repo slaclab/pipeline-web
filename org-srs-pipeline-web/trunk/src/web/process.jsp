@@ -46,17 +46,19 @@
             </c:otherwise>
         </c:choose>
 
+        <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
         <sql:query var="test">select * from 
-            ( select PROCESSINSTANCE, streamid, STREAMIDPATH, JOBID, Initcap(PROCESSINGSTATUS) status,CAST(p.CREATEDATE as DATE) CREATEDATE,CAST(p.SUBMITDATE as DATE) SUBMITDATE,CAST(p.STARTDATE as DATE) STARTDATE,CAST(p.ENDDATE as DATE) ENDDATE 
+            ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,CAST(p.CREATEDATE as DATE) CREATEDATE,CAST(p.SUBMITDATE as DATE) SUBMITDATE,CAST(p.STARTDATE as DATE) STARTDATE,CAST(p.ENDDATE as DATE) ENDDATE
+              <c:if test="${!showLatest}">, p.ExecutionNumber || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
               from PROCESSINSTANCE p
-              join streampath2 using (stream)
-              join stream using (stream)
-              where PROCESS=?
-              and IsLatestPath = 1
-              <c:if test="${!empty status}">and PROCESSINGSTATUS=?</c:if>
+              join streampath sp using (stream)
+              join stream s using (stream)
+              where p.PROCESS=?
+              <c:if test="${showLatest}">and sp.IsLatestPath = 1 and p.isLatest=1</c:if>
+              <c:if test="${!empty status}">and p.PROCESSINGSTATUS=?</c:if>
             ) where streamid>0
-            <c:if test="${!empty min}">and StreamId>=? </c:if>
-            <c:if test="${!empty max}">and StreamId<=? </c:if>
+            <c:if test="${!empty min}">and s.StreamId>=? </c:if>
+            <c:if test="${!empty max}">and s.StreamId<=? </c:if>
             <c:if test="${!empty minDate && minDate!='None'}"> and CREATEDATE>=? </c:if>
             <c:if test="${!empty maxDate && maxDate!='None'}"> and CREATEDATE<=? </c:if>
             <sql:param value="${param.process}"/>
@@ -92,6 +94,8 @@
             </table>
         </form>
         
+        <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox>
+        
         <c:choose>
             <c:when test="${param.format=='stream'}">
                 <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
@@ -103,6 +107,10 @@
                 <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                     <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                     <display:column property="Status" sortable="true" headerClass="sortable"/>
+                    <c:if test="${!showLatest}">
+                      <display:column property="ProcessExecutionNumber" title="Process #"/>
+                      <display:column property="StreamExecutionNumber" title="Stream #"/>
+                    </c:if>
                     <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable"/>
                     <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable"/>
                     <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable"/>

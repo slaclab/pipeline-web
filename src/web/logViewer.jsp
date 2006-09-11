@@ -71,8 +71,8 @@
             from log l
             left outer join processinstance i using (processinstance)
             left outer join process p using (process)
-            left outer join streampath2 s using (stream)
-            left outer join taskpath2 t using (task)
+            left outer join streampath s using (stream)
+            left outer join taskpath t using (task)
             where log_level > 0 
             <c:if test="${!empty severity}"> and log_level>=? 
                 <gsql:param value="${severity}"/>

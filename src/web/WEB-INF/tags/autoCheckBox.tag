@@ -9,6 +9,9 @@
 <script type="text/javascript" language="JavaScript">function Do${name}Submission() { document.${name}Form.submit(); }</script>
 <form name="${name}Form" target="_self"> 
     <input type="hidden" name="${name}Changed" value="true">
+    <c:forEach var="parameter" items="${param}">
+       <input type="hidden" name="${parameter.key}" value="${parameter.value}">
+    </c:forEach>
     <input type="checkbox" name="${name}" onClick="Do${name}Submission();" value="true" ${value ? "checked" : ""}><jsp:doBody/>
     <noscript>
         <input type="submit" value="Update">

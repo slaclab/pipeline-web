@@ -76,9 +76,9 @@ public class PipelineFilter implements Filter
             try
             {
                String sql = "select process,streampath,streamidPath,processname,taskpath,taskNamePath,taskname,task "+
-                       "from processinstance join streampath2 using (stream) "+
+                       "from processinstance join streampath using (stream) "+
                        "join process using (process) "+
-                       "join taskpath2 using (task) "+
+                       "join taskpath using (task) "+
                        "join task using (task) "+
                        "where processinstance=?";
                PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -117,7 +117,7 @@ public class PipelineFilter implements Filter
             {
                String sql = "select processname,taskpath,taskNamePath,taskname,task "+
                        "from process "+
-                       "join taskpath2 using (task) "+
+                       "join taskpath using (task) "+
                        "join task using (task) "+
                        "where process=?";
                PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -152,7 +152,7 @@ public class PipelineFilter implements Filter
             try
             {
                String sql = "select taskpath,taskNamePath,taskname "+
-                       "from taskpath2 "+
+                       "from taskpath "+
                        "join task using (task) "+
                        "where task=?";
                PreparedStatement preparedStatement = connection.prepareStatement(sql);

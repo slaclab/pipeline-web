@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:j="jelly:core" 
+         xmlns:u="jelly:util" default="war">
+
+    <goal name="tomcat03Redeploy">
+        <u:properties file="${user.home}/tomcat03.properties" />
+        <attainGoal name="tomcat:remove"/>
+        <attainGoal name="tomcat:deploy"/>
+    </goal>   
+    
+    <goal name="tomcat03Deploy">
+        <u:properties file="${user.home}/tomcat03.properties" />
+        <attainGoal name="tomcat:deploy"/>
+    </goal>   
+    
+</project>

@@ -46,7 +46,7 @@
             </c:otherwise>
         </c:choose>
 
-        <c:set var="showLatest" value="${!empty param.showLatest ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
+        <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
         <sql:query var="test">select * from 
             ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,CAST(p.CREATEDATE as DATE) CREATEDATE,CAST(p.SUBMITDATE as DATE) SUBMITDATE,CAST(p.STARTDATE as DATE) STARTDATE,CAST(p.ENDDATE as DATE) ENDDATE
               <c:if test="${!showLatest}">, p.ExecutionNumber || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>

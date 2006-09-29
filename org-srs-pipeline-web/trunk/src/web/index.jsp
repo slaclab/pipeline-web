@@ -28,7 +28,7 @@
         <c:set var="mergeVersions" value="${!empty param.mergeVersionsChanged ? !empty param.mergeVersions : empty mergeVersions ? true : mergeVersions}" scope="session"/>
         
         <sql:query var="stream_stats">
-            select STREAMSTATUS from STREAMSTATUS
+            select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER
         </sql:query>
         
         <sql:query var="test">
@@ -89,7 +89,7 @@
            <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
            <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
              <c:forEach var="row" items="${stream_stats.rows}">
-                <display:column property="${row.STREAMSTATUS}" title="${pl:prettyStatus(row.STREAMSTATUS)}" sortable="true" headerClass="sortable" />
+                <display:column property="${row.STREAMSTATUS}" title="<img src=\"img/${row.STREAMSTATUS}.gif\" alt=\"${pl:prettyStatus(row.STREAMSTATUS)}\" title=\"${pl:prettyStatus(row.STREAMSTATUS)}\">" sortable="true" headerClass="sortable" />
             </c:forEach>
         </display:table>
     </body>

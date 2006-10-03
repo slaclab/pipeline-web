@@ -31,11 +31,7 @@ public class TaskMap extends SimpleTagSupport
         try
         {
             HttpSession session = ((PageContext) getJspContext()).getSession();
-            Object dataSourceName = Config.get(session,Config.SQL_DATA_SOURCE);
-            if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");
-            InitialContext initialContext = new InitialContext();
-            DataSource dataSource = (DataSource) initialContext.lookup("java:comp/env/"+dataSourceName);
-            Connection connection = dataSource.getConnection();
+            Connection connection = ConnectionManager.getConnection((PageContext) getJspContext(), null);
             try
             {
                 Task t = new Task(task, connection);
@@ -59,10 +55,6 @@ public class TaskMap extends SimpleTagSupport
             {
                 connection.close();
             }
-        }
-        catch (NamingException x)
-        {
-            throw new JspException("Error creating task map",x);
         }
         catch (SQLException x)
         {

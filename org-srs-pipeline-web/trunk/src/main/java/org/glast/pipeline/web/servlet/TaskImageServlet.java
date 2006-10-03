@@ -2,20 +2,19 @@ package org.glast.pipeline.web.servlet;
 
 import java.io.*;
 import java.sql.Connection;
+import java.sql.SQLException;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.sql.DataSource;
+import org.glast.pipeline.web.util.ConnectionManager;
 import org.glast.pipeline.web.util.Task;
 import org.glast.pipeline.web.util.GraphViz;
 
 /**
  * A servlet to create pictures of tasks
  * @author tonyj, dflath
- * @version $Id: TaskImageServlet.java,v 1.5 2006-08-02 21:00:00 tonyj Exp $
+ * @version $Id: TaskImageServlet.java,v 1.6 2006-10-03 19:43:07 tonyj Exp $
  */
 public class TaskImageServlet extends HttpServlet
 {
@@ -32,12 +31,7 @@ public class TaskImageServlet extends HttpServlet
         try
         {
             int task_id = Integer.parseInt(request.getParameter("task"));
-            HttpSession session = request.getSession();
-            Object dataSourceName = Config.get(session, Config.SQL_DATA_SOURCE);
-            if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");
-            DataSource dataSource = (DataSource) initialContext.lookup("java:comp/env/"+dataSourceName);
-            Connection connection = dataSource.getConnection();
-            
+            Connection connection = ConnectionManager.getConnection(request);
             try
             {
                 ByteArrayOutputStream bytes = createTaskImage(task_id,connection);
@@ -49,7 +43,7 @@ public class TaskImageServlet extends HttpServlet
                 connection.close();
             }
         }
-        catch (Exception x)
+        catch (SQLException x)
         {
             throw new ServletException("Error in servlet",x);
         }
@@ -89,27 +83,6 @@ public class TaskImageServlet extends HttpServlet
     {
         super.init(config);
         dotCommand = config.getInitParameter("dotCommand");
-        try
-        {
-            initialContext = new InitialContext();
-        }
-        catch (NamingException x)
-        {
-            throw new ServletException("Error initializing PipelineFilter",x);
-        }
-    }
-    
-    public void destroy()
-    {
-        super.destroy();
-        try
-        {
-            initialContext.close();
-        }
-        catch (NamingException x)
-        {
-            throw new RuntimeException("Error destroying PipelineFilter",x);
-        }
     }
     
     private ByteArrayOutputStream createTaskImage(int task_id, Connection connection) throws ServletException

@@ -1,8 +1,9 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
-<%@taglib uri="http://displaytag.sf.net" prefix="display" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 
@@ -16,7 +17,11 @@
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
         
-        <h2>Task Summary: ${taskNamePath}</h2> 
+        <h2>Task Summary: ${taskNamePath} 
+        <c:if test="${!fn:contains(taskNamePath,'.')}">      
+            (<a href="xml.jsp?task=${task}">XML</a>)
+        </c:if>
+        </h2> 
         
         <sql:query var="versions">
            select task, version, revision from task where taskName=? and task<>?

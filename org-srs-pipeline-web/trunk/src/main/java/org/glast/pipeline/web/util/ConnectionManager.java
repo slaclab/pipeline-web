@@ -4,6 +4,9 @@ import java.sql.Connection;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
@@ -19,6 +22,22 @@ public class ConnectionManager
 {
    private static final String ESCAPE = "\\";
    private static final String TOKEN = ",";
+   
+   public static Connection getConnection(HttpServletRequest request) throws ServletException
+   {
+      HttpSession session = request.getSession();
+      Object dataSourceName = Config.get(session, Config.SQL_DATA_SOURCE);
+      if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");
+      try
+      {
+         DataSource dataSource = getDataSource(dataSourceName,null);
+         return dataSource.getConnection();
+      }
+      catch (Exception ex)
+      {
+         throw new ServletException("Invalid Datasource",ex);
+      }
+   }
    
    public static Connection getConnection(PageContext context, Object rawDataSource) throws JspException
    {

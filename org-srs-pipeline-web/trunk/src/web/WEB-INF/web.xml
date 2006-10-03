@@ -106,9 +106,17 @@
         <servlet-name>TaskImageServlet</servlet-name>
         <servlet-class>org.glast.pipeline.web.servlet.TaskImageServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DumpTaskServlet</servlet-name>
+        <servlet-class>org.glast.pipeline.web.servlet.DumpTaskServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TaskImageServlet</servlet-name>
         <url-pattern>/TaskImageServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DumpTaskServlet</servlet-name>
+        <url-pattern>/DumpTaskServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>aidaplot</servlet-name>

@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import oracle.jdbc.pool.OracleDataSource;
 import org.jdom.CDATA;
@@ -14,6 +16,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.output.Format;
+import org.jdom.output.Format.TextMode;
 import org.jdom.output.XMLOutputter;
 
 /**
@@ -64,7 +67,9 @@ public class Exporter
    public void export(Writer out, int task) throws SQLException, IOException
    {
       Document doc = export(task);
-      XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+      Format format = Format.getPrettyFormat();
+      format.setTextMode(TextMode.PRESERVE);
+      XMLOutputter outputter = new XMLOutputter(format);
       outputter.output(doc,out);
    }
    private Document export(int task) throws SQLException
@@ -145,7 +150,7 @@ public class Exporter
             
             Element scriptElement = new Element("script",ns);
             processElement.addContent(scriptElement);
-            scriptElement.addContent(new CDATA("\n"+rs2.getString("processcode")+"\n"));
+            scriptElement.addContent(new CDATA(rs2.getString("processcode")));
             rs2.close();
          }
          else if ("BATCH".equals(processType))
@@ -209,9 +214,15 @@ public class Exporter
       
       subTaskStatement.setInt(1,task);
       rs = subTaskStatement.executeQuery();
+      List<Integer> subTaskIds = new ArrayList<Integer>();
       while (rs.next())
       {
-         exportTask(taskElement,rs.getInt("task"));
+         subTaskIds.add(rs.getInt("task"));
+      }
+      rs.close();
+      for (int id : subTaskIds)
+      {
+         exportTask(taskElement,id);
       }
    }
    private void exportVariables(Element element, ResultSet rs) throws SQLException

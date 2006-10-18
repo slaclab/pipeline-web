@@ -82,7 +82,7 @@ processingstatisticshour
 	<td width="107" bgcolor="#FFCC66">Display Task: </td>
 	<td width="97" bgcolor="#FFCC66"><select name="taskname">
 <%-- Get task names to display in form from oracle query --%>
-    <sql:query var="taskdata" dataSource="jdbc/pipeline-ii" >
+    <sql:query var="taskdata">
 		select  distinct taskname
    			from ${datatbl}  
 			order by taskname  
@@ -152,7 +152,7 @@ processingstatisticshour
 	
    	<aida:plotter nx="1" ny="2" height="600"> 
    	<c:set var= "n" value= "0"/>
-   	<sql:query var="data" dataSource="jdbc/pipeline-ii" >
+   	<sql:query var="data">
 		select  ready as ready, submitted as submitted, running as running, 
       		to_date(to_char(entered,'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS') as entered 
       		from ${datatbl} 

@@ -10,6 +10,8 @@
    </head>
    <body>
 
+      <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
+
       <sql:query var="name">
          select LOGFILE from PROCESSINSTANCE where PROCESSINSTANCE=?
          <sql:param value="${processInstance}"/>           
@@ -17,10 +19,13 @@
       <c:set var="logName" value="${name.rows[0]['LOGFILE']}"/>
       <c:set var="logURL" value="${fn:replace(logName,'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
 
-      <h2>Task ${taskName} Process ${processName} Stream ${streamPath}</h2>
-
-      <b>Log file:</b> <font class="logFile">${logName}</font> (<a href="${logURL}">download</a>)
-      <c:import url="${logURL}" var="logFile"/>
-      <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
+      <c:catch var="error">
+         <c:import url="${logURL}" var="logFile"/>
+         <b>Log file:</b> <font class="logFile">${logName}</font> (<a href="${logURL}">download</a>)
+         <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
+      </c:catch>
+      <c:if test="${!empty error}">
+         <p>Log file not found</p>
+      </c:if>
    </body>
 </html>

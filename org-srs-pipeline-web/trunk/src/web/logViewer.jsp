@@ -11,13 +11,13 @@
 
 <html>
     <head>
-        <title>Pipeline Log viewer</title> 
+        <title>Pipeline Message Viewer</title> 
         <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
         <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css"> 
     </head>
     <body>
 
-        <h2>Log Viewer</h2>
+        <h2>Message Viewer</h2>
 
         <c:choose>
             <c:when test="${!empty param.submit}">

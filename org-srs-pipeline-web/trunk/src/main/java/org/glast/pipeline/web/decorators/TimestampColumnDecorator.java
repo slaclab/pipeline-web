@@ -18,7 +18,7 @@ public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comp
    private Format format;
    public TimestampColumnDecorator()
    {
-      this("dd-MMM-yyyy HH:mm:ss.SSS",Locale.US);
+      this("dd-MMM-yyyy HH:mm:ss",Locale.US);
    }
    public TimestampColumnDecorator(String pattern, Locale locale)
    {

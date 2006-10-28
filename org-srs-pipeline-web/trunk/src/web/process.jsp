@@ -48,28 +48,34 @@
 
         <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
         <sql:query var="test">select * from 
-            ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,CAST(p.CREATEDATE as DATE) CREATEDATE,CAST(p.SUBMITDATE as DATE) SUBMITDATE,CAST(p.STARTDATE as DATE) STARTDATE,CAST(p.ENDDATE as DATE) ENDDATE
+            ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE
               <c:if test="${!showLatest}">, p.ExecutionNumber || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
               from PROCESSINSTANCE p
               join streampath sp using (stream)
               join stream s using (stream)
               where p.PROCESS=?
+              <sql:param value="${param.process}"/>
               <c:if test="${showLatest}">and sp.IsLatestPath = 1 and p.isLatest=1</c:if>
-              <c:if test="${!empty status}">and p.PROCESSINGSTATUS=?</c:if>
+              <c:if test="${!empty status}">
+                 and p.PROCESSINGSTATUS=?
+                 <sql:param value="${status}"/>
+              </c:if>
             ) where streamid>0
-            <c:if test="${!empty min}">and StreamId>=? </c:if>
-            <c:if test="${!empty max}">and StreamId<=? </c:if>
-            <c:if test="${!empty minDate && minDate!='None'}"> and CREATEDATE>=? </c:if>
-            <c:if test="${!empty maxDate && maxDate!='None'}"> and CREATEDATE<=? </c:if>
-            <sql:param value="${param.process}"/>
-            <c:if test="${!empty status}"><sql:param value="${status}"/></c:if>
-            <c:if test="${!empty min}"><sql:param value="${min}"/></c:if>
-            <c:if test="${!empty max}"><sql:param value="${max}"/></c:if>
+            <c:if test="${!empty min}">
+               and StreamId>=? 
+               <sql:param value="${min}"/>
+            </c:if>
+            <c:if test="${!empty max}">
+               and StreamId<=?
+               <sql:param value="${max}"/>
+            </c:if>
             <c:if test="${!empty minDate && minDate!='None'}"> 
+               and CREATEDATE>=?
                 <fmt:parseDate value="${minDate}" pattern="MM/dd/yyyy" var="minDateUsed"/>
                 <sql:dateParam value="${minDateUsed}" type="date"/> 
             </c:if>
-            <c:if test="${!empty maxDate && maxDate!='None'}"> 
+            <c:if test="${!empty maxDate && maxDate!='None'}">
+               and CREATEDATE<=?
                 <fmt:parseDate value="${maxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
                 <% java.util.Date d = (java.util.Date) pageContext.getAttribute("maxDateUsed"); 
                     d.setTime(d.getTime()+24*60*60*1000);
@@ -111,10 +117,10 @@
                       <display:column property="ProcessExecutionNumber" title="Process #"/>
                       <display:column property="StreamExecutionNumber" title="Stream #"/>
                     </c:if>
-                    <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable"/>
-                    <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable"/>
-                    <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable"/>
-                    <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable"/>
+                    <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                    <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                    <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                    <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
                     <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>

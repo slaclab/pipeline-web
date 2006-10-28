@@ -10,12 +10,18 @@
    </head>
    <body>
 
+      <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
+
       <sql:query var="name">
          select WORKINGDIR from PROCESSINSTANCE where PROCESSINSTANCE=?
          <sql:param value="${processInstance}"/>           
       </sql:query>
       <c:set var="logURL" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
-      <c:redirect url="${logURL}"/>
+      <c:if test="${!empty logURL}">
+         <c:redirect url="${logURL}"/>
+      </c:if>
 
+      <p>Working directory not found.</p>
+      
    </body>
 </html>

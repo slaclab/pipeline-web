@@ -27,6 +27,7 @@ public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comp
    
    public Object decorate(Object columnValue, PageContext pageContext, MediaTypeEnum media)
    {
+      if (columnValue == null) return null;
       try
       {
          if (columnValue instanceof oracle.sql.TIMESTAMP)
@@ -35,7 +36,14 @@ public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comp
          }
       }
       catch (SQLException x) { x.printStackTrace(); } 
-      return format.format(columnValue);
+      try
+      {
+         return format.format(columnValue);
+      }
+      catch (IllegalArgumentException x)
+      {
+         return columnValue;
+      }
    }
 
    public int compare(Object o1, Object o2)

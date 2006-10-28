@@ -101,14 +101,27 @@ public class ProcessDecorator extends TableDecorator
    {
       Map map = (Map) getCurrentRowObject();
       Object processinstance = map.get("processinstance");
-      return "<a href=\"log.jsp?pi="+processinstance+"\">Log</a>&nbsp;:&nbsp;"+
-             "<a href=\"run.jsp?pi="+processinstance+"\">Files</a>";
+      
+      StringBuilder result = new StringBuilder();
+      if (map.get("ProcessType").toString().equalsIgnoreCase("batch"))
+      {
+         if (map.get("StartDate") != null)
+         {
+            result.append("<a href=\"log.jsp?pi="+processinstance+"\">Log</a>&nbsp;:&nbsp;");
+            result.append("<a href=\"run.jsp?pi="+processinstance+"\">Files</a>");
+         }
+      }
+      else if (map.get("ProcessType").toString().equalsIgnoreCase("script"))
+      {
+         result.append("<a href=\"logViewer.jsp?pi="+processinstance+"\">Messages</a>");
+      }
+      return result.toString();
    }
    public String getTaskLinks()
    {
       Map map = (Map) getCurrentRowObject();
       Object id = map.get("id");
-      return "<a href=\"stats.jsp?process="+id+"\">Stats</a>";
+      return "<a href=\"P2stats.jsp?process="+id+"\">Stats</a>";
    }
    
    public TaskWithVersion getTaskWithVersion()

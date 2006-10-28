@@ -11,9 +11,9 @@
    </head>
    <body>
      
-<sql:query var="processes" dataSource="jdbc/pipeline-ii">
+<sql:query var="processes">
  	select p.PROCESS,p.PROCESSNAME from PROCESS p   
- 	where p.TASK= ${param.task}
+ 	where p.TASK= ${task}
  	order by p.process         
 </sql:query> 		
 		 

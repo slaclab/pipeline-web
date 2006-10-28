@@ -22,7 +22,7 @@
         
         <h2>Runs for process: ${processName}</h2>
         
-        <p><b>*NEW*</b> <a href="stats.jsp?process=${process}">Show processing statistics</a></p>
+        <p><b>*NEW*</b> <a href="P2stats.jsp?process=${process}">Show processing statistics</a></p>
         
         <pt:taskSummary streamCount="runCount"/>
         
@@ -48,12 +48,13 @@
 
         <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
         <sql:query var="test">select * from 
-            ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE
+            ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessType
               <c:if test="${!showLatest}">, p.ExecutionNumber || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
               from PROCESSINSTANCE p
               join streampath sp using (stream)
               join stream s using (stream)
-              where p.PROCESS=?
+              join process x using (process)
+              where PROCESS=?
               <sql:param value="${param.process}"/>
               <c:if test="${showLatest}">and sp.IsLatestPath = 1 and p.isLatest=1</c:if>
               <c:if test="${!empty status}">
@@ -84,6 +85,8 @@
             </c:if>
         </sql:query>
 
+        <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
+        
         <form name="DateForm">
             <table class="filterTable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
                 <td>Status: <select size="1" name="status">
@@ -118,10 +121,14 @@
                       <display:column property="StreamExecutionNumber" title="Stream #"/>
                     </c:if>
                     <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                    <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                    <c:if test="${isBatch}">
+                      <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                    </c:if>
                     <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
                     <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                    <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
+                    <c:if test="${isBatch}">
+                       <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
+                    </c:if>
                     <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                 </display:table>
                 <c:if test="${test.rowCount>0}">

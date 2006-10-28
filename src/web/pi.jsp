@@ -33,11 +33,11 @@
           <tr><td>Swap Used</td><td>${data.SwapUsed}</td></tr>                                     
           <tr><td>Execution Host</td><td>${data.ExecutionHost}</td></tr>                                     
           <tr><td>Exit Code</td><td>${data.ExitCode}</td></tr>    
-          <tr><td>Working Dir</td><td>${data.WorkingDir}</td></tr>
-          <tr><td>Log File</td><td>${data.LogFile}</td></tr>
+          <tr><td>Working Dir</td><td><a href="run.jsp?pi=${param.pi}">${data.WorkingDir}</a></td></tr>
+          <tr><td>Log File</td><td><a href="log.jsp?pi=${param.pi}">${data.LogFile}</a></td></tr>
           <tr><td>Execution Number</td><td>${data.ExecutionNumber}</td></tr>
           <tr><td>Is Latest</td><td>${data.IsLatest}</td></tr>   
-          <tr><td>Batch Job ID</td><td>${data.JObId}</td></tr>                                     
+          <tr><td>Batch Job ID</td><td><a href="job.jsp?id=${data.JobId}">${data.JobId}</a></td></tr>                                     
       </table>
 
    </body>

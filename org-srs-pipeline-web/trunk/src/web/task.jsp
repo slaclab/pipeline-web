@@ -24,15 +24,21 @@
         </h2> 
         
         <sql:query var="versions">
-           select task, version, revision from task where taskName=? and task<>?
+           select task, version, revision from task where taskName=? order by version, revision
            <sql:param value="${taskName}"/>
-           <sql:param value="${task}"/>
         </sql:query>        
 
         <c:if test="${versions.rowCount>0}">
-           Other versions:  
+           Versions:  
            <c:forEach var="row" items="${versions.rows}">
-              <a href="task.jsp?task=${row['task']}">(${row["version"]}.${row["revision"]})</a>
+              <c:choose>
+                 <c:when test="${row.task != task}">
+                    <a href="task.jsp?task=${row.task}">(${row.version}.${row.revision})</a>
+                 </c:when>
+                 <c:otherwise>
+                    <b>(${row.version}.${row.revision})</b> 
+                 </c:otherwise>
+              </c:choose>
            </c:forEach>
         </c:if>
         

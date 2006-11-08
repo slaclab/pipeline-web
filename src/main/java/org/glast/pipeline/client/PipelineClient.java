@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
+import javax.management.RuntimeMBeanException;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -77,7 +78,7 @@ public class PipelineClient
    {
       return JMXConnectorFactory.connect(serviceURL);
    }
-   public void createTaskFromXML(String xml, String userName) throws PipelineException
+   public void createTaskFromXML(String xml, String userName) throws RemoteException, PipelineException
    {
       try
       {
@@ -92,12 +93,16 @@ public class PipelineClient
             c.close();
          }
       }
+      catch (RuntimeMBeanException x)
+      {
+         throw x.getTargetException();
+      }
       catch (Exception x)
       {
          throw new PipelineException("Error calling createTaskFromXML",x);
       }
    }
-   public int createStream(String task, int stream, String env) throws PipelineException
+   public int createStream(String task, int stream, String env) throws PipelineException, RemoteException
    {
       try
       {
@@ -113,13 +118,42 @@ public class PipelineClient
             c.close();
          }
       }
+      catch (RuntimeMBeanException x)
+      {
+         throw x.getTargetException();
+      }
       catch (Exception x)
       {
          throw new PipelineException("Error calling createStream",x);
       }      
    }
+   
+   public void deleteTask(String task) throws PipelineException, RemoteException
+   {
+      try
+      {
+         JMXConnector c = connect();
+         try
+         {
+            MBeanServerConnection connection = c.getMBeanServerConnection();
+            Object result = connection.invoke(name,"deleteTask",new Object[]{task},new String[]{"java.lang.String"});
+         }
+         finally
+         {
+            c.close();
+         }
+      }
+      catch (RuntimeMBeanException x)
+      {
+         throw x.getTargetException();
+      }
+      catch (Exception x)
+      {
+         throw new PipelineException("Error calling deleteTask",x);
+      }       
+   }
 
-   public void restartServer() throws PipelineException
+   public void restartServer() throws PipelineException, RemoteException
    {
       try
       {
@@ -133,6 +167,10 @@ public class PipelineClient
          {
             c.close();
          }
+      }
+      catch (RuntimeMBeanException x)
+      {
+         throw x.getTargetException();
       }
       catch (Exception x)
       {

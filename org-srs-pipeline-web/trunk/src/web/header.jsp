@@ -15,7 +15,7 @@
          |
          Jira <a href="http://jira.slac.stanford.edu/browse/PFE">(Front-End)</a> <a href="http://jira.slac.stanford.edu/browse/PII">(Server)</a>
          |
-         <a href="help.html">Help</a>
+         <a href="http://confluence.slac.stanford.edu/display/ds/Pipeline+II+User%27s+Guide">Help</a>
       </td>
    </tr>
    <tr>

@@ -66,6 +66,23 @@
     <body-content>empty</body-content>
   </tag>
   <tag>
+    <name>rollback</name>
+    <tag-class>org.glast.pipeline.web.taglib.admin.Rollback</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>processes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String[]</type>
+    </attribute>
+    <attribute>
+      <name>streams</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String[]</type>
+    </attribute>
+  </tag>
+  <tag>
     <name>serverInfo</name>
     <tag-class>org.glast.pipeline.web.taglib.admin.ServerInfo</tag-class>
     <body-content>empty</body-content>

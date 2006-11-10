@@ -178,6 +178,31 @@ public class PipelineClient
       } 
    }
    
+   public void rollback(String streams, String processes) throws PipelineException, RemoteException
+   {
+      try
+      {
+         JMXConnector c = connect();
+         try
+         {
+            MBeanServerConnection connection = c.getMBeanServerConnection();
+            connection.invoke(name,"rollback",new Object[]{streams,processes},new String[]{"java.lang.String","java.lang.String"});
+         }
+         finally
+         {
+            c.close();
+         }
+      }
+      catch (RuntimeMBeanException x)
+      {
+         throw x.getTargetException();
+      }
+      catch (Exception x)
+      {
+         throw new PipelineException("Error calling rollback",x);
+      } 
+   }
+   
    public class PipelineServerNotRunningException extends PipelineException
    {
       PipelineServerNotRunningException()

@@ -10,9 +10,10 @@ import org.glast.pipeline.web.util.ConnectionManager;
  * A tag for uploading xml files to the pipeline database
  * @author tonyj
  */
-public class RestartServer extends SimpleTagSupport
+public class Rollback extends SimpleTagSupport
 {
-   
+   private StringBuilder streams = new StringBuilder();
+   private StringBuilder processes = new StringBuilder();
    public void doTag() throws JspException
    {
       try
@@ -21,7 +22,7 @@ public class RestartServer extends SimpleTagSupport
          try
          {
             PipelineClient client = new PipelineClient(conn);
-            client.restartServer();
+            client.rollback(streams.toString(), processes.toString());
          }
          finally
          {
@@ -30,7 +31,23 @@ public class RestartServer extends SimpleTagSupport
       }
       catch (Exception x)
       {
-         throw new JspException("Restart server failed",x);
+         throw new JspException("Rollback failed",x);
+      }
+   }
+   public void setProcesses(String[] processStrings)
+   {
+      for (String process : processStrings)
+      {
+         if (processes.length() > 0) processes.append(',');
+         processes.append(process);
+      }
+   }
+   public void setStreams(String[] streamStrings)
+   {
+      for (String stream : streamStrings)
+      {
+         if (streams.length() > 0) streams.append(',');
+         streams.append(stream);
       }
    }
 }

@@ -117,6 +117,18 @@ public class ProcessDecorator extends TableDecorator
       }
       return result.toString();
    }
+   public String getSelector()
+   {
+      Map map = (Map) getCurrentRowObject();
+      Object processinstance = map.get("processinstance");
+      return "<input type=\"checkbox\" name=\"select\" value=\""+processinstance+"\">";
+   }
+   public String getStreamSelector()
+   {
+      Map map = (Map) getCurrentRowObject();
+      Object stream = map.get("stream");
+      return "<input type=\"checkbox\" name=\"select\" value=\""+stream+"\">";
+   }
    public String getTaskLinks()
    {
       Map map = (Map) getCurrentRowObject();

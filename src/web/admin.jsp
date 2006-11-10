@@ -9,7 +9,7 @@
 
 <html>
    <head>
-      <title>Pipeline: Upload</title>
+      <title>Pipeline: Admin</title>
    </head>
    <body>
       <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">

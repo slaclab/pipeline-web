@@ -16,16 +16,8 @@
       <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
    </head>
    <body>
-        
-      <sql:query var="proc_stats">
-         select PROCESSINGSTATUS from PROCESSINGSTATUS
-      </sql:query>
-        
-      <h2>Streams for process: ${processName}</h2>
-        
-      <p><b>*NEW*</b> <a href="P2stats.jsp?process=${process}">Show processing statistics</a></p>
-        
-      <pt:taskSummary streamCount="runCount"/>
+             
+      <h2>Streams for task: ${taskName}</h2>
         
       <c:choose>
          <c:when test="${!empty param.clear}">
@@ -48,21 +40,13 @@
       </c:choose>
 
       <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
-      <sql:query var="test">select * from 
-         ( select p.PROCESSINSTANCE, s.streamid, sp.STREAMIDPATH, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessType
-         <c:if test="${!showLatest}">, p.ExecutionNumber || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
-         from PROCESSINSTANCE p
-         join streampath sp using (stream)
-         join stream s using (stream)
-         join process x using (process)
-         where PROCESS=?
-         <sql:param value="${param.process}"/>
-         <c:if test="${showLatest}">and sp.IsLatestPath = 1 and p.isLatest=1</c:if>
+      <sql:query var="test">select *  from stream where task=?
+         <sql:param value="${param.task}"/>
+         <c:if test="${showLatest}"> and isLatest=1</c:if>
          <c:if test="${!empty status}">
-            and p.PROCESSINGSTATUS=?
+            and streamstatus=?
             <sql:param value="${status}"/>
          </c:if>
-         ) where streamid>0
          <c:if test="${!empty min}">
             and StreamId>=? 
             <sql:param value="${min}"/>
@@ -85,21 +69,23 @@
             <sql:dateParam value="${maxDateUsed}" type="date"/> 
          </c:if>
       </sql:query>
-
-      <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
+      
+      <sql:query var="statii">
+         select STREAMSTATUS from STREAMSTATUS
+      </sql:query>
         
       <form name="DateForm">
          <table class="filterTable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
             <td>Status: <select size="1" name="status">
                <option value="">All</option>
-               <c:forEach var="row" items="${proc_stats.rows}">
-                  <option value="${row.PROCESSINGSTATUS}" ${status==row.PROCESSINGSTATUS ? "selected" : ""}>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>
+               <c:forEach var="row" items="${statii.rows}">
+                  <option value="${row.STREAMSTATUS}" ${status==row.STREAMSTATUS ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>
                </c:forEach>
             </select></td></tr>
             <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
             <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
             <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
-            <input type="hidden" name="process" value="${process}"></td></tr>
+            <input type="hidden" name="task" value="${task}"></td></tr>
             <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
          </table>
       </form>
@@ -110,30 +96,19 @@
          <c:when test="${param.format=='stream'}">
             <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
          </c:when>
-         <c:when test="${param.format=='id'}">
-            <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
-         </c:when>
          <c:otherwise>
             <form name="selectForm" action="confirm.jsp">
                <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                  <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
-                  <display:column property="Status" sortable="true" headerClass="sortable"/>
+                  <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
+                  <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
                   <c:if test="${!showLatest}">
-                     <display:column property="ProcessExecutionNumber" title="Process #"/>
-                     <display:column property="StreamExecutionNumber" title="Stream #"/>
+                     <display:column property="ExecutionNumber" title="Stream #"/>
                   </c:if>
                   <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                  <c:if test="${isBatch}">
-                     <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                  </c:if>
                   <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
                   <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                  <c:if test="${isBatch}">
-                     <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
-                  </c:if>
-                  <display:column property="links" title="Links (<a href=help.html>?</a>)" />
                   <c:if test="${gm:isUserInGroup(userName,'PipelineAdmin')}">
-                     <display:column property="selector" title=" "/>
+                     <display:column property="streamSelector" title=" "/>
                   </c:if>
                </display:table>
                 
@@ -148,16 +123,15 @@
                      }
                   </script>                   
                   <a href="javascript:void(0)" onClick="ToggleAll();">Toggle Selection</a>
-                  <input type="hidden" name="process" value="${process}">
-                  <input type="submit" value="Rollback Selected" name="submit">
+                  <input type="hidden" name="task" value="${task}">
+                  <input type="submit" value="Rollback Selected Streams" name="submit">
                </c:if>
             </form>
                 
                 
             <c:if test="${test.rowCount>0}">
                <ul>
-                  <li><a href="process.jsp?process=${process}&format=stream">Dump stream id list</a>.</li>
-                  <li><a href="process.jsp?process=${process}&format=id">Dump job id list</a>.</li>
+                  <li><a href="stream.jsp?task=${task}&format=stream">Dump stream id list</a>.</li>
                </ul>
             </c:if>
          </c:otherwise>                                                                                                                                                                                                           

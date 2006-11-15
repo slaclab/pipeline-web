@@ -30,14 +30,6 @@ public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comp
       if (columnValue == null) return null;
       try
       {
-         if (columnValue instanceof oracle.sql.TIMESTAMP)
-         {
-            columnValue = ((oracle.sql.TIMESTAMP) columnValue).timestampValue();
-         }
-      }
-      catch (SQLException x) { x.printStackTrace(); } 
-      try
-      {
          return format.format(columnValue);
       }
       catch (IllegalArgumentException x)

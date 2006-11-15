@@ -140,6 +140,6 @@
     <name>formatTimestamp</name>
     <function-class>org.glast.pipeline.web.util.Util
         </function-class>
-    <function-signature>java.lang.String formatTimestamp(oracle.sql.TIMESTAMP)</function-signature>
+    <function-signature>java.lang.String formatTimestamp(java.sql.Timestamp)</function-signature>
   </function>
 </taglib>

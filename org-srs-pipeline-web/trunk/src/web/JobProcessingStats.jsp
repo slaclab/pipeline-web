@@ -139,7 +139,7 @@
       &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}</span></P>          
   
       <sql:query var="data">
-         select  sum(ready) ready, sum(running) running, sum(submitted) submitted,to_char(entered,'YYYY-MM-DD HH24:MI:SS') as entered 
+         select  sum(ready) ready, sum(running) running, sum(submitted) submitted,entered
          from ${datatbl} 
          where entered>=? and entered<=?
          <sql:dateParam value="${startRange}"/>
@@ -152,7 +152,7 @@
       </sql:query>
       <br><span class="style8">${fn:length(data.rows)} records found from table ${plotby}</span><br>
       <c:if test="${fn:length(data.rows) >0}">
-         <%--
+
          <aida:plotter height="400"> 
 
             <aida:tuple var="tuple" query="${data}"/>        
@@ -200,8 +200,7 @@
                </aida:plot>
             </aida:region>	 
          </aida:plotter>
-         --%>
-         <display:table class="dataTable" name="${data.rows}" />
+
       </c:if>
       <c:if test="${fn:length(data.rows) == 0}">
   

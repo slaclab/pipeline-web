@@ -44,8 +44,8 @@ public class Util
       }
       return result.toString();
    }
-   public static String formatTimestamp(oracle.sql.TIMESTAMP timestamp) throws SQLException
+   public static String formatTimestamp(java.sql.Timestamp timestamp) throws SQLException
    {
-      return timestamp == null ? "" : format.format(timestamp.timestampValue());
+      return timestamp == null ? "" : format.format(timestamp);
    }
 }

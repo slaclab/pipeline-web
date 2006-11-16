@@ -9,9 +9,7 @@
 
 <html>
     <head>
-        <title>Pipeline status</title>
-        <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
+        <title>Pipeline status</title>       
     </head>
     <body>        
         <h2>Running jobs for: ${taskName}</h2>

@@ -6,7 +6,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
-
+<%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 
 <html>
    <head>
@@ -106,32 +106,41 @@
       <c:if test="${ ! sessionUseHours && sessionStartTime != 'None' }">   		 
          <fmt:parseDate value="${sessionStartTime}" var="startRange" pattern="MM/dd/yyyy" />
       </c:if>
+      
       <c:set var="timerange" value="${(endRange.time-startRange.time)/(1000*60*60)}" />
       <c:choose>
-         <c:when test="${timerange <= 10}"> 
+         <c:when test="${timerange <= 24}"> 
             <c:set var="datatbl" value="processingstatisticsmin" />
             <c:set var="plotby" value="Minutes" />
+            <c:set var="groupby" value="${pl:ceil(timerange/2)}" />
          </c:when>
-         <c:when test="${timerange <= 48 }"> 
+         <c:when test="${timerange <= 24*60 }"> 
             <c:set var="datatbl" value="processingstatisticshour"/>
             <c:set var="plotby" value="Hours" />
+            <c:set var="groupby" value="${pl:ceil(timerange/(2*60))}" />
          </c:when>
-         <c:when test="${timerange <= 168}"> 
+         <c:when test="${timerange <= 24*60*24}"> 
             <c:set var="datatbl" value="processingstatisticsday"/>
             <c:set var="plotby" value="Days"/>
+            <c:set var="groupby" value="${pl:ceil(timerange/(2*60*24))}" />
          </c:when>
-         <c:when test="${timerange <= 672}"> 
+         <c:when test="${timerange <= 24*60*24*7}"> 
             <c:set var="datatbl" value="processingstatisticsweek"/>
             <c:set var="plotby" value="Weeks"/>
+            <c:set var="groupby" value="${pl:ceil(timerange/(2*60*24*7))}" />
          </c:when>
          <c:otherwise> 
             <c:set var="datatbl" value="processingstatisticsmonth"/>
             <c:set var="plotby" value="Months"/>
+            <c:set var="groupby" value="${pl:ceil(timerange/(2*60*24*7*4))}" />
          </c:otherwise>
       </c:choose>        
   
       <sql:query var="data">
-         select  sum(ready) ready, sum(running) running, sum(submitted) submitted,entered
+         <c:if test="${groupby != 1}">
+            select min(entered) entered,avg(ready) ready,avg(submitted) submitted ,avg(running) running from ( 
+         </c:if> 
+         select sum(ready) ready, sum(running) running, sum(submitted) submitted,entered
          from ${datatbl} 
          where entered>=? and entered<=?
          <sql:dateParam value="${startRange}"/>
@@ -140,12 +149,16 @@
             and taskname = ?
             <sql:param value="${sessionTaskName}"/>
          </c:if>  
-         group by entered
+         group by entered order by entered
+         <c:if test="${groupby != 1}">
+            ) group by  floor(rownum/?)
+            <sql:param value="${groupby}"/>
+         </c:if> 
       </sql:query>
 
       <P><span class="emphasis"> Starting Date: ${startRange}
       &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
-      ${fn:length(data.rows)} records found from table ${plotby}</span></P> 
+      ${fn:length(data.rows)} records found from table ${plotby} with group by ${groupby}</span></P> 
       
       <c:if test="${fn:length(data.rows) > 0}">
 

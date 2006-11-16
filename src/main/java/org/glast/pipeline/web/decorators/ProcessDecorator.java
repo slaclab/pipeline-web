@@ -132,8 +132,8 @@ public class ProcessDecorator extends TableDecorator
    public String getTaskLinks()
    {
       Map map = (Map) getCurrentRowObject();
-      Object id = map.get("id");
-      return "<a href=\"P2stats.jsp?process="+id+"\">Stats</a>";
+      Object id = map.get("process");
+      return "<a href=\"P2stats.jsp?process="+id+"\">Plots</a>";
    }
    
    public TaskWithVersion getTaskWithVersion()

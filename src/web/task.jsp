@@ -73,7 +73,8 @@
                     ProcessName,Process, Initcap(ProcessType) type
                     from PROCESS
                     join PROCESSINSTANCE using (PROCESS) 
-                    where TASK=?
+                    join STREAMPATH using (STREAM)
+                    where TASK=? and isLatest=1 and isLatestPath=1 
                     group by PROCESS, PROCESSNAME, PROCESSTYPE
                     <sql:param value="${task}"/>
                 </sql:query>

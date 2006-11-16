@@ -48,4 +48,12 @@ public class Util
    {
       return timestamp == null ? "" : format.format(timestamp);
    }
+   public static int floor(double d)
+   {
+      return (int) Math.floor(d);
+   }
+   public static int ceil(double d)
+   {
+      return (int) Math.ceil(d);
+   }
 }

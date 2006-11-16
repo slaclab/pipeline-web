@@ -5,27 +5,27 @@
 
     <goal name="tomcat03Redeploy">
         <u:properties file="${user.home}/tomcat03.properties" />
-        <attachGoal name="clean"/>
+        <attainGoal name="clean"/>
         <attainGoal name="tomcat:remove"/>
         <attainGoal name="tomcat:deploy"/>
     </goal>   
     
     <goal name="tomcat03Deploy">
         <u:properties file="${user.home}/tomcat03.properties" />
-        <attachGoal name="clean"/>
+        <attainGoal name="clean"/>
         <attainGoal name="tomcat:deploy"/>
     </goal>   
     
     <goal name="tomcat01Redeploy">
         <u:properties file="${user.home}/tomcat01.properties" />
-        <attachGoal name="clean"/>
+        <attainGoal name="clean"/>
         <attainGoal name="tomcat:remove"/>
         <attainGoal name="tomcat:deploy"/>
     </goal>   
     
     <goal name="tomcat01Deploy">
         <u:properties file="${user.home}/tomcat01.properties" />
-        <attachGoal name="clean"/>
+        <attainGoal name="clean"/>
         <attainGoal name="tomcat:deploy"/>
     </goal>   
     

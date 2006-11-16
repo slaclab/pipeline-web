@@ -11,14 +11,6 @@
 <html>
    <head>
       <title>Performance Plots</title>
-      <style type="text/css">
-         <!--
-.style1 {
-	color: #FF0000;
-	font-weight: bold;
-}
--->
-      </style>
    </head>
    <body>
       

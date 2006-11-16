@@ -23,7 +23,7 @@
         
       <h2>Streams for process: ${processName}</h2>
         
-      <p><b>*NEW*</b> <a href="P2stats.jsp?process=${process}">Show processing statistics</a></p>
+      <p><a href="P2stats.jsp?process=${process}">Processing plots</a></p>
         
       <pt:taskSummary streamCount="runCount"/>
         

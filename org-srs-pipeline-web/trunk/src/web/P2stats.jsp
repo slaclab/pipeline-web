@@ -12,65 +12,94 @@
    <head>
       <title>Performance Plots</title>
       <style type="text/css">
-<!--
+         <!--
 .style1 {
 	color: #FF0000;
 	font-weight: bold;
 }
 -->
       </style>
-</head>
+   </head>
    <body>
-  
-    
-        <tab:tabs name="ProcessTabs" param="process">
-	<sql:query var="processes" dataSource="jdbc/pipeline-ii">
- 		select p.PROCESS,p.PROCESSNAME,p.PROCESSTYPE from PROCESS p   
- 		where p.TASK= ${task}
- 		order by p.process         
-	</sql:query> 		
-		 
-<c:forEach var="row" items="${processes.rows}">
- 	<tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${param.process}" value="${row.PROCESS}">
-		   
-	<sql:query var="data" dataSource="jdbc/pipeline-ii">
-	select enddate,startdate,
-	(to_date(to_char(PI.startdate,'dd-mon-yyyy hh24:mi:ss '),'dd-mon-yyyy hh24:mi:ss')-
-	to_date(to_char(PI.submitdate,'dd-mon-yyyy hh24:mi:ss '),'dd-mon-yyyy hh24:mi:ss'))*24*60 "WaitTime",
-	(to_date(to_char(PI.enddate,'dd-mon-yyyy hh24:mi:ss '),'dd-mon-yyyy hh24:mi:ss') - 
-	to_date(to_char(PI.startdate,'dd-mon-yyyy hh24:mi:ss '),'dd-mon-yyyy hh24:mi:ss') ) *24*60*60 "WallClock"
- 	from processinstance PI
- 	where PI.process = ?
-	and PI.processingstatus = 'SUCCESS'
-	order by PI.process,PI.processinstance
-	<sql:param value="${row.PROCESS}"/>
-	</sql:query> 
-	 
-     <aida:tuple var="tuple" query="${data}" />        
-     <c:if test="${row.processtype !='SCRIPT'}"> 
-         <aida:tupleProjection var="waitPlot" tuple="${tuple}" xprojection="WaitTime"/>               
-	</c:if>
-	<aida:tupleProjection var="wallPlot" tuple="${tuple}" xprojection="WallClock"/>
-	<aida:plotter nx="2" ny="3" height="700">
-	<aida:style>
-    	<aida:attribute name="statisticsBoxFontSize" value="8"/>
-    	<aida:style type="data">
-    		<aida:attribute name="showErrorBars" value="false"/>   
-    	</aida:style>  
-	</aida:style>
-	<aida:region title="Wall Clock time (secs)">
-   		<aida:plot var="${wallPlot}"/>                     
-   	</aida:region>
-	<c:if test="${row.processtype !='SCRIPT'}"> 
-		<aida:region title="Pending time (mins)">
-			<aida:plot var="${waitPlot}"/>    			             
-		</aida:region>
-	</c:if>  
-	</aida:plotter> 		 
-	</tab:tab>
-    
-</c:forEach> 
-</tab:tabs>
-Plots Done
-</body>
+      
+      
+      <tab:tabs name="ProcessTabs" param="process">
+         
+         <tab:tab name="Summary" href="P2stats.jsp?task=${task}" value="0">
+              <sql:query var="data">
+                  select createdate,startdate,enddate
+                  from stream where task=? and streamstatus='SUCCESS' and isLatest=1
+                  <sql:param value="${task}"/>
+              </sql:query> 
+               <aida:tuple var="tuple" query="${data}" />    
+               <aida:tupleProjection var="elapsed" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60"/>
+               <aida:tupleProjection var="wait" tuple="${tuple}" xprojection="(STARTDATE-CREATEDATE)/60"/>
+               <aida:plotter nx="2" ny="2" height="600" width="600">
+                  <aida:style>
+                     <aida:attribute name="statisticsBoxFontSize" value="8"/>
+                     <aida:style type="data">
+                        <aida:attribute name="showErrorBars" value="false"/>   
+                     </aida:style>  
+                  </aida:style>
+                  <aida:region title="Elapsed time (mins)">
+                     <aida:plot var="${elapsed}"/>                     
+                  </aida:region>
+                  <aida:region title="Wait time (mins)">
+                     <aida:plot var="${wait}"/>                     
+                  </aida:region>
+               </aida:plotter> 	
+         </tab:tab>
+         <sql:query var="processes">
+            select p.PROCESS,p.PROCESSNAME,p.PROCESSTYPE from PROCESS p   
+            where p.TASK=?
+            order by p.process    
+            <sql:param value="${task}"/>
+         </sql:query> 		
+         
+         <c:forEach var="row" items="${processes.rows}">
+            <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp" value="${row.PROCESS}">
+               
+               <sql:query var="data">
+                  select enddate,startdate,submitdate,cpusecondsused
+                  from processinstance PI
+                  where PI.process = ?
+                  and PI.processingstatus = 'SUCCESS'
+                  <sql:param value="${row.PROCESS}"/>
+               </sql:query> 
+               
+               <aida:tuple var="tuple" query="${data}" />    
+               <aida:tupleProjection var="wallPlot" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60"/>
+               <c:if test="${row.processtype !='SCRIPT'}"> 
+                  <aida:tupleProjection var="waitPlot" tuple="${tuple}" xprojection="(STARTDATE-SUBMITDATE)/60"/>
+                  <aida:tupleProjection var="cpuSeconds" tuple="${tuple}" xprojection="CPUSECONDSUSED/60"/>   
+                  <aida:tupleProjection var="wallCpu" tuple="${tuple}" xprojection="CPUSECONDSUSED/(ENDDATE-STARTDATE)"/>               
+               </c:if>
+
+               <aida:plotter nx="2" ny="2" height="600" width="600">
+                  <aida:style>
+                     <aida:attribute name="statisticsBoxFontSize" value="8"/>
+                     <aida:style type="data">
+                        <aida:attribute name="showErrorBars" value="false"/>   
+                     </aida:style>  
+                  </aida:style>
+                  <aida:region title="Wall Clock time (mins)">
+                     <aida:plot var="${wallPlot}"/>                     
+                  </aida:region>
+                  <c:if test="${row.processtype !='SCRIPT'}"> 
+                     <aida:region title="Pending time (mins)">
+                        <aida:plot var="${waitPlot}"/>    			             
+                     </aida:region>
+                     <aida:region title="CPU time (mins)">
+                        <aida:plot var="${cpuSeconds}"/>    			             
+                     </aida:region>
+                     <aida:region title="CPU time/Wall Clock">
+                        <aida:plot var="${wallCpu}"/>    			             
+                     </aida:region>
+                  </c:if>  
+               </aida:plotter> 		 
+            </tab:tab>
+            
+         </c:forEach> 
+      </tab:tabs>
+   </body>
 </html>

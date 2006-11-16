@@ -64,7 +64,7 @@
             </c:when>
             <c:otherwise>
                 <p>To filter by status click on the count in the status column. To see all runs click on the name in the Name column.</p>   
-                <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}">Show streams</a> . <a href="P2stats.jsp?task=${task}">Show summary stats</a></p>
+                <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
                 
                 <sql:query var="test">select 
                     <c:forEach var="row" items="${proc_stats.rows}">

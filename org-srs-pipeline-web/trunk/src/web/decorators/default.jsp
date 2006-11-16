@@ -9,6 +9,9 @@
         <link href="http://glast-ground.slac.stanford.edu/Commons/css/glastCommons.jsp" rel="stylesheet" type="text/css">
         <style type="text/css">
            .pageHeader p { margin-top: .5em; margin-bottom: 0; }
+           .emphasis {color: #CC0000}
+           table.filtertable { background-color: #FFCC66; padding: 2px 4px 2px 4px }
+      </style>
         </style>
         <decorator:head />
     </head>

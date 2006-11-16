@@ -13,21 +13,16 @@
       <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
       <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
       <title>Pipeline Jobs VS Time Plots </title>    
-      <style type="text/css">
-         <!--
-         .style6 {color: #CC0000}
-         .style8 {color: #CC0000; font-weight: bold; }
-         -->
-      </style>
    </head>
    <body>
       <c:set var="datatbl" value="processingstatisticshour" scope="session"/>
  
       <c:set var="startTime" value="${param.startTime}" />
       <c:set var="endTime"   value="${param.endTime}"   />
-      <c:set var="hours" value="${param.hours}" /> 
       <c:set var="taskName" value="${param.taskName}" /> 
- 
+      <c:catch>
+         <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
+      </c:catch>
  
       <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != 'None' && startTime != sessionStartTime}" /> 
       <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != 'None' && endTime != sessionEndTime}" /> 
@@ -64,9 +59,9 @@
       </c:choose>
 
       <form name="DateForm">        
-         <table cellpadding="5" cellspacing="5" bgcolor="#FFCC66" class="filterTable">
-            <tr bgcolor="#FFCC66">
-               <td bgcolor="#FFCC66">Show data from</td>
+         <table class="filtertable">
+            <tr>
+               <td>Show data from</td>
                <td>
                <script language="JavaScript">
                   FSfncWriteFieldHTML("DateForm","startTime","${sessionUseHours ? 'None' : sessionStartTime}",100,
@@ -81,10 +76,10 @@
                <td>or last <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="6"> hours</td>
             </tr>
             <tr>               
-               <td bgcolor="#FFCC66" colspan="5">display task: 
+               <td colspan="5">Task: 
                <select name="taskName">
                   <%-- Get task names to display in form from oracle query --%>
-                  <sql:query var="taskdata" dataSource="jdbc/pipeline-ii" >
+                  <sql:query var="taskdata">
                      select  distinct taskname
                      from ${datatbl}  
                      order by taskname  
@@ -102,7 +97,7 @@
       <jsp:useBean id="endTimeBean" class="java.util.Date" />
       <c:set var="endRange" value="${endTimeBean}"/>
       <jsp:useBean id="startTimeBean" class="java.util.Date" /> 
-      <jsp:setProperty name="startTimeBean" property="time" value="${startTimeBean.time -sessionHours*60*60*1000}" /> 
+      <jsp:setProperty name="startTimeBean" property="time" value="${startTimeBean.time-sessionHours*60*60*1000}" /> 
       <c:set var="startRange" value="${startTimeBean}" />
 		
       <c:if test="${ ! sessionUseHours && sessionEndTime != 'None' }">   		  
@@ -113,7 +108,7 @@
       </c:if>
       <c:set var="timerange" value="${(endRange.time-startRange.time)/(1000*60*60)}" />
       <c:choose>
-         <c:when test="${timerange <= 3}"> 
+         <c:when test="${timerange <= 10}"> 
             <c:set var="datatbl" value="processingstatisticsmin" />
             <c:set var="plotby" value="Minutes" />
          </c:when>
@@ -133,10 +128,7 @@
             <c:set var="datatbl" value="processingstatisticsmonth"/>
             <c:set var="plotby" value="Months"/>
          </c:otherwise>
-      </c:choose>
-	
-      <P><span class="style6"> Starting Date: ${startRange}
-      &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}</span></P>          
+      </c:choose>        
   
       <sql:query var="data">
          select  sum(ready) ready, sum(running) running, sum(submitted) submitted,entered
@@ -150,8 +142,12 @@
          </c:if>  
          group by entered
       </sql:query>
-      <br><span class="style8">${fn:length(data.rows)} records found from table ${plotby}</span><br>
-      <c:if test="${fn:length(data.rows) >0}">
+
+      <P><span class="emphasis"> Starting Date: ${startRange}
+      &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
+      ${fn:length(data.rows)} records found from table ${plotby}</span></P> 
+      
+      <c:if test="${fn:length(data.rows) > 0}">
 
          <aida:plotter height="400"> 
 
@@ -205,7 +201,7 @@
       <c:if test="${fn:length(data.rows) == 0}">
   
          <br> 
-         <span class="style6"><strong>There are no records for the data requested</strong></span>.
+         <span class="emphasis"><strong>There are no records for the data requested</strong></span>.
   
       </c:if>
    </body>

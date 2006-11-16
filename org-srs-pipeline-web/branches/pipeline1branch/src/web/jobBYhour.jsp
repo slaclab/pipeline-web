@@ -22,7 +22,7 @@
       </style>
 </head>
    <body>  
-   
+   Testing 1
  <c:set var="filter" value="${param.filter}"/>  
  <c:set var="selectedHours" value="${param.selectedHours}"/>    
  <c:if test="${empty filter}">
@@ -112,9 +112,9 @@
     <c:if test="${filter == 'Hours'}"> 
 
  
-   <sql:query var="data" dataSource="jdbc/pipeline" >
-     select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
-	  ps.entered jobtime,
+    <sql:query var="data">
+     select to_char(PS.entered,'dd-mon-yyyy HH24'), 
+	  cast(ps.entered as timestamp)as entered,
 	  BG.BATCHGROUPNAME,
 	  PS.prepared as prepared,
       PS.SUBMITTED as submitted,
@@ -133,8 +133,8 @@
  <c:if test="${filter == 'Dates'}"> 
  
  <sql:query var="data" dataSource="jdbc/pipeline" >
-     select to_char(PS.entered,'dd-mon-yyyy HH24') as entered, 
-	  min(ps.entered) jobtime,
+     select to_char(PS.entered,'dd-mon-yyyy HH24'), 
+	  cast(min(ps.entered) as timestamp)as entered,
 	  BG.BATCHGROUPNAME,
 	  avg(PS.prepared) as prepared,
       avg(PS.SUBMITTED) as submitted,
@@ -153,9 +153,9 @@
      
   
    <aida:tuple var="tuple" query="${data}" />        
-      <aida:datapointset var="prepared" tuple="${tuple}" yaxisColumn="PREPARED" xaxisColumn="JOBTIME" />   
-      <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="JOBTIME" />   
-      <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="JOBTIME" />   
+      <aida:datapointset var="prepared" tuple="${tuple}" yaxisColumn="PREPARED" xaxisColumn="ENTERED" />   
+      <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="ENTERED" />   
+      <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />   
 	  <aida:region title="${pkg}">
 	    <aida:style>
 	 	   <aida:attribute name="showStatisticsBox" value="false"/>		        

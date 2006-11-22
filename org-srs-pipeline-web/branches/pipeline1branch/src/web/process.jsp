@@ -70,7 +70,7 @@
         </c:if>
 
         <sql:query var="test">select * from 
-            ( select rownum, TPINSTANCE_PK "Id", ${runNumber} "Run", PROCESSINGSTATUSNAME "Status", SUBMITTED "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
+            ( select rownum, TPINSTANCE_PK "Id", ${runNumber} "Run", PROCESSINGSTATUSNAME "Status", cast(SUBMITTED as TimeStamp) "Submitted", MEMORYBYTES "Bytes", CPUSECONDS "Cpu", PID 
             from TPINSTANCE i
             join RUN r on (i.RUN_FK=r.RUN_PK)
             join PROCESSINGSTATUS s on (i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK)

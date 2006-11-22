@@ -38,11 +38,11 @@
               <c:forEach var="row" items="${stream_stats.rows}">
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
              </c:forEach>
-              TASKNAME, ${ mergeVersions ? "Max(TASK) Task" : "TASK,VERSION,REVISION" }
+              TASKNAME, ${ mergeVersions ? "Max(t.TASK) Task" : "t.TASK,VERSION,REVISION" }
               from TASK t
-              left outer join STREAM s using (TASK)
+              left outer join STREAM s on s.TASK=t.TASK and s.isLatest=1
               where PARENTTASK = 0
-              group by TASKNAME ${mergeVersions ? "" : ",TASK,VERSION,REVISION"}
+              group by TASKNAME ${mergeVersions ? "" : ",t.TASK,VERSION,REVISION"}
            )
            where TASK>0 
             <c:if test="${!empty taskFilter && !regExp}">

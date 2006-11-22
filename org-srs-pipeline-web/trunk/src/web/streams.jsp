@@ -92,42 +92,56 @@
         
       <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox>
         
+      <script language="JavaScript" type="text/javascript">
+         function ShowAll(set) {
+           for (var i = 0; i < document.selectForm.elements.length; i++) {
+             if(document.selectForm.elements[i].type == 'checkbox'){
+               document.selectForm.elements[i].checked = set;
+             }
+           }
+         }
+         function ToggleAll() {
+           for (var i = 0; i < document.selectForm.elements.length; i++) {
+             if(document.selectForm.elements[i].type == 'checkbox'){
+               document.selectForm.elements[i].checked = !(document.selectForm.elements[i].checked);
+             }
+           }
+         }
+      </script>  
+      <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
+      
       <c:choose>
          <c:when test="${param.format=='stream'}">
             <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
          </c:when>
          <c:otherwise>
-            <form name="selectForm" action="confirm.jsp">
+            <form name="selectForm" action="confirm.jsp" method="post">
                <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                   <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                   <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
                   <c:if test="${!showLatest}">
                      <display:column property="ExecutionNumber" title="Stream #"/>
                   </c:if>
-                  <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                  <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                  <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                  <c:if test="${gm:isUserInGroup(userName,'PipelineAdmin')}">
-                     <display:column property="streamSelector" title=" "/>
-                  </c:if>
+                  <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                  <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                  <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                  <c:if test="${adminMode}">
+                     <display:column property="streamSelector" title=" " class="admin"/>
+                     <display:footer>
+                        <tr>
+                           <td colspan="20" class="admin">     
+                              <a href="javascript:void(0)" onClick="ShowAll(true);">Select all</a>&nbsp;.&nbsp;
+                              <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
+                              <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
+                              <input type="hidden" name="task" value="${task}">
+                              <input type="submit" value="Rollback Selected Streams" name="submit">
+                           </td>
+                        </tr>
+                     </display:footer>
+</tr>              </c:if>
                </display:table>
                 
-               <c:if test="${gm:isUserInGroup(userName,'PipelineAdmin')}">
-                  <script language="JavaScript" type="text/javascript">
-                     function ToggleAll() {
-                       for (var i = 0; i < document.selectForm.elements.length; i++) {
-                         if(document.selectForm.elements[i].type == 'checkbox'){
-                           document.selectForm.elements[i].checked = !(document.selectForm.elements[i].checked);
-                         }
-                       }
-                     }
-                  </script>                   
-                  <a href="javascript:void(0)" onClick="ToggleAll();">Toggle Selection</a>
-                  <input type="hidden" name="task" value="${task}">
-                  <input type="submit" value="Rollback Selected Streams" name="submit">
-               </c:if>
             </form>
-                
                 
             <c:if test="${test.rowCount>0}">
                <ul>

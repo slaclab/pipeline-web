@@ -1,10 +1,7 @@
 package org.glast.pipeline.web.decorators;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Locale;
 import javax.servlet.jsp.PageContext;
 import org.displaytag.decorator.DisplaytagColumnDecorator;
@@ -13,7 +10,7 @@ import org.displaytag.properties.MediaTypeEnum;
  *
  * @author tonyj
  */
-public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comparator
+public class TimestampColumnDecorator implements DisplaytagColumnDecorator
 {
    private Format format;
    public TimestampColumnDecorator()
@@ -36,16 +33,5 @@ public class TimestampColumnDecorator implements DisplaytagColumnDecorator, Comp
       {
          return columnValue;
       }
-   }
-
-   public int compare(Object o1, Object o2)
-   {
-      try
-      {
-         Timestamp ts1 = ((oracle.sql.TIMESTAMP) o1).timestampValue();
-         Timestamp ts2 = ((oracle.sql.TIMESTAMP) o2).timestampValue();
-         return ts1.compareTo(ts2);
-      }
-      catch (SQLException x) { return 0; } 
    }
 }

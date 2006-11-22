@@ -10,7 +10,7 @@
          <a href="index.jsp"><img src="img/pipeline.png"></a>
       </td>
       <td align="right" valign="top">    
-         <a href="releasenotes.jsp">Version 1.4.6</a>
+         <a href="releasenotes.jsp">Version 1.4.7</a>
          |
          <a href="http://jira.slac.stanford.edu/browse/PFE">Jira</a>
          |

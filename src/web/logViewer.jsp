@@ -89,7 +89,7 @@
         </gsql:query>
         
         <display:table class="dataTable" name="${log}" sort="external" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
-            <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" comparator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />
+            <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />
             <display:column property="log_level" decorator="org.glast.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" sortable="true" headerClass="sortable" />
             <display:column property="taskLinkPath" title="Task" />
             <display:column property="processname" title="Process" sortable="true" headerClass="sortable" href="process.jsp" paramId="process" paramProperty="process"/>

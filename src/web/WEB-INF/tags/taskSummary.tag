@@ -19,7 +19,7 @@
   SUM(1) "ALL"
   from TASK
   join STREAM using (TASK)
-  where TASK=?
+  where TASK=? and isLatest=1 
   <sql:param value="${task}"/>           
 </sql:query> 
 

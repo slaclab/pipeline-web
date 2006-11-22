@@ -18,18 +18,22 @@
       </c:if>
       
       <c:choose>
+         <c:when test="${param.submit == 'CANCEL'}">
+            <c:redirect url="index.jsp"/>
+         </c:when>
          <c:when test="${param.submit == 'Rollback Selected'}">
             <p class="warning">
             You have requested to rollback ${fn:length(paramValues["select"])} processes 
             from task <i>${taskName}</i> process <i>${processName}</i>. 
             This operation cannot be undone!</p>
 
-            <form>
+            <form method="post">
                <input type="hidden" name="process" value="${process}">
                <c:forEach var="item" items="${paramValues['select']}">
                   <input type="hidden" name="select" value="${item}">
                </c:forEach>
                <input type="submit" value="Confirm Rollback!" name="submit">
+               <input type="submit" value="CANCEL" name="submit">
             </form>
          </c:when>
          <c:when test="${param.submit == 'Rollback Selected Streams'}">
@@ -38,12 +42,13 @@
             from task <i>${taskName}</i>. 
             This operation cannot be undone!</p>
 
-            <form>
+            <form method="post">
                <input type="hidden" name="task" value="${task}">
                <c:forEach var="item" items="${paramValues['select']}">
                   <input type="hidden" name="select" value="${item}">
                </c:forEach>
                <input type="submit" value="Confirm Stream Rollback!" name="submit">
+               <input type="submit" value="CANCEL" name="submit">
             </form>
          </c:when>
          <c:when test="${param.submit == 'Confirm Rollback!'}">

@@ -37,7 +37,7 @@
             TASK_PK "Id", TASKNAME "Task"
             from RUN r right outer join TASK t on r.TASK_FK=t.TASK_PK
             GROUP BY TASK_PK, TASKNAME ) TABLE_A left outer join ( 
-            select T.Task_PK, GREATEST(MAX(TPI.Started), MAX(TPI.submitted), MAX(TPI.ended)) AS "Last Active" 
+            select T.Task_PK, cast(GREATEST(MAX(TPI.Started), MAX(TPI.submitted), MAX(TPI.ended)) as timestamp) AS "Last Active" 
             from Task T 
             join TaskProcess TP on T.Task_PK = TP.Task_FK
             join TPInstance TPI on TP.TaskProcess_PK = TPI.TaskProcess_FK 
@@ -64,7 +64,7 @@
                 and ("RUNNING">0 or "WAITING">0 or "FINALIZING">0)
             </c:if>
             <c:if test="${include=='last30'}">
-                and SYSDATE-"Last Active"<30 
+                and SYSDATE-"Last Active"<Interval '30' day 
             </c:if>
             <c:if test="${!gm:isUserInGroup(userName,'DC2Admins')}">
                 and h.GROUPS is null

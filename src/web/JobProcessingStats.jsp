@@ -7,7 +7,7 @@
 <%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-
+<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <html>
    <head>
       <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
@@ -57,28 +57,14 @@
             <c:set var ="sessionEndTime" value="None" scope="session"/>
          </c:when>
       </c:choose>
-
-      <form name="DateForm">        
-         <table class="filtertable">
-            <tr>
-               <td>Show data from</td>
-               <td>
-               <script language="JavaScript">
-                  FSfncWriteFieldHTML("DateForm","startTime","${sessionUseHours ? 'None' : sessionStartTime}",100,
-                  "http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)
-               </script></td>
-               <td>to</td>
-               <td>
-               <script language="JavaScript">
-                  FSfncWriteFieldHTML("DateForm","endTime","${sessionUseHours ? 'None' : sessionEndTime}",100,
-                  "http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)
-               </script></td>
-               <td>or last <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="6"> hours</td>
-            </tr>
-            <tr>               
-               <td colspan="5">Task: 
-               <select name="taskName">
-                  <%-- Get task names to display in form from oracle query --%>
+<br>	
+	
+  	<form name="DateForm">        
+  		<table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
+     	 
+			 <tr bordercolor="#000000" bgcolor="#FFCC66">               
+               <td colspan="5"><strong>Select Task</strong>:                 
+                 <select name="taskName">
                   <sql:query var="taskdata">
                      select  distinct taskname
                      from ${datatbl}  
@@ -88,25 +74,31 @@
                   <c:forEach items="${taskdata.rows}" var="taskrow"> 
                      <option value="${taskrow.taskname}" ${taskrow.taskname == sessionTaskName ? 'selected' : ''}>${taskrow.taskname}</option>
                   </c:forEach>
-               </select>
-               <input type="submit" value="Submit" name="filter"></td>
-            </tr>
-         </table>
-      </form>
-   
+          </select>		  </tr> 
+		  <tr bordercolor="#000000" bgcolor="#FFCC66">
+			
+			<td>  <strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td> 
+			   <td><strong>End</strong>  <utils:dateTimePicker size="20" name="endTime"   showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>     
+		   <td>or last 
+	      <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="10"> hours		  </tr> 
+			
+            <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"></td>
+          </tr> 
+	  </table></form>   
+
       <jsp:useBean id="endTimeBean" class="java.util.Date" />
       <c:set var="endRange" value="${endTimeBean}"/>
       <jsp:useBean id="startTimeBean" class="java.util.Date" /> 
-      <jsp:setProperty name="startTimeBean" property="time" value="${startTimeBean.time-sessionHours*60*60*1000}" /> 
+      <jsp:setProperty name="startTimeBean" property="time" value="${startTimeBean.time-sessionHours*60*60*1000}" /> 	  
       <c:set var="startRange" value="${startTimeBean}" />
 		
       <c:if test="${ ! sessionUseHours && sessionEndTime != 'None' }">   		  
-         <fmt:parseDate value="${sessionEndTime}" var="endRange" pattern="MM/dd/yyyy" />
+	      <jsp:setProperty name="endRange" property="time" value="${sessionEndTime}" /> 	  
       </c:if>
       <c:if test="${ ! sessionUseHours && sessionStartTime != 'None' }">   		 
-         <fmt:parseDate value="${sessionStartTime}" var="startRange" pattern="MM/dd/yyyy" />
-      </c:if>
-      
+	      <jsp:setProperty name="startRange" property="time" value="${sessionStartTime}" /> 	  
+	  </c:if>
+   	  
       <c:set var="timerange" value="${(endRange.time-startRange.time)/(1000*60*60)}" />
       <c:choose>
          <c:when test="${timerange <= 24}"> 

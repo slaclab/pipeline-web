@@ -21,8 +21,8 @@ import org.glast.pipeline.web.util.Task;
 public class Process
 {
    // primitives from DB record:
-   private int processPK;
-   private int taskPK;
+   private long processPK;
+   private long taskPK;
    private String name;
    private String type;
  
@@ -37,8 +37,8 @@ public class Process
    /** Creates a new instance of Process */
    public Process(Task _task, ResultSet rs) throws SQLException {
       try {
-         processPK = rs.getInt("PROCESS");
-         taskPK = rs.getInt("TASK");
+         processPK = rs.getLong("PROCESS");
+         taskPK = rs.getLong("TASK");
          name = rs.getString("PROCESSNAME");
          type = rs.getString("PROCESSTYPE");
          
@@ -49,10 +49,10 @@ public class Process
    public void buildProcessStatusDependencyList(Connection conn) throws SQLException {
       PreparedStatement stmt = conn.prepareStatement("select Process, ProcessingStatus from ProcessStatusCondition where DependentProcess = ?");
       try {
-         stmt.setInt(1, getProcessPK());
+         stmt.setLong(1, getProcessPK());
          ResultSet rs = stmt.executeQuery();
          while (rs.next()) {
-            Process p = getTask().findProcess(rs.getInt("PROCESS"));
+            Process p = getTask().findProcess(rs.getLong("PROCESS"));
             if (p != null)
                processStatusDependencyMap.put(p, rs.getString("PROCESSINGSTATUS"));
          }
@@ -64,10 +64,10 @@ public class Process
    public void buildProcessCompletionDependencyList(Connection conn) throws SQLException {
       PreparedStatement stmt = conn.prepareStatement("select Process from ProcessCompletionCondition where DependentProcess = ?");
       try {
-         stmt.setInt(1, getProcessPK());
+         stmt.setLong(1, getProcessPK());
          ResultSet rs = stmt.executeQuery();
          while (rs.next()) {
-            Process p = getTask().findProcess(rs.getInt("PROCESS"));
+            Process p = getTask().findProcess(rs.getLong("PROCESS"));
             if (p != null)
                processCompletionDependencyList.add(p);
          }
@@ -79,10 +79,10 @@ public class Process
    public void buildSubTaskCreationList(Connection conn) throws SQLException {
       PreparedStatement stmt = conn.prepareStatement("select SubTask from CreateSubTaskCondition where Process = ?");
       try {
-         stmt.setInt(1, getProcessPK());
+         stmt.setLong(1, getProcessPK());
          ResultSet rs = stmt.executeQuery();
          while (rs.next()) {
-            Task t = getTask().findTask(rs.getInt("SUBTASK"));
+            Task t = getTask().findTask(rs.getLong("SUBTASK"));
             if (t != null)
                subTaskCreationList.add(t);
          }
@@ -95,7 +95,7 @@ public class Process
    public Task getTask() { return task; }
    public String getType() { return type; }
    public String getName() { return name; }
-   public int getProcessPK() { return processPK; }
+   public long getProcessPK() { return processPK; }
    public Map<Process, String> getProcessStatusDependencyMap() { return processStatusDependencyMap; }
    public List<Process> getProcessCompletionDependencyList() { return processCompletionDependencyList; }
    public List<Task> getSubTaskCreationList() { return subTaskCreationList; }

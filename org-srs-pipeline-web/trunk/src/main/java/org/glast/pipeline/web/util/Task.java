@@ -28,8 +28,8 @@ import oracle.jdbc.pool.OracleDataSource;
 public class Task
 {
    // primitives from db record:
-   private int taskPK;
-   private int parentTaskPK;
+   private long taskPK;
+   private long parentTaskPK;
    private String name;
    private int version;
    private int revision;
@@ -43,8 +43,8 @@ public class Task
    private List<Process> processList = new ArrayList<Process>();
 
    protected void init(ResultSet rs, Connection conn, Task parentTask) throws SQLException {
-      taskPK = rs.getInt("TASK");
-      parentTaskPK = rs.getInt("PARENTTASK");
+      taskPK = rs.getLong("TASK");
+      parentTaskPK = rs.getLong("PARENTTASK");
       name = rs.getString("TASKNAME");
       version = rs.getInt("VERSION");
       revision = rs.getInt("REVISION");
@@ -53,14 +53,10 @@ public class Task
       
       this.parentTask = parentTask;
       
-      // create sub-tasks:
-      while(rs.next())
-         subTaskList.add(new Task(rs,conn,this));
-      
       // create processes:
       PreparedStatement stmt = conn.prepareStatement("select * from Process where Task = ?");
       try {
-         stmt.setInt(1, taskPK);
+         stmt.setLong(1, taskPK);
          ResultSet processCursor = stmt.executeQuery();
          while (processCursor.next())
             processList.add(new Process(this, processCursor));
@@ -74,14 +70,18 @@ public class Task
    }
    
    /** Creates a new instance of Task */
-   public Task(int task_pk, Connection conn) throws SQLException
+   public Task(long task_pk, Connection conn) throws SQLException
    {
       PreparedStatement stmt = conn.prepareStatement("select * from Task start with Task=? connect by prior Task = ParentTask");
       try {
-         stmt.setInt(1, task_pk);
+         stmt.setLong(1, task_pk);
          ResultSet rs = stmt.executeQuery();
          if (rs.next()) {
-           init(rs, conn, null);
+            init(rs, conn, null);
+            while (rs.next()) {
+               Task t = this.findTask(rs.getLong("PARENTTASK"));
+               t.getSubTaskList().add(new Task(rs,conn,t));
+            }
          } else {
             throw(new RuntimeException("Invalid task primary key[" + task_pk + "]!"));
          }
@@ -101,10 +101,10 @@ public class Task
    public String getStatus() { return status; }
    public List<Task> getSubTaskList() { return subTaskList; } // TODO:  Should this return an iterator?
    public List<Process> getProcessList() { return processList; } // TODO:  Should this return an iterator?
-   public int getDbTask() { return taskPK; }
-   public int getDbParentTask() { return parentTaskPK; }
+   public long getDbTask() { return taskPK; }
+   public long getDbParentTask() { return parentTaskPK; }
    
-   public Task findTask(int _dbTask) {
+   public Task findTask(long _dbTask) {
       // check if it's me:
       if (getDbTask() == _dbTask)
          return this;
@@ -120,7 +120,7 @@ public class Task
       return null;
    }
    
-   public Process findProcess(int _dbProcess) {
+   public Process findProcess(long _dbProcess) {
       // try to find the process at this task level:
       for (Process _process : getProcessList()) {
          if (_process.getProcessPK() == _dbProcess) {
@@ -185,9 +185,11 @@ public class Task
    
    int draw(Writer writer, String indent, int cluster, Map<Task, Process> subTaskCreatorMap) throws IOException 
    {
+      int myCluster = cluster; // save my cluster value to draw a link to the process that creates me.
+
       String indentIn = indent; // save original indent for header and footer
       indent += "\t"; // indent body of this subgraph one more tab
-
+      
       // draw task:
       writer.write(indentIn + "subgraph cluster" + cluster + " {\n"); // header (subgraph id)
       writer.write(indent + "label=\"" + getName() + "\";\n"); // title
@@ -221,8 +223,8 @@ public class Task
                         
       writer.write(indentIn + "}\n"); // footer
       if (subTaskCreatorMap.containsKey(this)) {
-         int someProc = getProcessList().get(0).getProcessPK();
-         writer.write(indentIn + subTaskCreatorMap.get(this).getProcessPK() + " -> " + someProc + "[lhead=cluster"+ cluster +", style=dashed, color=red];\n");
+         long someProc = getProcessList().get(0).getProcessPK();
+         writer.write(indentIn + subTaskCreatorMap.get(this).getProcessPK() + " -> " + someProc + "[lhead=cluster"+ myCluster +", style=dashed, color=red];\n");
          subTaskCreatorMap.remove(this);
       }
 
@@ -257,7 +259,7 @@ public class Task
      Connection conn =  ds.getConnection(user,password);
      conn.setAutoCommit(false);
 
-     Task testTask = new Task(2857, conn);
+     Task testTask = new Task(14065, conn);
 
      // print it:
      testTask.print();

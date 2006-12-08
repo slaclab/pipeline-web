@@ -24,8 +24,8 @@
          <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
       </c:catch>
  
-      <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != 'None' && startTime != sessionStartTime}" /> 
-      <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != 'None' && endTime != sessionEndTime}" /> 
+      <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" /> 
+      <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" /> 
       <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" /> 
       <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
  
@@ -92,10 +92,10 @@
       <jsp:setProperty name="startTimeBean" property="time" value="${startTimeBean.time-sessionHours*60*60*1000}" /> 	  
       <c:set var="startRange" value="${startTimeBean}" />
 		
-      <c:if test="${ ! sessionUseHours && sessionEndTime != 'None' }">   		  
+      <c:if test="${ ! sessionUseHours && sessionEndTime != '-1' }">   		  
 	      <jsp:setProperty name="endRange" property="time" value="${sessionEndTime}" /> 	  
       </c:if>
-      <c:if test="${ ! sessionUseHours && sessionStartTime != 'None' }">   		 
+      <c:if test="${ ! sessionUseHours && sessionStartTime != '-1' }">   		 
 	      <jsp:setProperty name="startRange" property="time" value="${sessionStartTime}" /> 	  
 	  </c:if>
    	  

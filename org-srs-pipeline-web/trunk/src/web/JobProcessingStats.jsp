@@ -12,7 +12,7 @@
    <head>
       <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
       <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
-      <title>Pipeline Jobs VS Time Plots </title>    
+      <title>Pipeline Jobs VS Time Plots</title>    
    </head>
    <body>
       <c:set var="datatbl" value="processingstatisticshour" scope="session"/>

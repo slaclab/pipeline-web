@@ -69,7 +69,7 @@ public class PipelineFilter implements Filter
          String piId = servletRequest.getParameter("pi");
          String taskId = servletRequest.getParameter("task");
          String processId = servletRequest.getParameter("process");
-         if (piId != null && !piId.equals("0"))
+         if (piId != null && piId.length() > 0 && !piId.equals("0"))
          {
             options.append("&pi=").append(piId);
             Connection connection = dataSource.getConnection();
@@ -109,7 +109,7 @@ public class PipelineFilter implements Filter
                connection.close();
             }
          }
-         else if (processId != null && !processId.equals("0"))
+         else if (processId != null && processId.length() > 0 && !processId.equals("0"))
          {
             options.append("&process=").append(processId);
             Connection connection = dataSource.getConnection();
@@ -145,7 +145,7 @@ public class PipelineFilter implements Filter
                connection.close();
             }
          }
-         else if (taskId != null && !taskId.equals("0"))
+         else if (taskId != null && taskId.length() > 0 && !taskId.equals("0"))
          {
             options.append("&task=").append(taskId);
             Connection connection = dataSource.getConnection();

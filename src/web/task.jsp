@@ -23,6 +23,15 @@
         </c:if>
         </h2> 
         
+        <sql:query var="notation">
+           select * from notation where task=?
+           <sql:param value="${task}"/>
+        </sql:query>  
+        
+        <c:if test="${notation.rowCount>0}">
+           <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
+        </c:if>
+        
         <sql:query var="versions">
            select task, version, revision from task where taskName=? order by version, revision
            <sql:param value="${taskName}"/>
@@ -60,10 +69,10 @@
         
         <c:choose>
             <c:when test="${count == 0}">
-                <p> No runs in this task.</p>
+                <p> No streams in this task.</p>
             </c:when>
             <c:otherwise>
-                <p>To filter by status click on the count in the status column. To see all runs click on the name in the Name column.</p>   
+                <p>To filter by status click on the count in the status column. To see all streams click on the name in the Name column.</p>   
                 <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
                 
                 <sql:query var="test">select 

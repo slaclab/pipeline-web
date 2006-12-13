@@ -66,7 +66,7 @@
          <c:set var="showAllVersions" value="${!empty param.showAllVersionsChanged ? !empty param.showAllVersions : empty showAllVersions ? false : showAllVersions}" scope="session"/>
          <pt:autoCheckBox name="showAllVersions" value="${showAllVersions}">Show all versions</pt:autoCheckBox>
          <form method="POST">
-            Task:&nbsp;<pt:taskChooser name="streamTask" selected="${param.streamTask}" showAllVersions="${showAllVersions}"/>
+            Task:&nbsp;<pt:taskChooser name="streamTask" showAllVersions="${showAllVersions}" allowNone="true"/>
             Stream:&nbsp;<input type="text" name="stream" value="" size="10" />
             Args:&nbsp;<input type="text" name="args" value="" size="50" />
             <input type="submit" value="Create Stream" name="submit">

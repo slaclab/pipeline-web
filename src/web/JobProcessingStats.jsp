@@ -15,6 +15,8 @@
       <title>Pipeline Jobs VS Time Plots</title>    
    </head>
    <body>
+   
+  
       <c:set var="datatbl" value="processingstatisticshour" scope="session"/>
  
       <c:set var="startTime" value="${param.startTime}" />
@@ -127,8 +129,8 @@
             <c:set var="groupby" value="${pl:ceil(timerange/(2*60*24*7*4))}" />
          </c:otherwise>
       </c:choose>        
-  
-      <sql:query var="data">
+
+    <sql:query var="data">
          <c:if test="${groupby != 1}">
             select min(entered) entered,avg(ready) ready,avg(submitted) submitted ,avg(running) running from ( 
          </c:if> 
@@ -146,7 +148,7 @@
             ) group by  floor(rownum/?)
             <sql:param value="${groupby}"/>
          </c:if> 
-      </sql:query>
+   </sql:query>
 
       <P><span class="emphasis"> Starting Date: ${startRange}
       &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
@@ -209,10 +211,60 @@
          <span class="emphasis"><strong>There are no records for the data requested</strong></span>.
   
       </c:if>
+<br>
+<c:if test="${sessionTaskName == 'ALL'}">
+<span class="style4"> Tasks running during requested time period </span><br>
+    <aida:plotter  height="400"> 
+		    <aida:region >
+               <aida:style>
+                  <aida:attribute name="showStatisticsBox" value="false"/>		        
+                  <aida:style type="xAxis">
+                     <aida:attribute name="label" value=""/>
+                     <aida:attribute name="type" value="date"/>
+                  </aida:style>
+                  <aida:style type="data">
+                     <aida:attribute name="connectDataPoints" value="true"/>
+                  </aida:style>
+               </aida:style>  
+			    
+      <c:forEach items="${taskdata.rows}" var="taskrow"> 
+		       <c:set var="tasklist" value="${taskrow.taskname}"/>  		 
+	      <sql:query var="taskdata">   
+	   <c:if test="${groupby != 1}">
+            select min(entered) entered,avg(running) running  from ( 
+         </c:if>   
+         select  sum(running) running, entered
+         from ${datatbl} 
+         where entered>=? and entered<=?
+         <sql:dateParam value="${startRange}"/>
+         <sql:dateParam value="${endRange}"/>
+            and taskname = ?
+            <sql:param value="${tasklist}"/> 
+			and running > 0
+         group by entered order by entered  
+	      <c:if test="${groupby != 1}">
+            ) group by  floor(rownum/?)
+            <sql:param value="${groupby}"/>
+         </c:if>   		 
+      </sql:query>
+
+	
+	  <c:if test="${fn:length(taskdata.rows) > 0}"> 
+	 
+
+            <aida:tuple var="tuple" query="${taskdata}"/>        
+                  <aida:datapointset var="running" title="${tasklist}" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />   
+       
+               <aida:plot var="${running}">
+                 
+                  
+               </aida:plot>
+            
+   </c:if>   
+   </c:forEach>   </aida:region>	 
+      </aida:plotter>  </c:if> 
    </body>
 </html>
-
-  
-  
-</body>
+  	 
+   </body>
 </html>

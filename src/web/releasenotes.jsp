@@ -8,6 +8,20 @@
     </head>
     <body>
     
+<h1>Release Notes - Pipeline Front End - Version 2.0.4</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-98'>PFE-98</a>] - Problem with version list in pipeline front end</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-103'>PFE-103</a>] - Pipeline Admin: Create Stream interface should start with no Task selected.</li>
+</ul>
+    
+<h2>Improvement</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-96'>PFE-96</a>] - Task display should show comment (if present)</li>
+</ul>
+        
+       
 <h1>Release Notes - Pipeline Front End - Version 2.0.0</h1>
 
 First pipeline II release

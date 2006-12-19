@@ -178,7 +178,7 @@ public class PipelineClient
       } 
    }
    
-   public void rollback(String streams, String processes) throws PipelineException, RemoteException
+   public void rollback(String streams, String processes, String env) throws PipelineException, RemoteException
    {
       try
       {
@@ -186,7 +186,7 @@ public class PipelineClient
          try
          {
             MBeanServerConnection connection = c.getMBeanServerConnection();
-            connection.invoke(name,"rollback",new Object[]{streams,processes},new String[]{"java.lang.String","java.lang.String"});
+            connection.invoke(name,"rollback",new Object[]{streams,processes,env},new String[]{"java.lang.String","java.lang.String","java.lang.String"});
          }
          finally
          {

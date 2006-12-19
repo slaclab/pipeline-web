@@ -47,6 +47,7 @@
                <c:forEach var="item" items="${paramValues['select']}">
                   <input type="hidden" name="select" value="${item}">
                </c:forEach>
+               Arguments to add or override:&nbsp;<input type="text" name="args" value="" size="50" />
                <input type="submit" value="Confirm Stream Rollback!" name="submit">
                <input type="submit" value="CANCEL" name="submit">
             </form>
@@ -56,7 +57,7 @@
             <p class="message">Rollback completed successfully.</a>
          </c:when>
          <c:when test="${param.submit == 'Confirm Stream Rollback!'}">
-            <p:rollback streams="${paramValues['select']}"/>    
+            <p:rollback streams="${paramValues['select']}" args="${args}"/>    
              <p class="message">Rollback completed successfully.</a>
          </c:when>
       </c:choose>

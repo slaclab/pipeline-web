@@ -14,6 +14,7 @@ public class Rollback extends SimpleTagSupport
 {
    private StringBuilder streams = new StringBuilder();
    private StringBuilder processes = new StringBuilder();
+   private String args = "j=test";
    public void doTag() throws JspException
    {
       try
@@ -22,7 +23,7 @@ public class Rollback extends SimpleTagSupport
          try
          {
             PipelineClient client = new PipelineClient(conn);
-            client.rollback(streams.toString(), processes.toString());
+            client.rollback(streams.toString(), processes.toString(), args);
          }
          finally
          {
@@ -49,5 +50,9 @@ public class Rollback extends SimpleTagSupport
          if (streams.length() > 0) streams.append(',');
          streams.append(stream);
       }
+   }
+   public void setArgs(String args)
+   {
+      this.args = args;
    }
 }

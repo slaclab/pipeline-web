@@ -57,7 +57,7 @@
             <p class="message">Rollback completed successfully.</a>
          </c:when>
          <c:when test="${param.submit == 'Confirm Stream Rollback!'}">
-            <p:rollback streams="${paramValues['select']}" args="${args}"/>    
+            <p:rollback streams="${paramValues['select']}" args="${param.args}"/>    
              <p class="message">Rollback completed successfully.</a>
          </c:when>
       </c:choose>

@@ -14,7 +14,7 @@ public class Rollback extends SimpleTagSupport
 {
    private StringBuilder streams = new StringBuilder();
    private StringBuilder processes = new StringBuilder();
-   private String args = "j=test";
+   private String args = "";
    public void doTag() throws JspException
    {
       try

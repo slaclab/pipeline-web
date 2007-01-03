@@ -56,4 +56,11 @@ public class Util
    {
       return (int) Math.ceil(d);
    }
+   public static String getPackageVersion(String packageName)
+   {
+      // Nice idea, but doesn't work since war file is not on classpath. 
+      // Need to look for a better solution
+      Package p = Package.getPackage(packageName);
+      return p == null ? "unknown" : p.getImplementationVersion();
+   }
 }

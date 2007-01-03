@@ -153,9 +153,14 @@
     <function-class>org.glast.pipeline.web.util.Util</function-class>
     <function-signature>int floor(double)</function-signature>
   </function>
- <function>
+  <function>
     <name>ceil</name>
     <function-class>org.glast.pipeline.web.util.Util</function-class>
     <function-signature>int ceil(double)</function-signature>
+  </function>
+  <function>
+    <name>getPackageVersion</name>
+    <function-class>org.glast.pipeline.web.util.Util</function-class>
+    <function-signature>java.lang.String getPackageVersion(java.lang.String)</function-signature>
   </function>
 </taglib>

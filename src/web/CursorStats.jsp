@@ -90,7 +90,7 @@
       <P><span class="emphasis"> Starting Date: ${startRange}
             &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
       
-      <aida:plotter height="400"> 
+      <aida:plotter height="600" width="1000"> 
          <aida:region  title="Cursors by session vs time">
             <aida:style>
                <aida:attribute name="showStatisticsBox" value="false"/>		        
@@ -122,9 +122,8 @@
                   and machine=? and sid=?
                   <sql:param value="${session.machine}"/>
                   <sql:param value="${session.sid}"/>
-                  order by entered
                   <c:if test="${groupby != 1}">
-                     ) group by  floor(rownum/?)
+                     ) group by  floor(rownum/?) order by entered
                      <sql:param value="${groupby}"/>
                   </c:if> 
                </sql:query>

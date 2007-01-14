@@ -145,7 +145,7 @@
          </c:if>  
          group by entered order by entered
          <c:if test="${groupby != 1}">
-            ) group by  floor(rownum/?)
+            ) group by  floor(rownum/?) order by entered
             <sql:param value="${groupby}"/>
          </c:if> 
       </sql:query>
@@ -243,7 +243,7 @@
                      and running > 0
                      group by entered order by entered  
                      <c:if test="${groupby != 1}">
-                        ) group by  floor(rownum/?)
+                        ) group by  floor(rownum/?) order by entered
                         <sql:param value="${groupby}"/>
                      </c:if>   		 
                   </sql:query>

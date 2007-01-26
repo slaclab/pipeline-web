@@ -22,8 +22,8 @@
       </style>
 </head>
    <body>  
-   Testing 1
- <c:set var="filter" value="${param.filter}"/>  
+   Testing 1 pipeline I
+conection 1/2/07 <c:set var="filter" value="${param.filter}"/>  
  <c:set var="selectedHours" value="${param.selectedHours}"/>    
  <c:if test="${empty filter}">
  	<c:set var="filter" value="Hours"/>
@@ -124,6 +124,7 @@
       and bg.batchgroupname = ?
       and entered >= ? 
       and entered <  ? 
+	  order by entered
     	   <sql:param value = "${pkg}"/>
    <sql:dateParam value = "${startRange}" />
    <sql:dateParam value = "${endRange}" />
@@ -145,6 +146,7 @@
       and entered >= ? 
       and entered <  ? 
 	  GROUP BY to_char(PS.ENTERED,'dd-mon-yyyy HH24'), BG.BATCHGROUPNAME
+	  order by entered
 	   <sql:param value = "${pkg}"/>
    <sql:dateParam value = "${startRange}" />
    <sql:dateParam value = "${endRange}" />

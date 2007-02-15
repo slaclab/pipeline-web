@@ -35,32 +35,7 @@ public class PipelineFilter implements Filter
       try
       {
          HttpSession session = ((HttpServletRequest) servletRequest).getSession();
-         String mode = servletRequest.getParameter("mode");
          StringBuilder options = new StringBuilder();
-         
-         if (mode != null)
-         {
-            String modeString;
-            String dataSource;
-            
-            if ("dev".equals(mode))
-            {
-               dataSource = "jdbc/pipeline-ii-dev";
-               modeString = "Dev";
-            }
-            else if ("test".equals(mode))
-            {
-               dataSource = "jdbc/pipeline-ii-test";
-               modeString = "Test";
-            }
-            else // if ("prod".equals(mode))
-            {
-               dataSource = "jdbc/pipeline-ii";
-               modeString = "Prod";
-            }
-            Config.set(session, Config.SQL_DATA_SOURCE, dataSource);
-            session.setAttribute("mode", modeString);
-         }
          
          Object dataSourceName = Config.get(session, Config.SQL_DATA_SOURCE);
          if (dataSourceName == null) dataSourceName = session.getServletContext().getInitParameter("javax.servlet.jsp.jstl.sql.dataSource");

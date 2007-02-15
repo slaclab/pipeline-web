@@ -26,6 +26,38 @@
         <filter-name>BlankLineFilter</filter-name>
         <filter-class>org.glast.pipeline.web.filters.BlankLineFilter</filter-class>
     </filter>
+    <!-- Adding Data Source Filter -->
+    <filter>
+        <filter-name>datasource</filter-name>
+        <filter-class>org.glast.base.web.datasource.DataSourceFilter</filter-class>
+        <init-param>
+            <param-name>Default</param-name>
+            <param-value>Prod</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>Order</param-name>
+            <param-value>Prod,Dev,Test</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>Prod</param-name>
+            <param-value>jdbc/pipeline-ii</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>Dev</param-name>
+            <param-value>jdbc/pipeline-ii-dev</param-value>
+        </init-param>    
+        <init-param>
+            <param-name>Test</param-name>
+            <param-value>jdbc/pipeline-ii-test</param-value>
+        </init-param>    
+    </filter>
+
+    <filter-mapping>
+        <filter-name>datasource</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- Done Adding the Data Srouce Filter -->
+    
     <filter>
         <filter-name>PipelineFilter</filter-name>
         <filter-class>org.glast.pipeline.web.filters.PipelineFilter</filter-class>

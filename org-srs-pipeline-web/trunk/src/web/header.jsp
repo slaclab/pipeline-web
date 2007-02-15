@@ -1,11 +1,15 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <table class="pageHeader">
+    <tr>
+        <td colspan="2"><c:import url="http://glast-ground.slac.stanford.edu/Commons/menuBar.jsp"/></td>
+    </tr>
    <tr>
       <td valign="top" rowspan="2">
          <a href="index.jsp"><img src="http://glast-ground.slac.stanford.edu/Commons/logoServlet.jsp?title=Pipeline+II"/></a>
@@ -31,7 +35,7 @@
                <p>User: ${userName}&nbsp;.&nbsp;<a href="?login=false">Logout</a></p>
             </c:otherwise>
          </c:choose>
-         <p>Mode: <b><c:out value="${mode}" default="Prod"/></b> Switch to: [ <a href="index.jsp?mode=prod">Prod</a> | <a href="index.jsp?mode=dev">Dev</a> | <a href="index.jsp?mode=test">Test</a> ]</p>
+         <p>Mode: [ <utils:dataSourceChooser/> ]</p>
          <p><a href="index.jsp">Task List</a>&nbsp;.&nbsp;<a href="logViewer.jsp">Message Viewer</a>&nbsp;.&nbsp;<a href="JobProcessingStats.jsp">Usage Plots</a>&nbsp;.&nbsp;<a href="admin.jsp?login=true">Pipeline Admin</a></p>
       </td>
    </tr>

@@ -11,6 +11,7 @@
         <title>Pipeline status</title>
     </head>
     <body>
+        <%--
         <c:choose>
           <c:when test="${param.mode=='prod'}">
             <sql:setDataSource dataSource="jdbc/pipeline" scope="session"/>
@@ -25,6 +26,7 @@
             <c:set var="mode" value="Test" scope="session"/>
           </c:when>
         </c:choose>
+        --%>
         
         <h1>Stored Procedures</h1>
         

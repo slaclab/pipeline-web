@@ -30,7 +30,7 @@
                   <p:upload user="${userName}" xml="${param.xml}"/>
                </c:when>
                <c:when test="${param.submit=='Create Stream'}">
-                  <p:createStream var="streamCreated" task="${param.streamTask}" stream="${empty param.stream ? 0 : param.stream}" args="${param.args}"/>
+                  <p:createStream var="streamCreated" task="${param.streamTask}" stream="${empty param.stream ? -1 : param.stream}" args="${param.args}"/>
                   <c:set var="message" value="Stream ${streamCreated} of task ${param.streamTask} successfully created"/>
                </c:when>
                <c:when test="${param.submit=='Restart Server'}">

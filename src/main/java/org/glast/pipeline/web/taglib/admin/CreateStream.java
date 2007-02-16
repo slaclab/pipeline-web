@@ -15,7 +15,7 @@ public class CreateStream extends SimpleTagSupport
 {
    private String task;
    private String args;
-   private int stream;
+   private int stream; // Note:  This is actually the Stream ID
    private String var;
    
    public void doTag() throws JspException
@@ -43,7 +43,7 @@ public class CreateStream extends SimpleTagSupport
    {
       this.task = task;
    }
-   public void setStream(int stream)
+   public void setStream(int stream) // Note:  Actually the Stream ID
    {
       this.stream = stream;
    }

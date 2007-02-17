@@ -62,7 +62,7 @@
             and p.PROCESSINGSTATUS=?
             <sql:param value="${status}"/>
          </c:if>
-         ) where streamid>0
+         ) where (null is null) 
          <c:if test="${!empty min}">
             and StreamId>=? 
             <sql:param value="${min}"/>

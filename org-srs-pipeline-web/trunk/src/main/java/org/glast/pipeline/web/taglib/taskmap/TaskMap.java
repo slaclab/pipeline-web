@@ -24,6 +24,7 @@ import org.glast.pipeline.web.util.*;
 public class TaskMap extends SimpleTagSupport
 {
     private int task;
+    private String gvOrientation;
     private static final Logger logger = Logger.getLogger(TaskMap.class.getPackage().getName());
     
     public void doTag() throws JspException, IOException
@@ -37,14 +38,16 @@ public class TaskMap extends SimpleTagSupport
                 Task t = new Task(task, connection);
                 String dotCommand = session.getServletContext().getInitParameter("dotCommand");
                 GraphViz gv = new GraphViz(dotCommand);
+                GraphVizProperties gvProperties = new GraphVizProperties();
+                gvProperties.addProperty(GraphVizProperties.RankDir.valueOf(gvOrientation));
                 StringWriter sw = new StringWriter();
-                t.draw(sw);
+                t.draw(sw, gvProperties);
                 ByteArrayOutputStream bytes = gv.getGraph(sw.toString(),GraphViz.Format.CMAP);
                 JspWriter writer = getJspContext().getOut();
                 writer.println("<map name=\"taskMap"+task+"\">");
                 writer.println(bytes.toString());
                 writer.println("</map>");
-                writer.println("<img src=\"TaskImageServlet?task="+task+"\" usemap=\"taskMap"+task+"\"/>");
+                writer.println("<img src=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"\" usemap=\"taskMap"+task+"\"/>");
             }
             catch (IOException x)
             {
@@ -65,6 +68,10 @@ public class TaskMap extends SimpleTagSupport
     public void setTask(int task)
     {
         this.task = task;
+    }
+    
+    public void setGvOrientation(String gvOrientation) {
+       this.gvOrientation = gvOrientation;
     }
     
 }

@@ -230,16 +230,20 @@ public class Task
 
       return cluster;
    }
-   
-   public void draw(Writer writer) throws IOException {
+
+   public void draw(Writer writer, GraphVizProperties gvProperties) throws IOException {
       try {
          String indent = "\t";
          
          // write the header:
          writer.write("digraph G {\n");
          writer.write(indent + "compound=true;\n");
-         writer.write(indent + "rankdir=\"LR\";\n");
+         if (gvProperties == null)
+            gvProperties = new GraphVizProperties();
 
+         for (String prop : gvProperties.getProperties())
+            writer.write(indent+prop+";\n");
+         
          // enter the recursive drawing routine:
          Map<Task, Process> subTaskCreatorMap = new HashMap<Task, Process>();
          draw(writer, indent, 0, subTaskCreatorMap);
@@ -251,6 +255,10 @@ public class Task
       }
    }
    
+   public void draw(Writer writer) throws IOException {
+      draw(writer, new GraphVizProperties());
+   }
+   
    public static void main(String args[]) throws Exception, SQLException, IOException {
      OracleDataSource ds = new OracleDataSource();
      ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
@@ -259,7 +267,7 @@ public class Task
      Connection conn =  ds.getConnection(user,password);
      conn.setAutoCommit(false);
 
-     Task testTask = new Task(14065, conn);
+     Task testTask = new Task(48087, conn);
 
      // print it:
      testTask.print();

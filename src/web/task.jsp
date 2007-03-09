@@ -85,7 +85,7 @@
                </c:if>
             </c:forEach>
             
-            Graph Oriention: 
+            Diagram Oriention: 
             <c:choose>
                <c:when test="${gvOrientation=='LR'}">
                   <input type="radio" name="gvOrientation" value="LR" checked>Left/Right</input>

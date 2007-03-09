@@ -15,7 +15,7 @@ import org.glast.pipeline.web.util.GraphViz;
 /**
  * A servlet to create pictures of tasks
  * @author tonyj, dflath
- * @version $Id: TaskImageServlet.java,v 1.7 2007-03-09 01:33:44 dflath Exp $
+ * @version $Id: TaskImageServlet.java,v 1.8 2007-03-09 21:40:43 dflath Exp $
  */
 public class TaskImageServlet extends HttpServlet
 {
@@ -33,12 +33,22 @@ public class TaskImageServlet extends HttpServlet
         {
             int task_id = Integer.parseInt(request.getParameter("task"));
             String gvOrientation = request.getParameter("gvOrientation");
+            String mode = request.getParameter("mode");
+            if (mode == null) mode = "image"; // default is image
             Connection connection = ConnectionManager.getConnection(request);
             try
             {
-                ByteArrayOutputStream bytes = createTaskImage(task_id,gvOrientation,connection);
-                response.setContentType("image/gif");
-                bytes.writeTo(response.getOutputStream());
+               if (mode.equals("source")) { // return dot source code that creates image
+                   String source = createTaskSource(task_id,gvOrientation,connection);
+                   // enable next line to open a save file dialog:
+                   // response.setHeader("Content-Disposition", "attachment; filename=\"task_" + task_id + ".txt\"");
+                   response.setContentType("text/html");
+                   response.getWriter().print("<pre>"+source+"</pre>");
+               } else { // default is to return an image
+                   ByteArrayOutputStream bytes = createTaskImage(task_id,gvOrientation,connection);
+                   response.setContentType("image/gif");
+                   bytes.writeTo(response.getOutputStream());
+               }
             }
             finally
             {
@@ -104,4 +114,23 @@ public class TaskImageServlet extends HttpServlet
             throw new ServletException("Error creating task image",ex);
         }
     }
+    
+    private String createTaskSource(int task_id, String gvOrientation, Connection connection) throws ServletException
+    {
+        try
+        {
+            Task t = new Task(task_id, connection);
+            GraphViz gv = new GraphViz(dotCommand);
+            StringWriter sw = new StringWriter();
+            GraphVizProperties gvProperties = new GraphVizProperties();
+            gvProperties.addProperty(GraphVizProperties.RankDir.valueOf(gvOrientation));
+            t.draw(sw, gvProperties);
+            return sw.toString();
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException("Error creating task image source",ex);
+        }
+    }
+    
 }

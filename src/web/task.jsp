@@ -67,8 +67,38 @@
          </c:forEach>
       </c:if>
       
-      <p><pl:taskMap task="${task}"/></p>
+      <c:if test="${ empty gvOrientation }" >
+         <c:set var="gvOrientation" value="LR" scope="session"/> 
+      </c:if> 
+      <c:if test="${ ! empty param.gvOrientation }" >
+         <c:set var="gvOrientation" value="${param.gvOrientation}" scope="session"/> 
+      </c:if>
+
+      <p><pl:taskMap task="${task}" gvOrientation="${gvOrientation}"/></p>
       
+      <script type="text/javascript" language="JavaScript">function DoOrientationSubmission() { document.OrientationForm.submit(); }</script>
+      <p>
+         <form name="OrientationForm"> 
+            <c:forEach var="parameter" items="${param}">
+               <c:if test="${parameter.key!='gvOrientation'}">
+                  <input type="hidden" name="${parameter.key}" value="${fn:escapeXml(parameter.value)}">
+               </c:if>
+            </c:forEach>
+            
+            Graph Oriention: 
+            <c:choose>
+               <c:when test="${gvOrientation=='LR'}">
+                  <input type="radio" name="gvOrientation" value="LR" checked>Left/Right</input>
+                  <input type="radio" name="gvOrientation" value="TB" onClick="DoOrientationSubmission();">Top/Bottom</input>
+               </c:when>
+               <c:otherwise>
+                  <input type="radio" name="gvOrientation" value="LR" onClick="DoOrientationSubmission();">Left/Right</input>
+                  <input type="radio" name="gvOrientation" value="TB" checked>Top/Bottom</input>
+               </c:otherwise>
+            </c:choose>
+         </form>
+      </p>
+            
       <pt:taskSummary streamCount="count"/>
       
       <c:choose>

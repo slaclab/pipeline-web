@@ -10,11 +10,16 @@
 <html>
    <head>
       <title>Pipeline status</title>
+      <style type="text/css">
+<!--
+.style1 {color: #0000FF}
+-->
+      </style>
    </head>
    <body>
       
       <sql:query var="proc_stats">
-         select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
+         select PROCESSINGSTATUS from PROCESSINGSTATUS
       </sql:query>
       
       <h2>Task Summary: ${taskNamePath} 
@@ -55,14 +60,15 @@
          </c:if>
       </c:if>
       
-      <sql:query var="subtasks">
-         select task, taskname from task where parenttask=?
+      <sql:query var="subtasks"> 
+		  select task, taskname,parenttask  from task 
+	start with task = ?  connect by  parenttask = prior task
          <sql:param value="${task}"/>
       </sql:query>
-      
+  
       <c:if test="${subtasks.rowCount>0}">
-         Subtasks: 
          <c:forEach var="row" items="${subtasks.rows}">
+		<!-- <br>  subtask ${row['task']}:  -->
             <a href="task.jsp?task=${row['task']}">${row["taskname"]}</a>
          </c:forEach>
       </c:if>
@@ -78,14 +84,14 @@
       
       <script type="text/javascript" language="JavaScript">function DoOrientationSubmission() { document.OrientationForm.submit(); }</script>
       <p>
-         <form name="OrientationForm"> 
+   <form name="OrientationForm"> 
             <c:forEach var="parameter" items="${param}">
                <c:if test="${parameter.key!='gvOrientation'}">
                   <input type="hidden" name="${parameter.key}" value="${fn:escapeXml(parameter.value)}">
                </c:if>
             </c:forEach>
             
-            Diagram Oriention: 
+            Graph Oriention: 
             <c:choose>
                <c:when test="${gvOrientation=='LR'}">
                   <input type="radio" name="gvOrientation" value="LR" checked>Left/Right</input>
@@ -96,12 +102,10 @@
                   <input type="radio" name="gvOrientation" value="TB" checked>Top/Bottom</input>
                </c:otherwise>
             </c:choose>
-         </form>
+   </form>
       </p>
             
-      <pt:taskSummary streamCount="count"/>
-      
-      <c:choose>
+      <pt:taskSummary streamCount="count"/>   <c:choose>
          <c:when test="${count == 0}">
             <p> No streams in this task.</p>
          </c:when>
@@ -110,24 +114,37 @@
             <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
             
             <sql:query var="test">select 
-               <c:forEach var="row" items="${proc_stats.rows}">
-                  SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
-               </c:forEach>
-               ProcessName,Process, Initcap(ProcessType) type
-               from PROCESS
-               join PROCESSINSTANCE using (PROCESS) 
-               join STREAMPATH using (STREAM)
-               where TASK=? and isLatest=1 and isLatestPath=1 
-               group by PROCESS, PROCESSNAME, PROCESSTYPE
+  		lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder,
+   		SUM(case when PROCESSINGSTATUS='WAITING' then 1 else 0 end) WAITING,
+   		SUM(case when PROCESSINGSTATUS='READY' then 1 else 0 end) READY,
+   		SUM(case when PROCESSINGSTATUS='QUEUED' then 1 else 0 end) QUEUED,
+   		SUM(case when PROCESSINGSTATUS='SUBMITTED' then 1 else 0 end) SUBMITTED,
+   		SUM(case when PROCESSINGSTATUS='RUNNING' then 1 else 0 end) RUNNING,
+   		SUM(case when PROCESSINGSTATUS='SUCCESS' then 1 else 0 end) SUCCESS,
+   		SUM(case when PROCESSINGSTATUS='FAILED' then 1 else 0 end) FAILED,
+   		SUM(case when PROCESSINGSTATUS='TERMINATED' then 1 else 0 end) TERMINATED,
+   		SUM(case when PROCESSINGSTATUS='CANCELED' then 1 else 0 end) CANCELED,
+   		SUM(case when PROCESSINGSTATUS='SKIPPED' then 1 else 0 end) SKIPPED
+   		from PROCESS 
+  			join (               
+                  SELECT task,taskname,level lev FROM TASK
+                         start with Task=? connect by prior Task = ParentTask
+               )  using (task)
+      join PROCESSINSTANCE using (PROCESS) 
+      join STREAMPATH using (STREAM)
+      where isLatest=1 and isLatestPath=1 
+   group by lev,task, taskname,process,PROCESSNAME,displayorder, processtype
+   order by task,displayorder, process
+
                <sql:param value="${task}"/>
-            </sql:query>
-            
-            <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="ascending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
-               <display:column property="ProcessName" title="Name" sortable="true" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
-               <display:column property="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
+            </sql:query>          		  		    
+            <display:table class="dataTable" name="${test.rows}"  decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+                 <display:column property="TaskName" title="Task"  class="leftAligned"  href="task.jsp" paramId="task" paramProperty="Task"/>     
+			  <display:column property="ProcessName" title="Process" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
+               <display:column property="Type" href="script.jsp" paramId="process" paramProperty="Process"/>
                <c:forEach var="row" items="${proc_stats.rows}">
                   <display:column property="${row.PROCESSINGSTATUS}" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
-                                                                                        </c:forEach>
+            </c:forEach>
                <display:column property="taskLinks" title="Links (<a href=help.html>?</a>)" />
             </display:table>
          </c:otherwise>

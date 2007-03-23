@@ -57,7 +57,13 @@
              select * from notation where task=?
               <sql:param value="${task}"/>
             </sql:query>  
-         
+            <sql:query var="datasets">
+            select count(*) count from dataset
+                         join processinstance using (processinstance)
+                         join process using (process)
+                         join ( select task from task start with Task=? connect by prior Task = ParentTask) using (task)
+               <sql:param value="${task}"/>
+            </sql:query> 
             <p class="warning">
             You have requested to delete task <i>${taskVersion}</i>.</p> 
             <c:if test="${notation.rowCount>0}">
@@ -65,9 +71,9 @@
             </c:if>
             <pt:taskSummary streamCount="count"/>
             <p>This operation cannot be undone!</p>
-            <p>
-               <font color="red"><b>Warning:  Any Datasets associated with this Task will be removed from the Data Catalog!</b></font>
-            </p>
+            <c:if test="${datasets.rows[0].count>0}">
+               <p class="warning">Warning: ${datasets.rows[0].count} Datasets associated with this Task will be removed from the Data Catalog!</p>
+            </c:if>
             <form method="post">
                <input type="hidden" name="deleteTask" value="${taskVersion}">
                <input type="submit" value="Confirm Delete!" name="submit">

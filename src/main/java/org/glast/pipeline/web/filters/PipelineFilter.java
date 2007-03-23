@@ -126,7 +126,7 @@ public class PipelineFilter implements Filter
             Connection connection = dataSource.getConnection();
             try
             {
-               String sql = "select taskpath,taskNamePath,taskname "+
+               String sql = "select taskpath,taskNamePath,taskname,taskversion "+
                        "from taskpath "+
                        "join task using (task) "+
                        "where task=?";
@@ -141,6 +141,7 @@ public class PipelineFilter implements Filter
                   servletRequest.setAttribute("taskPath",rs.getString(1));
                   servletRequest.setAttribute("taskNamePath",rs.getString(2));
                   servletRequest.setAttribute("taskName",rs.getString(3));
+                  servletRequest.setAttribute("taskVersion",rs.getString(4));
                   rs.close();
                }
                finally

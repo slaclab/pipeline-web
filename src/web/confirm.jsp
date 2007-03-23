@@ -53,14 +53,23 @@
             </form>
          </c:when>
          <c:when test="${param.submit == 'Delete Task'}">
+            <sql:query var="notation">
+             select * from notation where task=?
+              <sql:param value="${task}"/>
+            </sql:query>  
+         
             <p class="warning">
-            You have requested to delete task <i>${param.deleteTask}</i>. 
-            This operation cannot be undone!</p>
+            You have requested to delete task <i>${taskVersion}</i>.</p> 
+            <c:if test="${notation.rowCount>0}">
+               <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
+            </c:if>
+            <pt:taskSummary streamCount="count"/>
+            <p>This operation cannot be undone!</p>
             <p>
-               <font color="red"><b>Warning:  All Datasets associated with this Task will be removed from the Data Catalog!</b></font>
+               <font color="red"><b>Warning:  Any Datasets associated with this Task will be removed from the Data Catalog!</b></font>
             </p>
             <form method="post">
-               <input type="hidden" name="deleteTask" value="${param.deleteTask}">
+               <input type="hidden" name="deleteTask" value="${taskVersion}">
                <input type="submit" value="Confirm Delete!" name="submit">
                <input type="submit" value="CANCEL" name="submit">
             </form>

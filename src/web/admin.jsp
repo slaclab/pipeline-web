@@ -36,9 +36,6 @@
                <c:when test="${param.submit=='Restart Server'}">
                   <p:restartServer/>
                </c:when>
-               <c:when test="${param.submit=='Delete Task'}">
-                  <p:deleteTask task="${param.deleteTask}"/>
-               </c:when>
             </c:choose>
          </c:catch>
 
@@ -78,11 +75,8 @@
          </form>
          
          <h2>Delete Task</h2>
-         <form method="POST">
+         <form method="POST" action="confirm.jsp">
             Task:&nbsp;<pt:taskChooser name="deleteTask" showAllVersions="true" allowNone="true"/>
-            <p>
-               <font color="red"><b>Warning:  All Datasets associated with this Task will be removed from the Data Catalog!</b></font>
-            </p>
             <input type="submit" value="Delete Task" name="submit">
          </form> 
       </c:if>

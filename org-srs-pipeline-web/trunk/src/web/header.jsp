@@ -15,7 +15,7 @@
          <a href="index.jsp"><img src="http://glast-ground.slac.stanford.edu/Commons/logoServlet.jsp?title=Pipeline+II"/></a>
       </td>
       <td align="right" valign="top">
-         <a href="releasenotes.jsp">Version 2.0.6</a>
+         <a href="releasenotes.jsp">Version 2.1.0</a>
          |
          Jira <a href="http://jira.slac.stanford.edu/browse/PFE">(Front-End)</a> <a href="http://jira.slac.stanford.edu/browse/PII">(Server)</a>
          |

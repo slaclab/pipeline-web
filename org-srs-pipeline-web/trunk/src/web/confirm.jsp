@@ -52,13 +52,30 @@
                <input type="submit" value="CANCEL" name="submit">
             </form>
          </c:when>
+         <c:when test="${param.submit == 'Delete Task'}">
+            <p class="warning">
+            You have requested to delete task <i>${param.deleteTask}</i>. 
+            This operation cannot be undone!</p>
+            <p>
+               <font color="red"><b>Warning:  All Datasets associated with this Task will be removed from the Data Catalog!</b></font>
+            </p>
+            <form method="post">
+               <input type="hidden" name="deleteTask" value="${param.deleteTask}">
+               <input type="submit" value="Confirm Delete!" name="submit">
+               <input type="submit" value="CANCEL" name="submit">
+            </form>
+         </c:when>
          <c:when test="${param.submit == 'Confirm Rollback!'}">
             <p:rollback processes="${paramValues['select']}"/> 
             <p class="message">Rollback completed successfully.</a>
          </c:when>
          <c:when test="${param.submit == 'Confirm Stream Rollback!'}">
             <p:rollback streams="${paramValues['select']}" args="${param.args}"/>    
-             <p class="message">Rollback completed successfully.</a>
+            <p class="message">Rollback completed successfully.</a>
+         </c:when>
+         <c:when test="${param.submit=='Confirm Delete!'}">
+            <p:deleteTask task="${param.deleteTask}"/>
+            <p class="message">Delete completed successfully.</a>
          </c:when>
       </c:choose>
       

@@ -35,7 +35,7 @@
                <p>User: ${userName}&nbsp;.&nbsp;<a href="?login=false">Logout</a></p>
             </c:otherwise>
          </c:choose>
-         <p>Mode: [ <utils:dataSourceChooser/> ]</p>
+         <p>Mode: [ <utils:dataSourceChooser href="index.jsp"/> ]</p>
          <p><a href="index.jsp">Task List</a>&nbsp;.&nbsp;<a href="logViewer.jsp">Message Viewer</a>&nbsp;.&nbsp;<a href="JobProcessingStats.jsp">Usage Plots</a>&nbsp;.&nbsp;<a href="admin.jsp?login=true">Pipeline Admin</a></p>
       </td>
    </tr>

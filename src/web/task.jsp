@@ -22,7 +22,7 @@
          select PROCESSINGSTATUS from PROCESSINGSTATUS
       </sql:query>
       
-      <h2>Task Summary: ${taskNamePath} 
+      <h2><span class="style1">ktest4</span>Task Summary: ${taskNamePath} 
          <c:if test="${!fn:contains(taskNamePath,'.')}">      
             (<a href="xml.jsp?task=${task}">XML</a>)
          </c:if>
@@ -114,17 +114,10 @@
             <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
             
             <sql:query var="test">select 
-  		lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder,
-   		SUM(case when PROCESSINGSTATUS='WAITING' then 1 else 0 end) WAITING,
-   		SUM(case when PROCESSINGSTATUS='READY' then 1 else 0 end) READY,
-   		SUM(case when PROCESSINGSTATUS='QUEUED' then 1 else 0 end) QUEUED,
-   		SUM(case when PROCESSINGSTATUS='SUBMITTED' then 1 else 0 end) SUBMITTED,
-   		SUM(case when PROCESSINGSTATUS='RUNNING' then 1 else 0 end) RUNNING,
-   		SUM(case when PROCESSINGSTATUS='SUCCESS' then 1 else 0 end) SUCCESS,
-   		SUM(case when PROCESSINGSTATUS='FAILED' then 1 else 0 end) FAILED,
-   		SUM(case when PROCESSINGSTATUS='TERMINATED' then 1 else 0 end) TERMINATED,
-   		SUM(case when PROCESSINGSTATUS='CANCELED' then 1 else 0 end) CANCELED,
-   		SUM(case when PROCESSINGSTATUS='SKIPPED' then 1 else 0 end) SKIPPED
+			<c:forEach var="row" items="${proc_stats.rows}">
+                  SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
+               </c:forEach>
+  		lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
    		from PROCESS 
   			join (               
                   SELECT task,taskname,level lev FROM TASK
@@ -134,12 +127,13 @@
       join STREAMPATH using (STREAM)
       where isLatest=1 and isLatestPath=1 
    group by lev,task, taskname,process,PROCESSNAME,displayorder, processtype
-   order by task,displayorder, process
+   order by task, displayorder,  process
 
                <sql:param value="${task}"/>
             </sql:query>          		  		    
             <display:table class="dataTable" name="${test.rows}"  decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
                  <display:column property="TaskName" title="Task"  class="leftAligned"  href="task.jsp" paramId="task" paramProperty="Task"/>     
+			  <display:column property="displayorder" title="displayorder"  class="leftAligned"  />     
 			  <display:column property="ProcessName" title="Process" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
                <display:column property="Type" href="script.jsp" paramId="process" paramProperty="Process"/>
                <c:forEach var="row" items="${proc_stats.rows}">

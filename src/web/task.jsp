@@ -22,7 +22,7 @@
          select PROCESSINGSTATUS from PROCESSINGSTATUS
       </sql:query>
       
-      <h2><span class="style1">ktest4</span>Task Summary: ${taskNamePath} 
+      <h2>Task Summary: ${taskNamePath} 
          <c:if test="${!fn:contains(taskNamePath,'.')}">      
             (<a href="xml.jsp?task=${task}">XML</a>)
          </c:if>
@@ -116,7 +116,7 @@
             <sql:query var="test">select 
 			<c:forEach var="row" items="${proc_stats.rows}">
                   SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
-               </c:forEach>
+            </c:forEach>
   		lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
    		from PROCESS 
   			join (               
@@ -133,7 +133,6 @@
             </sql:query>          		  		    
             <display:table class="dataTable" name="${test.rows}"  decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
                  <display:column property="TaskName" title="Task"  class="leftAligned"  href="task.jsp" paramId="task" paramProperty="Task"/>     
-			  <display:column property="displayorder" title="displayorder"  class="leftAligned"  />     
 			  <display:column property="ProcessName" title="Process" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
                <display:column property="Type" href="script.jsp" paramId="process" paramProperty="Process"/>
                <c:forEach var="row" items="${proc_stats.rows}">

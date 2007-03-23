@@ -76,7 +76,7 @@
          
          <h2>Delete Task</h2>
          <form method="POST" action="confirm.jsp">
-            Task:&nbsp;<pt:taskChooser name="deleteTask" showAllVersions="true" allowNone="true"/>
+            Task:&nbsp;<pt:taskChooser name="task" showAllVersions="true" allowNone="true" useKey="true"/>
             <input type="submit" value="Delete Task" name="submit">
          </form> 
       </c:if>

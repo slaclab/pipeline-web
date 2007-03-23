@@ -32,7 +32,7 @@ public class DeleteTask extends SimpleTagSupport
       }
       catch (Exception x)
       {
-         throw new JspException("Create stream failed",x);
+         throw new JspException("Delete task failed",x);
       }
    }
    public void setTask(String task)

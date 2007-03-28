@@ -7,7 +7,53 @@
         <title>Pipeline status</title>
     </head>
     <body>
+ 
+    <h1>Release Notes - Pipeline Front End - Version 2.1.1</h1>
     
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-114'>PFE-114</a>] - Login broken</li>
+</ul>
+        
+    <h1>Release Notes - Pipeline Front End - Version 2.1</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-112'>PFE-112</a>] - Prod|Dev|Test switch can leave things in strange state</li>
+</ul>
+    
+<h2>Improvement</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-108'>PFE-108</a>] - rotate flowcharts</li>
+</ul>
+    
+<h2>New Feature</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-107'>PFE-107</a>] - Download dot</li>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-113'>PFE-113</a>] - Add confirmation page to delete task request from admin.jsp</li>
+</ul>
+            
+        
+        
+    <h1>Release Notes - Pipeline Front End - Version 2.0.6</h1>
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-111'>PFE-111</a>] - Process Display does not show streams with id=0</li>
+</ul>
+    
+<h2>Improvement</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-110'>PFE-110</a>] - Create Stream function in admin should allow streams with id=0</li>
+</ul>
+                
+        
+    <h1>Release Notes - Pipeline Front End - Version 2.0.5</h1>
+    
+<h2>Bug</h2>
+<ul>
+<li>[<a href='https://jira.slac.stanford.edu/browse/PFE-105'>PFE-105</a>] - Fix bug when uploading XML through web interface</li>
+</ul>
+         
 <h1>Release Notes - Pipeline Front End - Version 2.0.4</h1>
     
 <h2>Bug</h2>

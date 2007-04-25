@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.Filter;
@@ -44,7 +43,45 @@ public class PipelineFilter implements Filter
          String piId = servletRequest.getParameter("pi");
          String taskId = servletRequest.getParameter("task");
          String processId = servletRequest.getParameter("process");
-         if (piId != null && piId.length() > 0 && !piId.equals("0"))
+         String streamId = servletRequest.getParameter("stream");
+         if (streamId != null && streamId.length() > 0)
+         {
+            options.append("&stream=").append(streamId);
+            Connection connection = dataSource.getConnection();
+            try
+            {
+               String sql = "select streamId, streampath, streamIdPath, taskpath, taskNamePath, taskname,task "+
+                       "from stream join streampath using (stream) "+
+                       "join taskpath using (task) "+
+                       "join task using (task) "+
+                       "where stream=?";
+               PreparedStatement preparedStatement = connection.prepareStatement(sql);
+               try
+               {
+                  int stream = Integer.parseInt(streamId);
+                  preparedStatement.setInt(1,stream);
+                  ResultSet rs = preparedStatement.executeQuery();
+                  rs.next();
+                  servletRequest.setAttribute("streamId",rs.getString(1));
+                  servletRequest.setAttribute("streamPath",rs.getString(2));
+                  servletRequest.setAttribute("streamIdPath",rs.getString(3));
+                  servletRequest.setAttribute("taskPath",rs.getString(4));
+                  servletRequest.setAttribute("taskNamePath",rs.getString(5));
+                  servletRequest.setAttribute("taskName",rs.getString(6));
+                  servletRequest.setAttribute("task",rs.getInt(7));
+                  rs.close();
+               }
+               finally
+               {
+                  preparedStatement.close();
+               }
+            }
+            finally
+            {
+               connection.close();
+            }
+         }
+         else if (piId != null && piId.length() > 0 && !piId.equals("0"))
          {
             options.append("&pi=").append(piId);
             Connection connection = dataSource.getConnection();

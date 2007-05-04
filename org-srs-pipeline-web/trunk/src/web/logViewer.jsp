@@ -69,7 +69,7 @@
       </form>
       
       
-      <gsql:query var="log" pageNumber="${param.page}" sortColumn="${param.sort}" defaultSortColumn="timeentered" ascending="${param.dir=='asc'}" pageSize="500">
+      <gsql:query var="log" defaultSortColumn="timeentered" pageSize="500">
          select log, log_level, message, timeentered, processInstance, streamIdPath, process, processname, taskPath, taskNamePath, case when exception is null then 0 else 1 end hasException 
          from log l
          left outer join processinstance i using (processinstance)

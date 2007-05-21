@@ -71,7 +71,7 @@
       </sql:query>
       
       <sql:query var="statii">
-         select STREAMSTATUS from STREAMSTATUS
+         select STREAMSTATUS from STREAMSTATUS order by displayorder
       </sql:query>
         
       <form name="DateForm">

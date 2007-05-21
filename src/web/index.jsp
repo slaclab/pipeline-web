@@ -18,16 +18,23 @@
                 <c:set var="taskFilter" value="${param.taskFilter}" scope="session"/>
                 <c:set var="include" value="${param.include}" scope="session"/>
                 <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
+				<c:set var="versionGroup" value="${param.versionGroup}" />
             </c:when>
+		
             <c:when test="${!empty param.clear}">
                 <c:set var="taskFilter" value="" scope="session"/>
                 <c:set var="include" value="" scope="session"/>
+				<c:set var="versionGroup" value="" scope="session"/>
             </c:when>
         </c:choose>
-        
-        <c:set var="mergeVersions" value="${!empty param.mergeVersionsChanged ? !empty param.mergeVersions : empty mergeVersions ? true : mergeVersions}" scope="session"/>
-        
-        <sql:query var="stream_stats">
+	  @@@@	2	Version group to be displayed: ${versionGroup}   <br>
+    <!-- 
+        <c:set var=" " value="${!empty param.mergeVersionsChanged ? !empty param.mergeVersions : empty mergeVersions ? true : mergeVersions}" scope="session"/>
+      <c:set var="latestVersions" value="${!empty param.latestVersionsChanged ? !empty param.latestVersions : empty latestVersions ? true : latestVersions}" scope="session"/>
+        <c:set var="allVersions" value="${!empty param.allVersionsChanged ? !empty param.allVersions : empty allVersions ? true : allVersions}" scope="session"/>  
+	   merge version changed: ${param.mergeVersionsChanged} merge version:  ${param.mergeVersions}<br>
+	 --> 
+	    <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER
         </sql:query>
         
@@ -38,11 +45,29 @@
               <c:forEach var="row" items="${stream_stats.rows}">
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
              </c:forEach>
-              TASKNAME, ${ mergeVersions ? "Max(t.TASK) Task" : "t.TASK,VERSION,REVISION" }
+              taskname,
+			 <c:if test="${versionGroup == 'mergeVersions'}">
+			  Max(t.TASK) Task 
+			  </c:if>
+			  <c:if test="${versionGroup != 'mergeVersions'}">
+			    t.TASK,VERSION,REVISION 
+			    </c:if>		
               from TASK t
               left outer join STREAM s on s.TASK=t.TASK and s.isLatest=1
               where PARENTTASK = 0
-              group by TASKNAME ${mergeVersions ? "" : ",t.TASK,VERSION,REVISION"}
+			  <c:if test="${versionGroup == 'latestVersions'}">
+			   and t.revision = 
+        (select max(revision) from task t1 where t1.taskname = t.taskname and t1.version = 
+            (select max(version) from  task t2 where t2.taskname = t1.taskname)
+        )
+			    </c:if>
+              group by 
+			   <c:if test="${versionGroup == 'mergeVersions'}">
+			  TASKNAME 
+			  </c:if>
+			    <c:if test="${versionGroup != 'mergeVersions'}">
+			  TASKNAME ,t.TASK,VERSION,REVISION
+			   </c:if>
            )
            where TASK>0 
             <c:if test="${!empty taskFilter && !regExp}">
@@ -64,8 +89,8 @@
             </c:if>     
         </sql:query>    
 
-        <h2>Task Summary</h2>
-        
+        <h2>Task Summary test 5 </h2>
+        <br>
         <form name="DateForm">
             <table class="filterTable">
                 <tr valign="top">
@@ -78,19 +103,41 @@
                       <option value="active" ${include=='active' ? "selected" : ""}>Tasks with Active Runs</option>
                       <option value="last30" ${include=='last30' ? "selected" : ""}>Active in Last 30 days</option>
                   </select></td>
+				    <td><select name="versionGroup">
+                      <option value="allVersions" ${versionGroup=='allVersions' ? "selected" : ""}>All Task Version</option>
+                      <option value="mergeVersions" ${versionGroup=='mergeVersions' ? "selected" : ""}>Merge Task Versions</option>
+                      <option value="latestVersions" ${versionGroup=='latestVersions' ? "selected" : ""}>Latest Task Version</option>
+                          </select></td>
                   <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"></td>
                 </tr>
             </table>
         </form>      
- 
-        <pt:autoCheckBox name="mergeVersions" value="${mergeVersions}">Merge task versions</pt:autoCheckBox>
-        
+<br>
+    	<!--    
+		<pt:autoCheckBox name="mergeVersions" value="${mergeVersions}">Merge task versions</pt:autoCheckBox> 
+	<pt:autoCheckBox name="latestVersions" value="${latestVersions}">Latest task versions</pt:autoCheckBox>		  
+		<pt:autoCheckBox name="allVersions" value="${allVersions}">All task versions</pt:autoCheckBox>
+  -->   
         <display:table class="dataTable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
            <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
            <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
-             <c:forEach var="row" items="${stream_stats.rows}">
-                <display:column property="${row.STREAMSTATUS}" title="<img src=\"img/${row.STREAMSTATUS}.gif\" alt=\"${pl:prettyStatus(row.STREAMSTATUS)}\" title=\"${pl:prettyStatus(row.STREAMSTATUS)}\">" sortable="true" headerClass="sortable" />
-            </c:forEach>
+         
+		  <c:if test="${versionGroup == 'mergeVersions'}">
+			 <c:forEach var="row" items="${stream_stats.rows}">
+                <display:column property="${row.STREAMSTATUS}" 
+				title="<img src=\"img/${row.STREAMSTATUS}.gif\" alt=\"${pl:prettyStatus(row.STREAMSTATUS)}\" title=\"${pl:prettyStatus(row.STREAMSTATUS)}\">" 
+				sortable="true" headerClass="sortable" />             
+			</c:forEach> 
+		</c:if>
+			
+			 <c:if test="${versionGroup != 'mergeVersions'}">
+			 <c:forEach var="row" items="${stream_stats.rows}">
+                <display:column property="${row.STREAMSTATUS}"  
+				title="<img src=\"img/${row.STREAMSTATUS}.gif\" alt=\"${pl:prettyStatus(row.STREAMSTATUS)}\" title=\"${pl:prettyStatus(row.STREAMSTATUS)}\">" 
+				sortable="true" headerClass="sortable"   href="streams.jsp?status=${row.streamSTATUS}" paramId="task" paramProperty="task" />             
+			</c:forEach> 
+			</c:if>
+			
         </display:table>
     </body>
 </html>

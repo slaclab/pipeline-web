@@ -12,7 +12,7 @@
    </head>
    <body>
       
-      <h2>Task: ${taskNamePath} Stream: ${streamIdPath}</h2>    
+     <br>   
 	 
 	   <sql:query var="rs1">
          select * from processinstance
@@ -35,9 +35,9 @@
          <tr><td>EndDate</td><td>${pl:formatTimestamp(data.endDate)}</td></tr>                                     
                  
       </table>
-   
+   <!--
       <p>Links: <a href="logViewer.jsp?pi=${param.pi}&severity=500&minDate=None&maxDate=None">View Messages</a></p>
-      
+    -->  
       <h3>Variables</h3>
 	  
       <sql:query var="rs">
@@ -52,7 +52,7 @@
 		<display:column property="value" title="Value" sortable="true" headerClass="sortable"/>
 	</display:table>   
 	  
-	  <h3>Stream Process: </h3>
+	  <h3>Stream Processes: </h3>
 	  <sql:query var="testprocess">select * from processinstance pi
 			join stream using (stream)
 			join streampath using (stream)
@@ -63,7 +63,7 @@
 	   </sql:query>   
 	   
 	<display:table class="dataTable" name="${testprocess.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}"  >
-        <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable"/>
+        <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
         <display:column property="ProcessingStatus" title="Status" sortable="true" headerClass="sortable"/>
         <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable"/>                       
         <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
@@ -83,9 +83,9 @@
         </c:if>
 	</display:table>   
 	      	  
-	  <h3>Streams in subtasks: </h3>
+	  <h3>Substreams: </h3>
    
-   	<sql:query var="test">SELECT * FROM stream 
+   	  <sql:query var="test">SELECT * FROM stream 
        	join task using (task)
  		where  parentstream = ? 
 		order by task, streamid

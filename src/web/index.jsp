@@ -18,7 +18,7 @@
                 <c:set var="taskFilter" value="${param.taskFilter}" scope="session"/>
                 <c:set var="include" value="${param.include}" scope="session"/>
                 <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
-				<c:set var="versionGroup" value="${param.versionGroup}" />
+				<c:set var="versionGroup" value="${param.versionGroup}" scope="session"/>
             </c:when>
 		
             <c:when test="${!empty param.clear}">
@@ -27,13 +27,10 @@
 				<c:set var="versionGroup" value="" scope="session"/>
             </c:when>
         </c:choose>
-	  @@@@	2	Version group to be displayed: ${versionGroup}   <br>
-    <!-- 
-        <c:set var=" " value="${!empty param.mergeVersionsChanged ? !empty param.mergeVersions : empty mergeVersions ? true : mergeVersions}" scope="session"/>
-      <c:set var="latestVersions" value="${!empty param.latestVersionsChanged ? !empty param.latestVersions : empty latestVersions ? true : latestVersions}" scope="session"/>
-        <c:set var="allVersions" value="${!empty param.allVersionsChanged ? !empty param.allVersions : empty allVersions ? true : allVersions}" scope="session"/>  
-	   merge version changed: ${param.mergeVersionsChanged} merge version:  ${param.mergeVersions}<br>
-	 --> 
+	
+	<c:if test = "${empty versionGroup}">
+	<c:set var="versionGroup" value='latestVersions'/>
+	</c:if>
 	    <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER
         </sql:query>
@@ -46,10 +43,10 @@
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
              </c:forEach>
               taskname,
-			 <c:if test="${versionGroup == 'mergeVersions'}">
+			 <c:if test="${versionGroup != 'allVersions'}">
 			  Max(t.TASK) Task 
 			  </c:if>
-			  <c:if test="${versionGroup != 'mergeVersions'}">
+			  <c:if test="${versionGroup == 'allVersions'}">
 			    t.TASK,VERSION,REVISION 
 			    </c:if>		
               from TASK t
@@ -89,7 +86,7 @@
             </c:if>     
         </sql:query>    
 
-        <h2>Task Summary test 5 </h2>
+        <h2>Task Summary </h2>
         <br>
         <form name="DateForm">
             <table class="filterTable">
@@ -103,10 +100,10 @@
                       <option value="active" ${include=='active' ? "selected" : ""}>Tasks with Active Runs</option>
                       <option value="last30" ${include=='last30' ? "selected" : ""}>Active in Last 30 days</option>
                   </select></td>
-				    <td><select name="versionGroup">
-                      <option value="allVersions" ${versionGroup=='allVersions' ? "selected" : ""}>All Task Version</option>
+				<td><select name="versionGroup">
+                      <option value="latestVersions" ${versionGroup=='latestVersions' ? "selected" : ""}>Latest Task Versions</option>
+					  <option value="allVersions" ${versionGroup=='allVersions' ? "selected" : ""}>All Task Versions</option>
                       <option value="mergeVersions" ${versionGroup=='mergeVersions' ? "selected" : ""}>Merge Task Versions</option>
-                      <option value="latestVersions" ${versionGroup=='latestVersions' ? "selected" : ""}>Latest Task Version</option>
                           </select></td>
                   <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"></td>
                 </tr>

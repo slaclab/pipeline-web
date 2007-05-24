@@ -79,7 +79,7 @@
       <c:if test="${ ! empty param.gvOrientation }" >
          <c:set var="gvOrientation" value="${param.gvOrientation}" scope="session"/> 
       </c:if>
- <p><iframe "width=100%"  frameborder="0"   
+ <p><iframe "width=100%"  frameborder="0"  height=50%   
 	  src= "taskout.jsp?task=${task}&gvOrientation=${gvOrientation}  ">
 	  </iframe> </p>
         <p>
@@ -128,7 +128,7 @@
       join STREAMPATH using (STREAM)
       where isLatest=1 and isLatestPath=1 
    group by lev,task, taskname,process,PROCESSNAME,displayorder, processtype
-   order by task,   process
+   order by  task,   process
 
                <sql:param value="${task}"/>
             </sql:query>

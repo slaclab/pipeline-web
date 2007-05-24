@@ -1,23 +1,29 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 
 <html>
    <head>
       <title>Pipeline status</title>
    </head>
    <body>
-      
+     
      <br>   
+	  <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 	 
 	   <sql:query var="rs1">
-         select * from processinstance
-		 join stream using (stream)
-         where stream=?
+        select * from processinstance 
+	 	join stream  using (stream)
+		join streampath   using(stream)
+        where stream=?
          <sql:param value="${param.stream}"/>
       </sql:query>
       <c:set var="data" value="${rs1.rows[0]}"/>
@@ -53,11 +59,17 @@
 	</display:table>   
 	  
 	  <h3>Stream Processes: </h3>
+    <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox><br>
+	    
 	  <sql:query var="testprocess">select * from processinstance pi
 			join stream using (stream)
 			join streampath using (stream)
 			join process using (process)
  			where stream = ?		
+			<c:if test="${showLatest}"> 
+		   and streampath.IsLatestPath = 1 and stream.isLatest=1
+		   and pi.isLatest=1
+		 </c:if >
 			order by displayorder
 	   <sql:param value="${param.stream}"/>    
 	   </sql:query>   

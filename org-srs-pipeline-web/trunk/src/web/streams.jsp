@@ -16,7 +16,7 @@
       <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
    </head>
    <body>
-             
+          
       <h2>Streams for task: ${taskName}</h2>
         
       <c:choose>
@@ -40,9 +40,12 @@
       </c:choose>
 
       <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
-      <sql:query var="test">select *  from stream where task=?
+	  
+	  <sql:query var="test">select *  from stream
+	  join streampath using (stream)
+	   where task=?
          <sql:param value="${param.task}"/>
-         <c:if test="${showLatest}"> and isLatest=1</c:if>
+         <c:if test="${showLatest}"> and isLatest=1 and IsLatestPath=1</c:if>
          <c:if test="${!empty status}">
             and streamstatus=?
             <sql:param value="${status}"/>

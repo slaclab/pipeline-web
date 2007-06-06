@@ -16,9 +16,9 @@
             select distinct stream from stream 
             join task using (task)
             join process using (task)
-            where  task = ? 
+            where  taskname = ? 
             and streamid=?
-            <sql:param value="${param.task}"/>
+            <sql:param value="${param.taskname}"/>
             <sql:param value="${param.streamid}"/>
 	 </sql:query>  
          </c:if>         

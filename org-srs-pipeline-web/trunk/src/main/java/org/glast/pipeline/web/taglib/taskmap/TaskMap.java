@@ -7,15 +7,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-import javax.sql.DataSource;
 import org.glast.pipeline.web.util.*;
 /**
  * A tag for uploading xml files to the pipeline database
@@ -48,7 +44,6 @@ public class TaskMap extends SimpleTagSupport
                 writer.println(bytes.toString());
                 writer.println("</map>");
                 writer.println("<img src=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"\" usemap=\"taskMap"+task+"\"/>");
-                writer.println("<a target=\"_blank\" href=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"&mode=source\">Diagram source</a>");
             }
             catch (IOException x)
             {

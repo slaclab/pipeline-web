@@ -78,7 +78,7 @@
       </sql:query>
         
       <form name="DateForm">
-         <table class="filterTable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
+         <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
             <td>Status: <select size="1" name="status">
                <option value="">All</option>
                <c:forEach var="row" items="${statii.rows}">
@@ -119,7 +119,7 @@
          </c:when>
          <c:otherwise>
             <form name="selectForm" action="confirm.jsp" method="post">
-               <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+               <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                   <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
                   <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
                   <c:if test="${!showLatest}">

@@ -74,7 +74,7 @@
 
         <p>getTaskList() = ${result} size=${result.rowCount}</p>
         
-        <display:table class="dataTable" name="${result.rows}" defaultsort="1" defaultorder="ascending">
+        <display:table class="datatable" name="${result.rows}" defaultsort="1" defaultorder="ascending">
             <display:column property="TASK_PK" sortable="true" headerClass="sortable"/>
             <display:column property="TASKNAME" sortable="true" headerClass="sortable" />
             <display:column property="TASKTYPENAME" sortable="true" headerClass="sortable" />

@@ -9,28 +9,19 @@
 
 <html>
    <head>
-      <title>Task Map</title>
- 
+      <title>Task Map</title> 
+      <BASE TARGET="_top">
    </head>
    <body>
- 
-      
-
       <c:if test="${ empty gvOrientation }" >
          <c:set var="gvOrientation" value="LR" scope="session"/> 
       </c:if> 
       <c:if test="${ ! empty param.gvOrientation }" >
          <c:set var="gvOrientation" value="${param.gvOrientation}" scope="session"/> 
-      </c:if>
-
-	 <pl:taskMap task="${task}" gvOrientation="${gvOrientation}"/>
-
-    
-     <p>
-  
+      </c:if>      
+      <pl:taskMap task="${task}" gvOrientation="${gvOrientation}"/>           
    </body>
 </html>
 
 
-  
-        
+

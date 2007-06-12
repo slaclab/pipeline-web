@@ -50,7 +50,7 @@
          <sql:param value="${param.pi}"/>
       </sql:query>      
       
-      <display:table class="dataTable" name="${rs.rows}" defaultsort="1" defaultorder="ascending">
+      <display:table class="datatable" name="${rs.rows}" defaultsort="1" defaultorder="ascending">
          <display:column property="varname" title="Name" sortable="true" headerClass="sortable" />
          <display:column property="vartype" title="Type" sortable="true" headerClass="sortable"/>
          <display:column property="value" title="Value" sortable="true" headerClass="sortable"/>

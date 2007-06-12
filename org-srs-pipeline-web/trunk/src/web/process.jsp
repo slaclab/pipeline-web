@@ -23,7 +23,7 @@
       
       <h2>Streams for process: ${processName}</h2>
       
-      <p><a href="P2stats.jsp?process=${process}">Processing plots</a></p>
+      <p><a href="P2stats.jsp?process=${process}">Processing plots</a>&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a></p>
       
       <pt:taskSummary streamCount="runCount"/>
       
@@ -89,7 +89,7 @@
       <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
       
       <form name="DateForm">
-         <table class="filterTable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
+         <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
                <td>Status: <select size="1" name="status">
                      <option value="">All</option>
                      <c:forEach var="row" items="${proc_stats.rows}">
@@ -133,7 +133,7 @@
          </c:when>
          <c:otherwise>
             <form name="selectForm" action="confirm.jsp" method="post">
-               <display:table class="dataTable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+               <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                   <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                   <display:column property="Status" sortable="true" headerClass="sortable"/>
                   <c:if test="${!showLatest}">
@@ -151,7 +151,7 @@
                      <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
                      <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
                   </c:if>
-                  <display:column property="links" title="Links (<a href=help.html>?</a>)" />
+                  <display:column property="links" title="Links" />
                   <c:if test="${adminMode}">
                      <display:column property="selector" title=" " class="admin"/>
                      <display:footer>

@@ -30,7 +30,7 @@
                   <p:upload user="${userName}" xml="${param.xml}"/>
                </c:when>
                <c:when test="${param.submit=='Create Stream'}">
-                  <p:createStream var="streamCreated" task="${param.streamTask}" stream="${empty param.stream ? -1 : param.stream}" args="${param.args}"/>
+                  <p:createStream var="streamCreated" task="${param.streamTask}" stream="${empty param.streamid ? -1 : param.streamid}" args="${param.args}"/>
                   <c:set var="message" value="Stream ${streamCreated} of task ${param.streamTask} successfully created"/>
                </c:when>
                <c:when test="${param.submit=='Restart Server'}">
@@ -64,7 +64,7 @@
          <pt:autoCheckBox name="showAllVersions" value="${showAllVersions}" noHiddenParameters="true">Show all versions</pt:autoCheckBox>
          <form method="POST">
             Task:&nbsp;<pt:taskChooser name="streamTask" showAllVersions="${showAllVersions}" allowNone="true"/>
-            Stream:&nbsp;<input type="text" name="stream" value="" size="10" />
+            Stream:&nbsp;<input type="text" name="streamid" value="" size="10" />
             Args:&nbsp;<input type="text" name="args" value="" size="50" />
             <input type="submit" value="Create Stream" name="submit">
          </form> 

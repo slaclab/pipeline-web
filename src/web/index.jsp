@@ -44,7 +44,7 @@
          </c:forEach>
          taskname,
          <c:if test="${versionGroup != 'allVersions'}">
-            Max(t.TASK) Task 
+            Max(t.TASK) Task
          </c:if>
          <c:if test="${versionGroup == 'allVersions'}">
             t.TASK,VERSION,REVISION 
@@ -53,10 +53,11 @@
          left outer join STREAM s on s.TASK=t.TASK and s.isLatest=1
          where PARENTTASK = 0
          <c:if test="${versionGroup == 'latestVersions'}">
+           and t.version = 
+           (select distinct max(version) from  task t1 where t1.taskname = t.taskname)
             and t.revision = 
-            (select max(revision) from task t1 where t1.taskname = t.taskname and t1.version = 
-            (select max(version) from  task t2 where t2.taskname = t1.taskname)
-            )
+           (select max(revision) from task t2  where t2.taskname = t.taskname  and t2.version = t.version)
+ 
          </c:if>
          group by 
          <c:if test="${versionGroup == 'mergeVersions'}">

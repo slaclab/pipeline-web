@@ -311,7 +311,7 @@
   <dependency>
    <groupId>glast</groupId>
    <artifactId>org-glast-base-web</artifactId>
-   <version>0.3.12</version>
+   <version>0.3.13-SNAPSHOT</version>
    <type>jar</type>
    <properties>
     <war.bundle>true</war.bundle>

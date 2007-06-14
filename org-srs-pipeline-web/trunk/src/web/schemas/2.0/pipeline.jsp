@@ -105,10 +105,10 @@
          <xs:attribute name="maxMemory" type="PathType"/>
          <xs:attribute name="workingDir" type="PathType"/>
          <xs:attribute name="batchOptions" type="PathType"/>
-         <xs:attribute name="queue" type="NameType"/>
-         <xs:attribute name="allocationGroup" type="NameType"/>
+         <xs:attribute name="queue" type="PathType"/>
+         <xs:attribute name="allocationGroup" type="PathType"/>
          <xs:attribute name="jobName" type="PathType"/>
-         <xs:attribute name="priority" type="NameType"/>
+         <xs:attribute name="priority" type="PathType"/>
          <xs:attribute name="logFile" type="PathType"/>
       </xs:complexType>
    </xs:element>

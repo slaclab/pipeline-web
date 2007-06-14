@@ -2,10 +2,10 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
    <head>
@@ -14,7 +14,7 @@
    <body>
       
       <sql:query var="proc_stats">
-         select PROCESSINGSTATUS from PROCESSINGSTATUS
+         select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
       </sql:query>
       
       <h2>v1 Task Summary: ${taskNamePath} 
@@ -136,11 +136,7 @@
                   <display:column property="${row.PROCESSINGSTATUS}" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                                                                                         </c:forEach>
                <display:column property="taskLinks" title="Links" />
-            </display:table>
-            
-            
-            
-            
+            </display:table>            
          </c:otherwise>
       </c:choose>
    </body>

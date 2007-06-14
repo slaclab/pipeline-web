@@ -1,6 +1,5 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
@@ -8,6 +7,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GlastSQL" prefix="gsql" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
    <head>
@@ -69,7 +69,7 @@
       </form>
       
       
-      <gsql:query var="log" defaultSortColumn="timeentered" pageSize="500">
+      <gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
          select log, log_level, message, timeentered, processInstance, streamIdPath, process, processname, taskPath, taskNamePath, case when exception is null then 0 else 1 end hasException 
          from log l
          left outer join processinstance i using (processinstance)

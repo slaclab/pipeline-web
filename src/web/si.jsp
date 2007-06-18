@@ -14,9 +14,11 @@
    <title>Pipeline status</title>
 </head>
 <body>
-
+   
+   <h2>Task ${taskName} Stream ${streamIdPath}</h2>
+      
    <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
-
+   
    <sql:query var="rs1">
       select * from stream 
       join streampath using(stream)
@@ -63,25 +65,18 @@
       <sql:param value="${param.stream}"/>    
    </sql:query>   
 
-   <display:table class="datatable" name="${testprocess.rows}" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}"  >
+   <display:table class="datatable" name="${testprocess.rows}" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
       <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="pi.jsp" paramId="pi" paramProperty="ProcessInstance"/>
       <display:column property="ProcessingStatus" title="Status" sortable="true" headerClass="sortable"/>
       <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable"/>                       
       <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-      <c:if test="${isBatch}">
-         <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-      </c:if>
+      <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
       <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
       <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-      <c:if test="${isBatch}">
-         <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
-         <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
-         <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
-      </c:if>
+      <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
+      <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
+      <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
       <display:column property="links" title="Links" />
-      <c:if test="${adminMode}">
-         <display:column property="selector" title=" " class="admin"/>                                      
-      </c:if>
    </display:table>   
 
    <h3>Substreams</h3>

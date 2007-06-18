@@ -23,7 +23,7 @@
       
       <h2>Streams for process: ${processName}</h2>
       
-      <p><a href="P2stats.jsp?process=${process}">Processing plots</a>&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a></p>
+      <p><a href="P2stats.jsp?process=${process}">Processing plots</a><!--&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a>--></p>
       
       <pt:taskSummary streamCount="runCount"/>
       

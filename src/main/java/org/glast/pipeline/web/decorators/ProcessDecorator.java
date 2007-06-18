@@ -57,7 +57,7 @@ public class ProcessDecorator extends TableDecorator
       Object pid = map.get("JobID");
       if (pid != null)
       {
-         int id = Integer.parseInt(pid.toString());
+         String id = pid.toString();
          if (statusCache != null && statusCache.getId() == id) return statusCache;
          try
          {
@@ -113,7 +113,7 @@ public class ProcessDecorator extends TableDecorator
       }
       else if (map.get("ProcessType").toString().equalsIgnoreCase("script"))
       {
-         result.append("<a href=\"logViewer.jsp?pi="+processinstance+"\">Messages</a>");
+         result.append("<a href=\"logViewer.jsp?pi="+processinstance+"&severity=500&minDate=None&maxDate=None\">Messages</a>");
       }
       return result.toString();
    }

@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-import org.glast.pipeline.util.exception.BriefWriter;
+import org.glast.datahandling.common.util.exception.BriefWriter;
 /**
  * A tag for uploading xml files to the pipeline database
  * @author tonyj

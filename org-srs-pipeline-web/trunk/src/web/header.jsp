@@ -26,9 +26,8 @@
    <tr>
       <td align="right" valign="bottom">
          <p><jsp:useBean id="now" class="java.util.Date" />
-         Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> </p>
-         <p><utils:login/></p>
-         <p>Mode: [ <utils:dataSourceChooser href="index.jsp"/> ]</p>
+         Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <utils:refresh /></p>
+         <p><utils:login/> Mode: [ <utils:dataSourceChooser href="index.jsp"/> ]</p>
          <p><a href="index.jsp">Task List</a>&nbsp;.&nbsp;<a href="logViewer.jsp">Message Viewer</a>&nbsp;.&nbsp;<a href="JobProcessingStats.jsp">Usage Plots</a>&nbsp;.&nbsp;<a href="admin.jsp?login=true">Pipeline Admin</a></p>
       </td>
    </tr>

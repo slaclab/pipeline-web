@@ -329,7 +329,9 @@
          <groupId>glast</groupId>
          <artifactId>org-glast-datahandling-common</artifactId>
          <version>0.7</version>
-         <type>jar</type>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
       </dependency>
    </dependencies>
    <build>

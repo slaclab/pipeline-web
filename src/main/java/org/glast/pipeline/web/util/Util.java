@@ -15,10 +15,16 @@ public class Util
    
    public static String prettyStatus(String status)
    {
+      if (status == null) return "";
       String result = status;
       if (result.startsWith("END_")) result = result.substring(4);
       result = result.substring(0,1).toUpperCase() + result.substring(1).toLowerCase();
       return result;
+   }
+   
+   public static String linkToStreams(String streamIdPath, String streamPath, String separator, String url)
+   {
+      return linkToPath(streamIdPath, streamPath, separator, url);
    }
    
    public static String linkToTasks(String taskNamePath, String taskPath, String separator, String url)

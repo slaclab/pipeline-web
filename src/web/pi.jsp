@@ -23,9 +23,9 @@
       <c:set var="data" value="${rs.rows[0]}"/>
       
       <table>
-         <tr><td>Type</td><td>${data.processtype}</td></tr>
+         <tr><td>Type</td><td>${pl:prettyStatus(data.processtype)}</td></tr>
          <tr><td>Status</td><td>${pl:prettyStatus(data.processingstatus)}</td></tr> 
-         <tr><td>Stream</td><td><a href="si.jsp?stream=${stream}">${streamIdPath}</a></td></tr> 
+         <tr><td>Stream</td><td>${pl:linkToStreams(streamIdPath,streamPath,".","si.jsp?stream=")}</td></tr> 
          <tr><td>CreateDate</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
          <tr><td>SubmitDate</td><td>${pl:formatTimestamp(data.submitDate)}</td></tr>          
          <tr><td>StartDate</td><td>${pl:formatTimestamp(data.startDate)}</td></tr>                   

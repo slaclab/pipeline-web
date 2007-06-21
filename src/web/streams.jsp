@@ -119,11 +119,13 @@
          </c:when>
          <c:otherwise>
             <form name="selectForm" action="confirm.jsp" method="post">
-               <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+               <display:table class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                   <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
                   <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
                   <c:if test="${!showLatest}">
-                     <display:column property="ExecutionNumber" title="Stream #"/>
+                     <display:column title="#">
+                        ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
+                     </display:column>
                   </c:if>
                   <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
                   <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>

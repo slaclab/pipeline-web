@@ -141,6 +141,13 @@
     <function-signature>java.lang.String prettyStatus(java.lang.String)</function-signature>
   </function>
   <function>
+    <description>Convert a stream path to a set of links</description>
+    <name>linkToStreams</name>
+    <function-class>org.glast.pipeline.web.util.Util
+        </function-class>
+    <function-signature>java.lang.String linkToStreams(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+  </function>
+  <function>
     <description>Convert a task path to a set of links</description>
     <name>linkToTasks</name>
     <function-class>org.glast.pipeline.web.util.Util

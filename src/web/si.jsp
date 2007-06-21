@@ -28,13 +28,13 @@
    <c:set var="data" value="${rs1.rows[0]}"/>
 
    <table>        
-      <tr><td>StreamId</td><td>${data.streamIdPath}</td></tr>   
-      <tr><td>ExecutionNumber</td></td><td>${data.executionNumber}</td></tr>
+      <tr><td>Stream</td><td>${data.streamIdPath}</td></tr>   
+      <tr><td>Execution</td></td><td>${data.executionNumber}</td></tr>
       <tr><td>Is Latest</td><td>${data.isLatestPath}</td></tr>
       <tr><td>Status</td><td>${data.streamStatus}</td></tr>
-      <tr><td>Submited</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
-      <tr><td>StartDate</td><td>${pl:formatTimestamp(data.startDate)}</td></tr>                   
-      <tr><td>EndDate</td><td>${pl:formatTimestamp(data.endDate)}</td></tr>                                                
+      <tr><td>Submitted</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
+      <tr><td>Started</td><td>${pl:formatTimestamp(data.startDate)}</td></tr>                   
+      <tr><td>Ended</td><td>${pl:formatTimestamp(data.endDate)}</td></tr>                                                
    </table>
 
    <h3>Variables</h3>
@@ -54,12 +54,13 @@
    <h3>Stream Processes</h3>
    <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox><br>
 
-   <sql:query var="testprocess">select * from processinstance pi
-      join stream using (stream)
+   <sql:query var="testprocess">
+      select processinstance, process, stream, processName, Initcap(processingStatus) status, Initcap(ProcessType) ProcessType, CreateDate, SubmitDate, StartDate,
+      EndDate, jobid, cpuSecondsUsed, executionHost, executionNumber from processinstance
       join process using (process)
       where stream = ?		
       <c:if test="${showLatest}"> 
-         and pi.isLatest=1
+         and isLatest=1
       </c:if >
       order by displayorder
       <sql:param value="${param.stream}"/>    
@@ -67,8 +68,11 @@
 
    <display:table class="datatable" name="${testprocess.rows}" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
       <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="pi.jsp" paramId="pi" paramProperty="ProcessInstance"/>
-      <display:column property="ProcessingStatus" title="Status" sortable="true" headerClass="sortable"/>
-      <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable"/>                       
+      <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
+      <c:if test="${!showLatest}">
+         <display:column property="ExecutionNumber" title="#"/>
+      </c:if>
+      <display:column property="ProcessType" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
       <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
       <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
       <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
@@ -76,7 +80,7 @@
       <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
       <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
       <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
-      <display:column property="links" title="Links" />
+      <display:column property="links" title="Links" class="leftAligned"/>
    </display:table>   
 
    <h3>Substreams</h3>
@@ -93,9 +97,6 @@
       <display:column property="Taskname" title="taskname" sortable="true" group = "1" headerClass="sortable" />              			    
       <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" href="si.jsp" paramId="stream" paramProperty="stream"/>                  
       <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
-      <c:if test="${!showLatest}">
-         <display:column property="ExecutionNumber" title="Stream #"/>
-      </c:if>
       <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
       <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
       <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>

@@ -24,7 +24,8 @@
       
       <table>
          <tr><td>Type</td><td>${data.processtype}</td></tr>
-         <tr><td>Status</td><td>${pl:prettyStatus(data.processingstatus)}</td></tr>          
+         <tr><td>Status</td><td>${pl:prettyStatus(data.processingstatus)}</td></tr> 
+         <tr><td>Stream</td><td><a href="si.jsp?stream=${stream}">${streamIdPath}</a></td></tr> 
          <tr><td>CreateDate</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
          <tr><td>SubmitDate</td><td>${pl:formatTimestamp(data.submitDate)}</td></tr>          
          <tr><td>StartDate</td><td>${pl:formatTimestamp(data.startDate)}</td></tr>                   
@@ -53,7 +54,7 @@
       <display:table class="datatable" name="${rs.rows}" defaultsort="1" defaultorder="ascending">
          <display:column property="varname" title="Name" sortable="true" headerClass="sortable" />
          <display:column property="vartype" title="Type" sortable="true" headerClass="sortable"/>
-         <display:column property="value" title="Value" sortable="true" headerClass="sortable"/>
+         <display:column property="value" title="Value" sortable="true" headerClass="sortable" class="leftAligned"/>
       </display:table>      
       
    </body>

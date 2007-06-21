@@ -123,7 +123,8 @@
          }
       </script>   
       
-      <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
+      <%-- <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/> --%>
+      <c:set var="adminMode" value="false"/>
       <c:choose>
          <c:when test="${param.format=='stream'}">
             <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
@@ -151,7 +152,7 @@
                      <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
                      <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
                   </c:if>
-                  <display:column property="links" title="Links" />
+                  <display:column property="links" title="Links" class="leftAligned"/>
                   <c:if test="${adminMode}">
                      <display:column property="selector" title=" " class="admin"/>
                      <display:footer>

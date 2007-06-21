@@ -28,10 +28,10 @@
    <c:set var="data" value="${rs1.rows[0]}"/>
 
    <table>        
-      <tr><td>Stream</td><td>${data.streamIdPath}</td></tr>   
+      <tr><td>Stream</td><td>${pl:linkToStreams(streamIdPath,streamPath,".","si.jsp?stream=")}</td></tr>   
       <tr><td>Execution</td></td><td>${data.executionNumber}</td></tr>
       <tr><td>Is Latest</td><td>${data.isLatestPath}</td></tr>
-      <tr><td>Status</td><td>${data.streamStatus}</td></tr>
+      <tr><td>Status</td><td>${pl:prettyStatus(data.streamStatus)}</td></tr>
       <tr><td>Submitted</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
       <tr><td>Started</td><td>${pl:formatTimestamp(data.startDate)}</td></tr>                   
       <tr><td>Ended</td><td>${pl:formatTimestamp(data.endDate)}</td></tr>                                                
@@ -40,7 +40,7 @@
    <h3>Variables</h3>
 
    <sql:query var="rs">
-      select * from streamvar
+      select varname, Initcap(vartype) vartype, value from streamvar
       where stream=?
       <sql:param value="${param.stream}"/>
    </sql:query>      
@@ -56,7 +56,7 @@
 
    <sql:query var="testprocess">
       select processinstance, process, stream, processName, Initcap(processingStatus) status, Initcap(ProcessType) ProcessType, CreateDate, SubmitDate, StartDate,
-      EndDate, jobid, cpuSecondsUsed, executionHost, executionNumber from processinstance
+      EndDate, jobid, cpuSecondsUsed, executionHost, executionNumber, isLatest from processinstance
       join process using (process)
       where stream = ?		
       <c:if test="${showLatest}"> 
@@ -66,13 +66,15 @@
       <sql:param value="${param.stream}"/>    
    </sql:query>   
 
-   <display:table class="datatable" name="${testprocess.rows}" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+   <display:table class="datatable" name="${testprocess.rows}" id="row" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
       <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="pi.jsp" paramId="pi" paramProperty="ProcessInstance"/>
       <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
       <c:if test="${!showLatest}">
-         <display:column property="ExecutionNumber" title="#"/>
+         <display:column title="#">
+             ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
+         </display:column>
       </c:if>
-      <display:column property="ProcessType" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
+      <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
       <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
       <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
       <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
@@ -85,7 +87,7 @@
 
    <h3>Substreams</h3>
 
-   <sql:query var="test">SELECT * FROM stream 
+   <sql:query var="test">SELECT taskname, stream, streamid, Initcap(streamstatus) streamStatus, createDate, StartDate, EndDate FROM stream 
       join task using (task)
       where  parentstream = ? 
       order by task, streamid

@@ -105,10 +105,11 @@ public class ProcessDecorator extends TableDecorator
       StringBuilder result = new StringBuilder();
       if (map.get("ProcessType").toString().equalsIgnoreCase("batch"))
       {
+         result.append("<a href=\"logViewer.jsp?pi="+processinstance+"&severity=500&minDate=None&maxDate=None\">Messages</a>");
          if (map.get("StartDate") != null)
          {
-            result.append("<a href=\"log.jsp?pi="+processinstance+"\">Log</a>&nbsp;:&nbsp;");
-            result.append("<a href=\"run.jsp?pi="+processinstance+"\">Files</a>");
+            result.append("&nbsp;:&nbsp;<a href=\"log.jsp?pi="+processinstance+"\">Log</a>");
+            result.append("&nbsp;:&nbsp;<a href=\"run.jsp?pi="+processinstance+"\">Files</a>");
          }
       }
       else if (map.get("ProcessType").toString().equalsIgnoreCase("script"))

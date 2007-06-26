@@ -17,7 +17,7 @@
          select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
       </sql:query>
       
-      <h2>v1 Task Summary: ${taskNamePath} 
+      <h2>Task Summary: ${taskNamePath} 
          <c:if test="${!fn:contains(taskNamePath,'.')}">      
             (<a href="xml.jsp?task=${task}">XML</a>)
          </c:if>

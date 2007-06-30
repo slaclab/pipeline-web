@@ -21,7 +21,7 @@
                <sql:param value="${param.taskname}"/>
                <sql:param value="${param.streamid}"/>
             </sql:query>
-            <c:redirect url="si.jsp?&stream=${rows[0].stream}"/>
+            <c:redirect url="si.jsp?&stream=${data.rows[0].stream}"/>
          </c:when>         
          <c:otherwise>
             Unrecognized request type show=${param.show}

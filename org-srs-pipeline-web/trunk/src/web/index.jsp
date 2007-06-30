@@ -42,7 +42,7 @@
          <c:forEach var="row" items="${stream_stats.rows}">
             SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
          </c:forEach>
-         taskname,
+         taskname, tasktype, 
          <c:if test="${versionGroup != 'allVersions'}">
             Max(t.TASK) Task
          </c:if>
@@ -61,10 +61,10 @@
          </c:if>
          group by 
          <c:if test="${versionGroup == 'mergeVersions'}">
-            TASKNAME 
+            TaskName, TaskType 
          </c:if>
          <c:if test="${versionGroup != 'mergeVersions'}">
-            TASKNAME ,t.TASK,VERSION,REVISION
+            TaskName, TaskType, t.TASK,VERSION,REVISION
          </c:if>
          )
          where TASK>0 
@@ -114,7 +114,7 @@
       <display:table class="datatable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
          <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
          <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
-         
+         <display:column property="taskType" title="Type" sortable="true" headerClass="sortable" />
          <c:if test="${versionGroup == 'mergeVersions'}">
             <c:forEach var="row" items="${stream_stats.rows}">
                <display:column property="${row.STREAMSTATUS}" 

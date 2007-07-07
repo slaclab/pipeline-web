@@ -3,9 +3,6 @@ package org.glast.pipeline.web.servlet;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +15,7 @@ import org.glast.pipeline.web.xml.Exporter;
  * @author tonyj
  */
 public class DumpTaskServlet extends HttpServlet
-{
-   private InitialContext initialContext;
-   
+{  
    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
    {
       try
@@ -28,9 +23,11 @@ public class DumpTaskServlet extends HttpServlet
          Connection connection = ConnectionManager.getConnection(request);
          try
          {
-            int task = Integer.valueOf(request.getParameter("task"));
+            long task = Long.valueOf(request.getParameter("task"));
+            String fromDB = request.getParameter("fromDB");
+            boolean forceDump = fromDB!=null && Boolean.valueOf(fromDB);
             Exporter exporter = new Exporter(connection);
-            exporter.export(response.getWriter(),task);
+            exporter.export(response.getWriter(),task,forceDump);
             exporter.close();
          }
          finally

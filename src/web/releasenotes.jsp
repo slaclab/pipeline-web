@@ -7,6 +7,8 @@
    </head>
    <body>
       
+      See also the <a href="https://jira.slac.stanford.edu/browse/PFE?report=com.atlassian.jira.plugin.system.project:changelog-panel">JIRA change log</a>.
+      
       <h1>Release Notes - Pipeline Front End - Version 2.2.2</h1>
       
       <h2>Bug</h2>

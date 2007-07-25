@@ -12,25 +12,31 @@
    <head>
       <title>Pipeline status</title>  
    </head>
-   <body>
+   <body>      
+      <c:if test="${empty userPrefInput}">
+          <c:set var="userPrefInput" value="true" scope="session"/>
+      </c:if>
+       
       <c:choose>
-         <c:when test="${!empty param.submit}">  
+         <c:when test="${!empty param.submit}"> 
             <c:set var="taskFilter" value="${param.taskFilter}" scope="session"/>
             <c:set var="include" value="${param.include}" scope="session"/>
             <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
             <c:set var="versionGroup" value="${param.versionGroup}" scope="session"/>
+            <c:set var="userPrefInput" value="false" scope="session"/>
          </c:when>
          
          <c:when test="${!empty param.clear}">
             <c:set var="taskFilter" value="" scope="session"/>
-            <c:set var="include" value="" scope="session"/>
-            <c:set var="versionGroup" value="" scope="session"/>
+            <c:set var="userPrefInput" value="true" scope="session"/>
          </c:when>
       </c:choose>
       
-      <c:if test = "${empty versionGroup}">
-         <c:set var="versionGroup" value='latestVersions'/>
+      <c:if test="${userPrefInput}">
+         <c:set var="versionGroup" value="${preferences.taskVersion}" scope="session"/>
+         <c:set var="include" value="${preferences.task}" scope="session"/>
       </c:if>
+      
       <sql:query var="stream_stats">
          select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER
       </sql:query>

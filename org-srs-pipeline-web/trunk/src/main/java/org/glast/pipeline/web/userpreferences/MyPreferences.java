@@ -16,10 +16,15 @@ package org.glast.pipeline.web.userpreferences;
 /**
  *
  * @author chee
+ * 
  */
+
+/* defaultSort defines what column to use for sorting, the default is to use column 1 */
 public class MyPreferences {
     String task = "all";
     String taskVersion = "latestVersions";
+    String defaultOrder = "descending";
+    String defaultSort = "1";
     
     /** Creates a new instance of MyPreferences */
     public MyPreferences() {
@@ -39,5 +44,21 @@ public class MyPreferences {
     
     public String getTaskVersion(){
         return taskVersion;
+    }
+    
+    public String getDefaultOrder() {
+        return defaultOrder;
+    }
+    
+    public void setDefaultOrder(String defaultOrder) {
+        this.defaultOrder = defaultOrder;
+    }
+    
+    public String getDefaultSort() {
+        return defaultSort;
+    }
+    
+    public void setDefaultSort(String defaultSort) {
+        this.defaultSort = defaultSort;
     }
 }

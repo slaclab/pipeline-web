@@ -18,7 +18,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     <body>
         
     <h1>Set User Preferences Form</h1>
-    This form allows you to choose the default settings used when you first logon to the Pipeline page.<br>
+    This form allows you to set the default settings to be used when you first logon to Pipeline-II.<br>
             Select items from the pull down menus and then click the <strong>Update Preferences</strong> button.<p>
             <utils:preferences name="preferences">
                 <utils:preference name="task"  size="50" title="Default Task">
@@ -32,9 +32,27 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <utils:value value="latestVersions" text="Latest Task Versions"/>
                 <utils:value value="allVersions" text="All Task Versions"/>
                 <utils:value value="mergeVersions" text="Merge Task Versions"/>
+            </utils:preference>  
+            <utils:preference name="defaultSort" size = "50" title="Default Sort Column">
+                <utils:value value="1" text="Last Active"/>
+                <utils:value value="2" text="Task Name"/>
+                <utils:value value="3" text="Type"/>
+                <utils:value value="4" text="Waiting"/>
+                <utils:value value="5" text="Queued"/>
+                <utils:value value="6" text="Running"/>          
+                 <utils:value value="7" text="Success"/>
+                <utils:value value="8" text="Failed"/>
+                <utils:value value="9" text="Terminating"/>
+                <utils:value value="10" text="Terminated"/>
+                <utils:value value="11" text="Canceling"/>
+                <utils:value value="12" text="Canceled"/> 
+            </utils:preference> 
+            <utils:preference name="defaultOrder" size="50" title="Default Sort Order ">
+                <utils:value value="ascending"/>
+                <utils:value value="descending"/>
             </utils:preference>
         </utils:preferences>
-  
+     
         <%--
         <table>
             <td>Task Filter: <input type="text" name="taskFilter" value="${taskFilter}"></td>

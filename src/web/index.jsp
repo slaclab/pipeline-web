@@ -12,7 +12,10 @@
    <head>
       <title>Pipeline status</title>  
    </head>
-   <body>      
+   <body>    
+       <!-- If userPrefInput is empty then we know to initialize their preferences and we set
+       the value to 'true'.
+       --> 
       <c:if test="${empty userPrefInput}">
           <c:set var="userPrefInput" value="true" scope="session"/>
       </c:if>
@@ -117,7 +120,7 @@
          </table>
       </form>      
       <br> 
-      <display:table class="datatable" name="${test.rows}" defaultsort="1" defaultorder="descending" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+      <display:table class="datatable" name="${test.rows}" defaultsort="${preferences.defaultSort}" defaultorder="${preferences.defaultOrder}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
          <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
          <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
          <display:column property="taskType" title="Type" sortable="true" headerClass="sortable" />

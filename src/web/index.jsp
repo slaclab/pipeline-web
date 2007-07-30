@@ -115,7 +115,7 @@
                      <option value="allVersions" ${versionGroup=='allVersions' ? "selected" : ""}>All Task Versions</option>
                      <option value="mergeVersions" ${versionGroup=='mergeVersions' ? "selected" : ""}>Merge Task Versions</option>
                </select></td>
-               <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"></td>
+               <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset Defaults" name="reset"></td>
             </tr>
          </table>
       </form>      

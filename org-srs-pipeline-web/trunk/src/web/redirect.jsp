@@ -15,10 +15,11 @@
             <sql:query var="data">       
                select stream from stream 
                join task using (task)
-               where taskname = ? 
+               join taskpath using (task)
+               where taskversion like ? 
                and streamid = ?
                order by version desc,revision desc
-               <sql:param value="${param.taskname}"/>
+               <sql:param value="${param.taskname}%"/>
                <sql:param value="${param.streamid}"/>
             </sql:query>
             <c:redirect url="si.jsp?&stream=${data.rows[0].stream}"/>

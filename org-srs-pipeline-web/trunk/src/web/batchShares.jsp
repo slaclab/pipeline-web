@@ -31,13 +31,15 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <c:if test="${empty loadValuesFromDB}">
             <sql:query var="resultgrp" dataSource="jdbc/glastgenDev" scope="session">
                 select group_name from bqueue_groups order by group_name
-            </sql:query>    
+            </sql:query> 
+            <%-- there is only 1 fair share and does not depend on the queue
             <sql:query var="resultque" dataSource="jdbc/glastgenDev" scope="session">
                 select queue_name from bqueue_queues where queue_name = 'short' order by queue_name
             </sql:query> 
+            --%>
             <c:set var="loadValuesFromDB" value="false" scope="session"/> 
             <c:set var="selectedGroup" value="glastgrp" scope="session" />
-            <c:set var="selectedQueue" value="${resultque.rows[0].queue_name}" scope="session" />
+            <%-- <c:set var="selectedQueue" value="${resultque.rows[0].queue_name}" scope="session" /> --%>
             <c:set var="selectedData" value="cpu_time" scope="session" />
             <c:set var="availableData" value="${fn:split('cpu_time,priority,reserved,shares,started,wall_clock',',')}" scope="session"/>
             <c:set var="availableColors" value="${fn:split('blue,red,orange,black,green,brown,yellow,pink',',')}" scope="session"/>
@@ -58,11 +60,11 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </c:forEach>
         </c:if>
         
-        <%-- we only allow selection of one queue at a time, no multiples --%>
+        <%-- fair shares is not queue dependent. SCCS has only one lot defined for fair shares and it crosses all queues 
         <c:if test="${ ! empty param.listofqueues}" >
             <c:set var="selectedQueue" value="${param.listofqueues}" scope="session" />   
         </c:if>
-        
+        --%>
         <c:if test="${ ! empty paramValues.listofdata}" >
             <c:set var="selectedData" value="" scope="session" />   
             
@@ -91,11 +93,26 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                     <utils:dateTimePicker value="${empty endTime ? utils:now('PST') : endTime}" size="18" name="endTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/> 
                                 </td>
                             </tr>
+                            <p></p>
+                            <tr><th>Groups</th><td>
+                                 <select name="listofgroups" multiple=1 size="4">
+                                        <c:forEach items="${resultgrp.rows}" var="groupname">
+                                            <option <c:if test="${fn:contains(selectedGroup,groupname.group_name)}">selected</c:if>>${groupname.group_name}</option>
+                                        </c:forEach>
+                                    </select>  
+                            </td>
+                            <th>Data</th><td>
+                               <select name="listofdata" multiple=1 size="4">
+                                        <c:forEach var="data" items="${availableData}" >
+                                            <option <c:if test="${fn:contains(selectedData,data)}">selected</c:if>>${data}</option>
+                                        </c:forEach>
+                                    </select>     
+                            </td></tr>
                         </table>
                 </td></tr>
-                <tr><td>
-                        <table>
-                            <tr><th>Groups</th><th>Queue</th><th>Data</th></tr>
+               <%-- <tr><td>
+                       <table>
+                            <tr><th>Groups</th><th>Data</th></tr>
                             
                             <tr><td>
                                     <select name="listofgroups" multiple=1 size="4">
@@ -104,7 +121,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                         </c:forEach>
                                     </select>  
                                 </td>
-                                
+                              <!--  
                                 <td>
                                     <select name="listofqueues" size="4">
                                         <c:forEach items="${resultque.rows}" var="queue">
@@ -112,6 +129,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                         </c:forEach>
                                     </select>   
                                 </td>
+                                -->
+                               
                                 <td>
                                     <select name="listofdata" multiple=1 size="4">
                                         <c:forEach var="data" items="${availableData}" >
@@ -120,12 +139,16 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                     </select>   
                                 </td> 
                             </tr>
-                            <tr><td colspan="3">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td><input type="submit" name="Submit" value="Submit" /></td>
                             <td></td></tr>
                         </table>
+                      
                 </td></tr>
+                --%>
+                <tr><td><input type="submit" name="Submit" value="Submit" /></td></tr>
             </table> 
+            
         </form>
         
         
@@ -150,15 +173,26 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     </aida:style>   
                     
                     <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
-                        <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
+                       
+                         <%-- <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
                             select ${data}, snapshot_date from bqueue_groups bg, bqueue_queues bq, bqueue_data bd
                             where bg.group_name = bd.group_name and bq.queue_name = bd.queue_name and bd.group_name = ? and
                             bd.snapshot_date >= ? and bd.snapshot_date <= ?
                             <sql:param value="${group}" />
                             <sql:dateParam value="${startTime}"/>
                             <sql:dateParam value="${stopTime}"/>
-                        </sql:query>
+                        </sql:query> 
+                        --%>
                         
+                         <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
+                            select ${data}, snapshot_date from bqueue_groups bg, bqueue_data bd
+                            where bg.group_name = bd.group_name and bd.group_name = ? and
+                            bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
+                            <sql:param value="${group}" />
+                            <sql:dateParam value="${startTime}"/>
+                            <sql:dateParam value="${stopTime}"/>
+                         </sql:query>
+                         
                         
                         <aida:tuple var="tuple" query="${batchDBInfo}"/>        
                         <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(data)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   

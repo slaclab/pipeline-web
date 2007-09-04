@@ -29,6 +29,9 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         --%>
         
         <c:if test="${empty loadValuesFromDB}">
+            <%
+            System.getProperties().setProperty("jas.plot.vertical.labels","true");            
+            %>
             <sql:query var="resultgrp" dataSource="jdbc/glastgenDev" scope="session">
                 select group_name from bqueue_groups order by group_name
             </sql:query> 
@@ -76,8 +79,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </c:forEach> 
         </c:if> 
         
-        <c:set var="beginTime" value="${ empty param.beginTime ? beginTime : param.beginTime}" scope="session"/>
-        <c:set var="endTime" value="${ empty param.endTime ? endTime : param.endTime}" scope="session"/>
+        <c:set var="fairShareBeginTime" value="${ empty param.fairShareBeginTime ? fairShareBeginTime : param.fairShareBeginTime}" scope="session"/>
+        <c:set var="fairShareEndTime" value="${ empty param.fairShareEndTime ? fairShareEndTime : param.fairShareEndTime}" scope="session"/>
         
         <form id="batShares" name="batShares"  action="batchShares.jsp">
             <table class="filtertable">
@@ -86,23 +89,23 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             <tr>
                                 <th>Begin Time</th>
                                 <td> 
-                                    <utils:dateTimePicker value="${empty beginTime ? utils:now('PST')-140*24*60*60*1000 : beginTime}" size="18" name="beginTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                                    <utils:dateTimePicker value="${empty fairShareBeginTime ? utils:now('PST')-140*24*60*60*1000 : fairShareBeginTime}" size="18" name="fairShareBeginTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                                 </td>
                                 <th>End Time</th>
                                 <td> 
-                                    <utils:dateTimePicker value="${empty endTime ? utils:now('PST') : endTime}" size="18" name="endTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/> 
+                                    <utils:dateTimePicker value="${empty fairShareEndTime ? utils:now('PST') : fairShareEndTime}" size="18" name="fairShareEndTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/> 
                                 </td>
                             </tr>
                             <p></p>
                             <tr><th>Groups</th><td>
-                                 <select name="listofgroups" multiple=1 size="4">
+                                    <select name="listofgroups" multiple=1 size="4">
                                         <c:forEach items="${resultgrp.rows}" var="groupname">
                                             <option <c:if test="${fn:contains(selectedGroup,groupname.group_name)}">selected</c:if>>${groupname.group_name}</option>
                                         </c:forEach>
                                     </select>  
-                            </td>
-                            <th>Data</th><td>
-                               <select name="listofdata" multiple=1 size="4">
+                                </td>
+                                <th>Data</th><td>
+                                    <select name="listofdata" multiple=1 size="4">
                                         <c:forEach var="data" items="${availableData}" >
                                             <option <c:if test="${fn:contains(selectedData,data)}">selected</c:if>>${data}</option>
                                         </c:forEach>
@@ -110,7 +113,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             </td></tr>
                         </table>
                 </td></tr>
-               <%-- <tr><td>
+                <%-- <tr><td>
                        <table>
                             <tr><th>Groups</th><th>Data</th></tr>
                             
@@ -153,46 +156,45 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         
         
         <jsp:useBean id="startTime" class="java.util.Date" /> 
-        <jsp:setProperty name="startTime" property="time" value="${beginTime}" /> 	  
+        <jsp:setProperty name="startTime" property="time" value="${fairShareBeginTime}" /> 	  
         <jsp:useBean id="stopTime" class="java.util.Date" /> 
-        <jsp:setProperty name="stopTime" property="time" value="${endTime}" /> 	  
+        <jsp:setProperty name="stopTime" property="time" value="${fairShareEndTime}" /> 	  
         
         
         <c:forEach items="${paramValues.listofdata}" var="data">
+            
             <aida:plotter height="400"> 
-                <aida:region title= "${data}" >
+                <aida:region title="${data}" >
                     <aida:style>
-                        <aida:attribute name="showStatisticsBox" value="false"/>		        
+                        <aida:style type="statisticsBox">
+                            <aida:attribute name="isVisible" value="false"/>
+                        </aida:style>
                         <aida:style type="xAxis">
-                            <aida:attribute name="label" value=""/>
+                            <aida:attribute name="label" value="Time"/>
                             <aida:attribute name="type" value="date"/>
                         </aida:style>
+                        <aida:style type="yAxis">
+                            <aida:attribute name="label" value="${data}"/>
+                        </aida:style>
                         <aida:style type="data">
-                            <aida:attribute name="connectDataPoints" value="false"/>
+                            <aida:style type="outline">
+                                <aida:attribute name="isVisible" value="false"/>
+                            </aida:style>
                         </aida:style>
                     </aida:style>   
                     
                     <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
-                       
-                         <%-- <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
-                            select ${data}, snapshot_date from bqueue_groups bg, bqueue_queues bq, bqueue_data bd
-                            where bg.group_name = bd.group_name and bq.queue_name = bd.queue_name and bd.group_name = ? and
-                            bd.snapshot_date >= ? and bd.snapshot_date <= ?
-                            <sql:param value="${group}" />
-                            <sql:dateParam value="${startTime}"/>
-                            <sql:dateParam value="${stopTime}"/>
-                        </sql:query> 
-                        --%>
                         
-                         <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
+                        
+                        <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
                             select ${data}, snapshot_date from bqueue_groups bg, bqueue_data bd
                             where bg.group_name = bd.group_name and bd.group_name = ? and
                             bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
                             <sql:param value="${group}" />
                             <sql:dateParam value="${startTime}"/>
                             <sql:dateParam value="${stopTime}"/>
-                         </sql:query>
-                         
+                        </sql:query>
+                        
                         
                         <aida:tuple var="tuple" query="${batchDBInfo}"/>        
                         <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(data)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   

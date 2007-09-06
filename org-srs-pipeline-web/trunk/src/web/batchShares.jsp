@@ -17,6 +17,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="http://glast-ground.slac.stanford.edu/Commons/css/glastCommons.jsp" rel="stylesheet" type="text/css">
         <title>Batch Fair Shares Page</title>    
+        
     </head>
     
     <body>
@@ -43,9 +44,11 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             <c:set var="loadValuesFromDB" value="false" scope="session"/> 
             <c:set var="selectedGroup" value="glastgrp" scope="session" />
             <%-- <c:set var="selectedQueue" value="${resultque.rows[0].queue_name}" scope="session" /> --%>
-            <c:set var="selectedData" value="cpu_time" scope="session" />
-            <c:set var="availableData" value="${fn:split('cpu_time,priority,reserved,shares,started,wall_clock',',')}" scope="session"/>
+            <c:set var="selectedData" value="cpu_secs" scope="session" />
+            <c:set var="availableData" value="${fn:split('cpu_secs,priority,reserved,shares,started,wall_clock',',')}" scope="session"/>
             <c:set var="availableColors" value="${fn:split('blue,red,orange,black,green,brown,yellow,pink',',')}" scope="session"/>
+            
+            
         </c:if>   
         
         <%--
@@ -79,8 +82,21 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </c:forEach> 
         </c:if> 
         
+        <c:if test="${empty fairShareBeginTime}">
+            <c:set var="fairShareBeginTime" value="${utils:now('PST')-7*24*60*60*1000}" scope="session"/>                
+        </c:if>
+        <c:if test="${empty fairShareEndTime}">
+            <c:set var="fairShareEndTime" value="${utils:now('PST')}" scope="session"/>            
+        </c:if>
         <c:set var="fairShareBeginTime" value="${ empty param.fairShareBeginTime ? fairShareBeginTime : param.fairShareBeginTime}" scope="session"/>
         <c:set var="fairShareEndTime" value="${ empty param.fairShareEndTime ? fairShareEndTime : param.fairShareEndTime}" scope="session"/>
+        
+        <c:set var="maxbins" value="36"/>
+         
+        <c:set var="deltatime" value="${ ( (fairShareEndTime - fairShareBeginTime )/1000 )/maxbins }"/>
+        <c:set var="deltatime" value="${ deltatime > 900 ? deltatime : 900 }"/>
+        
+        <c:out value="Delta: ${deltatime} maxbins: ${maxbins}"/>
         
         <form id="batShares" name="batShares"  action="batchShares.jsp">
             <table class="filtertable">
@@ -89,11 +105,11 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             <tr>
                                 <th>Begin Time</th>
                                 <td> 
-                                    <utils:dateTimePicker value="${empty fairShareBeginTime ? utils:now('PST')-140*24*60*60*1000 : fairShareBeginTime}" size="18" name="fairShareBeginTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                                    <utils:dateTimePicker value="${fairShareBeginTime}" size="18" name="fairShareBeginTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                                 </td>
                                 <th>End Time</th>
                                 <td> 
-                                    <utils:dateTimePicker value="${empty fairShareEndTime ? utils:now('PST') : fairShareEndTime}" size="18" name="fairShareEndTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/> 
+                                    <utils:dateTimePicker value="${fairShareEndTime}" size="18" name="fairShareEndTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/> 
                                 </td>
                             </tr>
                             <p></p>
@@ -113,42 +129,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             </td></tr>
                         </table>
                 </td></tr>
-                <%-- <tr><td>
-                       <table>
-                            <tr><th>Groups</th><th>Data</th></tr>
-                            
-                            <tr><td>
-                                    <select name="listofgroups" multiple=1 size="4">
-                                        <c:forEach items="${resultgrp.rows}" var="groupname">
-                                            <option <c:if test="${fn:contains(selectedGroup,groupname.group_name)}">selected</c:if>>${groupname.group_name}</option>
-                                        </c:forEach>
-                                    </select>  
-                                </td>
-                              <!--  
-                                <td>
-                                    <select name="listofqueues" size="4">
-                                        <c:forEach items="${resultque.rows}" var="queue">
-                                            <option <c:if test="${selectedQueue == queue.queue_name}">selected</c:if>>${queue.queue_name}</option>
-                                        </c:forEach>
-                                    </select>   
-                                </td>
-                                -->
-                               
-                                <td>
-                                    <select name="listofdata" multiple=1 size="4">
-                                        <c:forEach var="data" items="${availableData}" >
-                                            <option <c:if test="${fn:contains(selectedData,data)}">selected</c:if>>${data}</option>
-                                        </c:forEach>
-                                    </select>   
-                                </td> 
-                            </tr>
-                            <tr><td colspan="2">&nbsp;</td></tr>
-                            <tr><td><input type="submit" name="Submit" value="Submit" /></td>
-                            <td></td></tr>
-                        </table>
-                      
-                </td></tr>
-                --%>
                 <tr><td><input type="submit" name="Submit" value="Submit" /></td></tr>
             </table> 
             
@@ -161,10 +141,12 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <jsp:setProperty name="stopTime" property="time" value="${fairShareEndTime}" /> 	  
         
         
-        <c:forEach items="${paramValues.listofdata}" var="data">
-            
+        <table>
+        <c:forEach items="${paramValues.listofdata}" var="listOfDataItem">
+            <tr>
+                <td>
             <aida:plotter height="400"> 
-                <aida:region title="${data}" >
+                <aida:region title="${listOfDataItem}">
                     <aida:style>
                         <aida:style type="statisticsBox">
                             <aida:attribute name="isVisible" value="false"/>
@@ -174,7 +156,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             <aida:attribute name="type" value="date"/>
                         </aida:style>
                         <aida:style type="yAxis">
-                            <aida:attribute name="label" value="${data}"/>
+                            <aida:attribute name="label" value="${listOfDataItem}"/>
                         </aida:style>
                         <aida:style type="data">
                             <aida:style type="outline">
@@ -185,9 +167,8 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     
                     <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
                         
-                        
                         <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
-                            select ${data}, snapshot_date from bqueue_groups bg, bqueue_data bd
+                            select ${listOfDataItem}, snapshot_date from bqueue_groups bg, bqueue_data bd
                             where bg.group_name = bd.group_name and bd.group_name = ? and
                             bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
                             <sql:param value="${group}" />
@@ -197,7 +178,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                         
                         
                         <aida:tuple var="tuple" query="${batchDBInfo}"/>        
-                        <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(data)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
+                        <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
                         
                         <aida:plot var="${plot}">
                             <aida:style>        
@@ -208,74 +189,69 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             </aida:style>
                         </aida:plot>
                         
-                        
                     </c:forEach>
+                    
                 </aida:region>
             </aida:plotter>
-            
+                    
+                </td>
+                <td>
+                    <%-- Accumulated data 
+            <aida:plotter height="400"> 
+                <aida:region title="${listOfDataItem}">
+                    <aida:style>
+                        <aida:style type="statisticsBox">
+                            <aida:attribute name="isVisible" value="false"/>
+                        </aida:style>
+                        <aida:style type="xAxis">
+                            <aida:attribute name="label" value="Time"/>
+                            <aida:attribute name="type" value="date"/>
+                        </aida:style>
+                        <aida:style type="yAxis">
+                            <aida:attribute name="label" value="${listOfDataItem}"/>
+                        </aida:style>
+                        <aida:style type="data">
+                            <aida:style type="outline">
+                                <aida:attribute name="isVisible" value="false"/>
+                            </aida:style>
+                        </aida:style>
+                    </aida:style>   
+                    
+                    <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
+                        
+                        <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
+                            select ${listOfDataItem}, snapshot_date from bqueue_groups bg, bqueue_data bd
+                            where bg.group_name = bd.group_name and bd.group_name = ? and
+                            bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
+                            <sql:param value="${group}" />
+                            <sql:dateParam value="${startTime}"/>
+                            <sql:dateParam value="${stopTime}"/>
+                        </sql:query>
+                        
+                        
+                        <aida:tuple var="tuple" query="${batchDBInfo}"/>        
+                        <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
+                        
+                        <aida:plot var="${plot}">
+                            <aida:style>        
+                                <aida:style type="marker">
+                                    <aida:attribute name="color" value="${availableColors[status.index]}"/>
+                                    <aida:attribute name="shape" value="dot"/>
+                                </aida:style>
+                            </aida:style>
+                        </aida:plot>
+                        
+                    </c:forEach>
+                    
+                </aida:region>
+            </aida:plotter>
+                    --%>
+                </td>
+            </tr>            
         </c:forEach>
-        
-        <%--
-        
-        <c:set var="rowsReturned" value="${batchDBInfo.rowCount}"/>
-        Number of selected rows: ${rowsReturned}<br>
-        
-        <table>
-            <tr>
-                <c:forEach items="${batchDBInfo.columnNames}" var="colName">
-                    <th>-${fn:escapeXml(colName)}</th>
-                </c:forEach> 
-            </tr>
-            <c:forEach items="${batchDBInfo.rowsByIndex}" var="row">  
-                <tr>
-                    <td>${row[0]} ${fn:length(row)} ${batchDBInfo.rows}</td>
-                </tr>
-            </c:forEach>
             
         </table>
-        --%>
         
-        <%--
-        <c:out value="${param.listofqueues}"/><br>
         
-        <c:forEach items="${paramValues.listofdata}" var="currentvals2">
-            <c:out value="${currentvals2}" /><br>
-        </c:forEach>
-        --%>
-        
-        <%--
-        <utils:dateTimePicker value="${utils:toTime("${param.beginTime}")}" name="convertedBegin" timezone="PST"/>
-        <utils:dateTimePicker value="${utils:toTime("${param.endTime}")}"  name="convertedEnd" timezone="PST"/>
-       
-       
-        <c:out value="${param.beginTime}"/><br>
-        <c:out value="${param.endTime}"/><br>
-       --%>  
-        
-        <%--
-- decide what the default value is (either glast, or all of the groups or whatherver) -> selectedGroups
-- loop over the result set and build the form
-
-
-<option  <:if test="if selected loopvariable">selected</c:if>  >loopvariable</option>
---%>
-        
-        <%--
-Something here ${paramValues['listofgroups']}<br>
-<c:forEach items="${paramValues['listofgroups']}" var="group">
-    Group: <b>${group}</b>
-</c:forEach>
---%>
-        
-        <%--
-        <c:choose>
-            <c:when test="${!empty param.Submit}"> 
-                Group: "${param.listofgroups}"
-            </c:when>
-            
-            <c:when test="${!empty param.clear}">
-            </c:when>
-        </c:choose>
-        --%>        
     </body>
 </html>

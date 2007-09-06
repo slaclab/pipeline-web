@@ -108,17 +108,16 @@
 <!--
 Show all substreams summaries for the task in table form
 -->
-<sql:query var="stream_stats">
-    select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER
+<sql:query var="proc_stats">
+    select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
 </sql:query>
-
 
 <sql:query var="streamset">
     select
-    <c:forEach var="row" items="${stream_stats.rows}">
+    <c:forEach var="row" items="${process_stats.rows}">
         SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
     </c:forEach>
-     taskname,task,parentstream,processname,process
+    taskname,task,processname,process
     from stream
     join task using (task)
     join process using (task)
@@ -127,25 +126,43 @@ Show all substreams summaries for the task in table form
     FROM stream 
     start with stream  = ?
     connect by prior stream = parentstream)
-    GROUP BY taskname, TASK, PARENTSTREAM,processname,process
+    GROUP BY taskname, TASK, processname,process
     order by task
     
     <sql:param value="${param.stream}"/>    
 </sql:query>
 
+<sql:query var="streamset">select 
+    <c:forEach var="row" items="${proc_stats.rows}">
+        SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
+    </c:forEach>
+    lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
+    from PROCESS 
+    join (               
+    SELECT task,taskname,level lev FROM TASK
+    start with Task=? connect by prior Task = ParentTask
+    )  using (task)
+    join PROCESSINSTANCE using (PROCESS) 
+    join STREAMPATH using (STREAM)
+    where isLatest=1 and isLatestPath=1 
+    and stream in (
+    SELECT stream
+    FROM stream 
+    start with stream  = ?
+    connect by prior stream = parentstream)
+    group by lev,task, taskname,process,PROCESSNAME,displayorder, processtype
+    order by task, process
+    <sql:param value="${task}"/>    
+    <sql:param value="${param.stream}"/>    
+</sql:query>    
 
-
-<display:table class="datatable" name="${streamset.rows}" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-    
-    
-    <display:column property="Taskname" title="Task" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
-    <display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	
-   
-     <c:forEach var="row" items="${stream_stats.rows}">
-                  <display:column property="${row.STREAMSTATUS}" title="<img src=\"img/${row.STREAMSTATUS}.gif\" alt=\"${pl:prettyStatus(row.STREAMSTATUS)}\" title=\"${pl:prettyStatus(row.STREAMSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.STREAMSTATUS}" paramId="process" paramProperty="process"/>
-               </c:forEach>
-    
-  </display:table>
+<display:table class="datatable" name="${streamset.rows}" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
+    <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
+    <display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	    
+    <c:forEach var="row" items="${proc_stats.rows}">
+        <display:column property="${row.PROCESSINGSTATUS}" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
+    </c:forEach>   
+</display:table>
 
 </body>
 </html>

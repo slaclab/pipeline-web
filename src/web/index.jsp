@@ -13,7 +13,7 @@
       <title>Pipeline status</title>  
    </head>
    <body>    
-       <!-- If userPrefInput is empty then we know to initialize their preferences and we set
+       <!-- If userPrefInput is empty then we know this is the first time coming to this page and to initialize their preferences so we set
        the value to 'true'.
        --> 
       <c:if test="${empty userPrefInput}">

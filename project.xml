@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-   <pomVersion>3</pomVersion>
+    <pomVersion>3</pomVersion>
    <artifactId>org-glast-pipeline-web</artifactId>
    <groupId>glast</groupId>
    <currentVersion>2.3</currentVersion>

@@ -92,11 +92,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <c:set var="fairShareEndTime" value="${ empty param.fairShareEndTime ? fairShareEndTime : param.fairShareEndTime}" scope="session"/>
         
         <c:set var="maxbins" value="36"/>
-         
+        
         <c:set var="deltatime" value="${ ( (fairShareEndTime - fairShareBeginTime )/1000 )/maxbins }"/>
         <c:set var="deltatime" value="${ deltatime > 900 ? deltatime : 900 }"/>
         
-        <c:out value="Delta: ${deltatime} maxbins: ${maxbins}"/>
         
         <form id="batShares" name="batShares"  action="batchShares.jsp">
             <table class="filtertable">
@@ -140,117 +139,143 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <jsp:useBean id="stopTime" class="java.util.Date" /> 
         <jsp:setProperty name="stopTime" property="time" value="${fairShareEndTime}" /> 	  
         
-        
+        <%--
         <table>
-        <c:forEach items="${paramValues.listofdata}" var="listOfDataItem">
-            <tr>
-                <td>
-            <aida:plotter height="400"> 
-                <aida:region title="${listOfDataItem}">
-                    <aida:style>
-                        <aida:style type="statisticsBox">
-                            <aida:attribute name="isVisible" value="false"/>
-                        </aida:style>
-                        <aida:style type="xAxis">
-                            <aida:attribute name="label" value="Time"/>
-                            <aida:attribute name="type" value="date"/>
-                        </aida:style>
-                        <aida:style type="yAxis">
-                            <aida:attribute name="label" value="${listOfDataItem}"/>
-                        </aida:style>
-                        <aida:style type="data">
-                            <aida:style type="outline">
-                                <aida:attribute name="isVisible" value="false"/>
-                            </aida:style>
-                        </aida:style>
-                    </aida:style>   
-                    
-                    <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
+        --%>
+            <c:forEach items="${paramValues.listofdata}" var="listOfDataItem">
+                <%--
+                <tr>
+                    <td>
+                        <aida:plotter height="400"> 
+                            <aida:region title="${listOfDataItem}">
+                                <aida:style>
+                                    <aida:style type="statisticsBox">
+                                        <aida:attribute name="isVisible" value="false"/>
+                                    </aida:style>
+                                    <aida:style type="xAxis">
+                                        <aida:attribute name="label" value="Time"/>
+                                        <aida:attribute name="type" value="date"/>
+                                    </aida:style>
+                                    <aida:style type="yAxis">
+                                        <aida:attribute name="label" value="${listOfDataItem}"/>
+                                    </aida:style>
+                                    <aida:style type="data">
+                                        <aida:style type="outline">
+                                            <aida:attribute name="isVisible" value="false"/>
+                                        </aida:style>
+                                    </aida:style>
+                                </aida:style>   
+                                
+                                <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
+                                    
+                                    <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
+                                        select ${listOfDataItem}, snapshot_date from bqueue_groups bg, bqueue_data bd
+                                        where bg.group_name = bd.group_name and bd.group_name = ? and
+                                        bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
+                                        <sql:param value="${group}" />
+                                        <sql:dateParam value="${startTime}"/>
+                                        <sql:dateParam value="${stopTime}"/>
+                                    </sql:query>
+                                    
+                                    
+                                    <aida:tuple var="tuple" query="${batchDBInfo}"/>        
+                                    <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
+                                    
+                                    <aida:plot var="${plot}">
+                                        <aida:style>        
+                                            <aida:style type="marker">
+                                                <aida:attribute name="color" value="${availableColors[status.index]}"/>
+                                                <aida:attribute name="shape" value="dot"/>
+                                            </aida:style>
+                                        </aida:style>
+                                    </aida:plot>
+                                    
+                                </c:forEach>
+                                
+                            </aida:region>
+                        </aida:plotter>
                         
-                        <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
-                            select ${listOfDataItem}, snapshot_date from bqueue_groups bg, bqueue_data bd
-                            where bg.group_name = bd.group_name and bd.group_name = ? and
-                            bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
-                            <sql:param value="${group}" />
-                            <sql:dateParam value="${startTime}"/>
-                            <sql:dateParam value="${stopTime}"/>
-                        </sql:query>
-                        
-                        
-                        <aida:tuple var="tuple" query="${batchDBInfo}"/>        
-                        <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
-                        
-                        <aida:plot var="${plot}">
-                            <aida:style>        
-                                <aida:style type="marker">
-                                    <aida:attribute name="color" value="${availableColors[status.index]}"/>
-                                    <aida:attribute name="shape" value="dot"/>
-                                </aida:style>
-                            </aida:style>
-                        </aida:plot>
-                        
-                    </c:forEach>
-                    
-                </aida:region>
-            </aida:plotter>
-                    
-                </td>
-                <td>
-                    <%-- Accumulated data 
-            <aida:plotter height="400"> 
-                <aida:region title="${listOfDataItem}">
-                    <aida:style>
-                        <aida:style type="statisticsBox">
-                            <aida:attribute name="isVisible" value="false"/>
-                        </aida:style>
-                        <aida:style type="xAxis">
-                            <aida:attribute name="label" value="Time"/>
-                            <aida:attribute name="type" value="date"/>
-                        </aida:style>
-                        <aida:style type="yAxis">
-                            <aida:attribute name="label" value="${listOfDataItem}"/>
-                        </aida:style>
-                        <aida:style type="data">
-                            <aida:style type="outline">
-                                <aida:attribute name="isVisible" value="false"/>
-                            </aida:style>
-                        </aida:style>
-                    </aida:style>   
-                    
-                    <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
-                        
-                        <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">
-                            select ${listOfDataItem}, snapshot_date from bqueue_groups bg, bqueue_data bd
-                            where bg.group_name = bd.group_name and bd.group_name = ? and
-                            bd.snapshot_date >= ? and bd.snapshot_date <= ?                       
-                            <sql:param value="${group}" />
-                            <sql:dateParam value="${startTime}"/>
-                            <sql:dateParam value="${stopTime}"/>
-                        </sql:query>
-                        
-                        
-                        <aida:tuple var="tuple" query="${batchDBInfo}"/>        
-                        <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
-                        
-                        <aida:plot var="${plot}">
-                            <aida:style>        
-                                <aida:style type="marker">
-                                    <aida:attribute name="color" value="${availableColors[status.index]}"/>
-                                    <aida:attribute name="shape" value="dot"/>
-                                </aida:style>
-                            </aida:style>
-                        </aida:plot>
-                        
-                    </c:forEach>
-                    
-                </aida:region>
-            </aida:plotter>
+                    </td>
+                    <td>
                     --%>
-                </td>
-            </tr>            
-        </c:forEach>
-            
+                        <%-- Accumulated data --%>
+                        <aida:plotter height="400"> 
+                            <aida:region title="${listOfDataItem}">
+                                <aida:style>
+                                    <aida:style type="statisticsBox">
+                                        <aida:attribute name="isVisible" value="false"/>
+                                    </aida:style>
+                                    <aida:style type="xAxis">
+                                        <aida:attribute name="label" value="Time"/>
+                                        <aida:attribute name="type" value="date"/>
+                                    </aida:style>
+                                    <aida:style type="yAxis">
+                                        <aida:attribute name="label" value="${listOfDataItem}"/>
+                                    </aida:style>
+                                    <aida:style type="data">
+                                        <aida:style type="outline">
+                                            <aida:attribute name="isVisible" value="false"/>
+                                        </aida:style>
+                                    </aida:style>
+                                </aida:style>   
+                                
+                                <c:forEach items="${paramValues.listofgroups}" var="group" varStatus="status" >
+                                    
+                                    <sql:query var="batchDBInfo" dataSource="jdbc/glastgenDev" scope="session">                                        
+                                        select
+                                        avg(${listOfDataItem}) as ${listOfDataItem}, min(snapshot_date) as snapshot_date, max(snapshot_date) as max_snapshot_date
+                                        from 
+                                        (
+                                        select 
+                                        ${listOfDataItem},
+                                        snapshot_date, 
+                                        extract(second from snapshot_date-?)+
+                                        extract(minute from snapshot_date-?)*60 +
+                                        extract(hour from snapshot_date-?)*3600 +
+                                        extract(day from snapshot_date-?)*86400 as time
+                                        from 
+                                        bqueue_groups bg, 
+                                        bqueue_data bd
+                                        where 
+                                        bg.group_name = bd.group_name and 
+                                        bd.group_name = ? and
+                                        bd.snapshot_date >= ? and bd.snapshot_date <= ?
+                                        )
+                                        group by floor(time/?)
+                                        <sql:dateParam value="${startTime}"/>
+                                        <sql:dateParam value="${startTime}"/>
+                                        <sql:dateParam value="${startTime}"/>
+                                        <sql:dateParam value="${startTime}"/>
+                                        <sql:param value="${group}" />
+                                        <sql:dateParam value="${startTime}"/>
+                                        <sql:dateParam value="${stopTime}"/>
+                                        <sql:param value="${deltatime}" />
+                                    </sql:query>
+                                    
+                                    <aida:tuple var="tuple" query="${batchDBInfo}"/>        
+                                    <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
+                                    
+                                    <aida:plot var="${plot}">
+                                        <aida:style>        
+                                            <aida:style type="marker">
+                                                <aida:attribute name="color" value="${availableColors[status.index]}"/>
+                                                <aida:attribute name="shape" value="dot"/>
+                                            </aida:style>
+                                        </aida:style>
+                                    </aida:plot>
+                                    
+                                </c:forEach>
+                                
+                            </aida:region>
+                        </aida:plotter>
+<%--                        
+                    </td>
+                </tr>            
+                --%>
+            </c:forEach>
+            <%--
         </table>
+        --%>
         
         
     </body>

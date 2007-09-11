@@ -55,18 +55,12 @@
             <c:when  test = "${NumStatusReqs > 1}"> 
                 and streamstatus in (
                 <c:forEach  var="i" begin= "0" end="${NumStatusReqs -'1'}" step="1" > 
-                    <c:set var ="testi" value = "${i}" />             
-                    <c:if test = "${testi== 0}">          
-                        <c:set var ="statusRequestForm" value = "'${paramValues.status[i]}',"/>
-                        ${statusRequestForm}
-                    </c:if>                                
+                    <c:set var ="testi" value = "${i}" />                                          
                     <c:if test = "${testi== LastReq}">           
-                        <c:set var ="statusRequestForm" value = "'${paramValues.status[i]}'"/>
-                         ${statusRequestForm}
+                       '${paramValues.status[i]}'                        
                     </c:if>
-                    <c:if test = "${testi!= 0 and i != LastReq}">
-                        <c:set var ="statusRequestForm" value = "'${paramValues.status[i]}',"/>
-                        ${statusRequestForm}
+                    <c:if test = "${testi != LastReq}">
+                       '${paramValues.status[i]}',                     
                     </c:if>                       
                 </c:forEach>
                 )

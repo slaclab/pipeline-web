@@ -91,7 +91,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <c:set var="fairShareBeginTime" value="${ empty param.fairShareBeginTime ? fairShareBeginTime : param.fairShareBeginTime}" scope="session"/>
         <c:set var="fairShareEndTime" value="${ empty param.fairShareEndTime ? fairShareEndTime : param.fairShareEndTime}" scope="session"/>
         
-        <c:set var="maxbins" value="36"/>
+        <c:set var="maxbins" value="100"/>
         
         <c:set var="deltatime" value="${ ( (fairShareEndTime - fairShareBeginTime )/1000 )/maxbins }"/>
         <c:set var="deltatime" value="${ deltatime > 900 ? deltatime : 900 }"/>
@@ -199,7 +199,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     <td>
                     --%>
                         <%-- Accumulated data --%>
-                        <aida:plotter height="400"> 
+                        <aida:plotter height="600" width="800"> 
                             <aida:region title="${listOfDataItem}">
                                 <aida:style>
                                     <aida:style type="statisticsBox">
@@ -214,7 +214,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                     </aida:style>
                                     <aida:style type="data">
                                         <aida:style type="outline">
-                                            <aida:attribute name="isVisible" value="false"/>
+                                            <aida:attribute name="isVisible" value="true"/>
                                         </aida:style>
                                     </aida:style>
                                 </aida:style>   
@@ -239,9 +239,9 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                         where 
                                         bg.group_name = bd.group_name and 
                                         bd.group_name = ? and
-                                        bd.snapshot_date >= ? and bd.snapshot_date <= ?
+                                        bd.snapshot_date >= ? and bd.snapshot_date <= ? 
                                         )
-                                        group by floor(time/?)
+                                        group by floor(time/?) order by snapshot_date
                                         <sql:dateParam value="${startTime}"/>
                                         <sql:dateParam value="${startTime}"/>
                                         <sql:dateParam value="${startTime}"/>
@@ -260,6 +260,9 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                             <aida:style type="marker">
                                                 <aida:attribute name="color" value="${availableColors[status.index]}"/>
                                                 <aida:attribute name="shape" value="dot"/>
+                                            </aida:style>
+                                            <aida:style type="outline">
+                                                <aida:attribute name="color" value="${availableColors[status.index]}"/>
                                             </aida:style>
                                         </aida:style>
                                     </aida:plot>

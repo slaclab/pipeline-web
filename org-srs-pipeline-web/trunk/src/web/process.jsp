@@ -78,11 +78,11 @@
                 )
             </c:when>   
             <c:otherwise>     
-                <c:if test= "${param.status != 'NOTSUCCESS'}">
+                <c:if test= "${status != 'NOTSUCCESS'}">
                     and p.PROCESSINGSTATUS=?
                     <sql:param value="${status}"/>
                 </c:if>
-                <c:if test= "${param.status == 'NOTSUCCESS'}">
+                <c:if test= "${status == 'NOTSUCCESS'}">
                     and p.PROCESSINGSTATUS != 'SUCCESS'            
                 </c:if>         
             </c:otherwise>
@@ -117,8 +117,8 @@
         <form name="DateForm">
             <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
                     <td>Status: <select size="3" name="status" multiple>
-                            <option value="">All</option>
-                             <option value="NOTSUCCESS">All Not Success </option> 
+                             <option value="" ${status=="" ? "selected" : ""}>All</option>
+            <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option> 
                             <c:forEach var="row" items="${proc_stats.rows}">
                                 <option value="${row.PROCESSINGSTATUS}" ${status==row.PROCESSINGSTATUS ? "selected" : ""}>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>
                             </c:forEach>

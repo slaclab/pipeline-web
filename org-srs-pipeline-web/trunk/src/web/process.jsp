@@ -149,68 +149,6 @@
              }
            }
          }
-
-      </script>   
-      
-      <%-- <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/> --%>
-      <c:set var="adminMode" value="false"/>
-        
-      <c:choose>
-         <c:when test="${param.format=='stream'}">
-            <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
-         </c:when>
-         <c:when test="${param.format=='id'}">
-            <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
-         </c:when>
-         <c:otherwise>
-            <form name="selectForm" action="confirm.jsp" method="post">
-               <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount> 50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                  <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
-                  <display:column property="Status" sortable="true" headerClass="sortable"/>
-                  <c:if test="${!showLatest}">
-                     <display:column property="ProcessExecutionNumber" title="Process #"/>
-                     <display:column property="StreamExecutionNumber" title="Stream #"/>
-                  </c:if>
-                  <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-                  <c:if test="${isBatch}">
-                     <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-                  </c:if>
-                  <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-                  <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-                  <c:if test="${isBatch}">
-                     <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
-                     <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
-                     <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
-                  </c:if>
-                  <display:column property="links" title="Links" class="leftAligned"/>
-                  <c:if test="${adminMode}">
-                     <display:column property="selector" title=" " class="admin"/>
-                     <display:footer>
-                        <tr>
-                           <td colspan="20" class="admin">                
-                              <a href="javascript:void(0)" onClick="ShowAll(true);">Select all</a>&nbsp;.&nbsp;
-                              <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
-                              <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
-                              <input type="hidden" name="process" value="${process}">
-                              <input type="submit" value="Rollback Selected" name="submit">
-                           </td>
-                        </tr>
-                     </display:footer>
-                  </c:if>
-               </display:table>
-            </form>
-            
-            
-            <c:if test="${test.rowCount>0}">
-               <ul>
-                  <li><a href="process.jsp?process=${process}&format=stream">Dump stream id list</a>.</li>
-                  <li><a href="process.jsp?process=${process}&format=id">Dump job id list</a>.</li>
-               </ul>
-            </c:if>
-         </c:otherwise>                                                                                                                                                                                                           
-      </c:choose>
-   </body>
-   
         </script>   
         
         <%-- <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/> --%>
@@ -224,7 +162,7 @@
             </c:when>
             <c:otherwise>
                 <form name="selectForm" action="confirm.jsp" method="post">
-                    <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+                    <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                         <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                         <display:column property="Status" sortable="true" headerClass="sortable"/>
                         <c:if test="${!showLatest}">

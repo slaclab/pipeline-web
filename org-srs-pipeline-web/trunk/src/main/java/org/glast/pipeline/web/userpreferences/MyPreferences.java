@@ -7,7 +7,7 @@
  * and open the template in the editor.
  *
  * PipelineUserPrefs allows the user to customize the default settings
- * that are displayed the first time a user logs in or whenever the user 
+ * that are displayed the first time a user logs in or whenever the user
  * clears the default settings by clicking the clear button.
  */
 
@@ -16,7 +16,7 @@ package org.glast.pipeline.web.userpreferences;
 /**
  *
  * @author chee
- * 
+ *
  */
 
 /* defaultSort defines what column to use for sorting, the default is to use column 1 */
@@ -25,10 +25,12 @@ public class MyPreferences {
     String taskVersion = "latestVersions";
     String defaultOrder = "descending";
     String defaultSort = "1";
+    int showStreams = 20;
     
     /** Creates a new instance of MyPreferences */
     public MyPreferences() {
     }
+    
     // Setters
     public void setTask(String a){
         task = a;
@@ -37,7 +39,21 @@ public class MyPreferences {
     public void setTaskVersion(String b){
         taskVersion = b;
     }
+    
+    public void setDefaultOrder(String defaultOrder) {
+        this.defaultOrder = defaultOrder;        
+    }
+    
+    public void setDefaultSort(String defaultSort) {
+        this.defaultSort = defaultSort;
+    }
+    
+    public void setShowStreams(int c){
+        showStreams = c;
+    }
+    
     // Getters
+    
     public String getTask(){
         return task;
     }
@@ -50,15 +66,12 @@ public class MyPreferences {
         return defaultOrder;
     }
     
-    public void setDefaultOrder(String defaultOrder) {
-        this.defaultOrder = defaultOrder;
-    }
-    
     public String getDefaultSort() {
         return defaultSort;
     }
     
-    public void setDefaultSort(String defaultSort) {
-        this.defaultSort = defaultSort;
+    public int getShowStreams(){
+        return showStreams;
     }
+    
 }

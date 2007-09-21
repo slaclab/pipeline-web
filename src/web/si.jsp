@@ -20,8 +20,7 @@
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 
 <sql:query var="rs1">
-    select * from stream 
-    join streampath using(stream)
+    select stream.*,PII.GetStreamIsLatestPath(stream) isLatestPath from stream 
     where stream=?
     <sql:param value="${param.stream}"/>
 </sql:query>
@@ -104,8 +103,6 @@
     <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
 </display:table>
 
-
-
 <h3>Stream  Status Summary </h3>
 
 <sql:query var="sumstats">   
@@ -128,8 +125,7 @@
     start with Task=?  connect by prior Task = ParentTask
     )  using (task)
     join PROCESSINSTANCE using (PROCESS) 
-    join STREAMPATH using (STREAM)
-    where isLatest=1 and isLatestPath=1 
+    where isLatest=1 and PII.GetStreamIsLatestPath(stream)=1 
     and stream in (
     SELECT stream
     FROM stream 
@@ -139,7 +135,6 @@
     order by task    
     <sql:param value="${task}"/>
     <sql:param value="${param.stream}"/>
-    
 </sql:query>   
 
 
@@ -195,8 +190,7 @@ Show all substreams summaries for the task in table form
     start with Task=? connect by prior Task = ParentTask
     )  using (task)
     join PROCESSINSTANCE using (PROCESS) 
-    join STREAMPATH using (STREAM)
-    where isLatest=1 and isLatestPath=1 
+    where isLatest=1 and PII.GetStreamIsLatestPath(stream)=1 
     and stream in (
     SELECT stream
     FROM stream 

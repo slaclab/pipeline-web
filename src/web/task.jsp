@@ -121,11 +121,9 @@
                start with Task=? connect by prior Task = ParentTask
                )  using (task)
                join PROCESSINSTANCE using (PROCESS) 
-               join STREAMPATH using (STREAM)
-               where isLatest=1 and isLatestPath=1 
+               where isLatest=1 and 0 not in (Select isLatest from stream start with stream = processinstance.stream connect by stream = prior parentstream and stream <> 0)           
                group by lev,task, taskname,process,PROCESSNAME,displayorder, processtype
-               order by task, process
-               
+               order by task, process               
                <sql:param value="${task}"/>
             </sql:query>
             <display:table class="datatable" name="${test.rows}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">

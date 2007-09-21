@@ -2,9 +2,9 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 
 <html>
    <head>

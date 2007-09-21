@@ -50,8 +50,8 @@ public class PipelineFilter implements Filter
             Connection connection = dataSource.getConnection();
             try
             {
-               String sql = "select streamId, streampath, streamIdPath, taskpath, taskNamePath, taskname,task "+
-                       "from stream join streampath using (stream) "+
+               String sql = "select streamId, PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath, taskpath, taskNamePath, taskname,task "+
+                       "from stream "+
                        "join taskpath using (task) "+
                        "join task using (task) "+
                        "where stream=?";
@@ -87,8 +87,8 @@ public class PipelineFilter implements Filter
             Connection connection = dataSource.getConnection();
             try
             {
-               String sql = "select process,streampath,streamidPath,processname,taskpath,taskNamePath,taskname,task "+
-                       "from processinstance join streampath using (stream) "+
+               String sql = "select process,PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath,processname,taskpath,taskNamePath,taskname,task "+
+                       "from processinstance "+
                        "join process using (process) "+
                        "join taskpath using (task) "+
                        "join task using (task) "+

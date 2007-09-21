@@ -70,11 +70,12 @@
       
       
       <gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
-         select log, log_level, message, timeentered, processInstance, streamIdPath, process, processname, taskPath, taskNamePath, case when exception is null then 0 else 1 end hasException 
+         select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
+         case when exception is null then 0 else 1 end hasException,
+         PII.GetStreamIdPath(stream) streamIdPath
          from log l
          left outer join processinstance i using (processinstance)
          left outer join process p using (process)
-         left outer join streampath s using (stream)
          left outer join taskpath t using (task)
          where log_level > 0 
          <c:if test="${!empty severity}"> and log_level>=? 

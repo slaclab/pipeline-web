@@ -103,54 +103,6 @@
     <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
 </display:table>
 
-<h3>Stream  Status Summary </h3>
-
-<sql:query var="sumstats">   
-    select  taskname,
-    SUM(case when processingSTATUS='SUCCESS'  then 1 else 0 end)  +
-    SUM(case when processingSTATUS='FAILED'  then 1 else 0 end)  Done,
-    SUM(case when processingSTATUS='SUCCESS'  then 1 else 0 end)  S,
-    SUM(case when processingSTATUS='FAILED'  then 1 else 0 end)  Failed,
-    SUM(case when processingSTATUS='RUNNING'  then 1 else 0 end)  Running,
-    SUM(case when processingSTATUS='SUBMITTED'  then 1 else 0 end)  +
-    SUM(case when processingSTATUS='READY'  then 1 else 0 end)  +
-    SUM(case when processingSTATUS='QUEUED'  then 1 else 0 end)  +
-    SUM(case when processingSTATUS='WAITING'  then 1 else 0 end) Lineup,
-    SUM(case when processingSTATUS='SKIPPED'  then 1 else 0 end) Skipped ,
-    SUM(case when processingSTATUS='CANCELED'  then 1 else 0 end)  +
-    SUM(case when processingSTATUS='TERMINATED'  then 1 else 0 end)  TerminateStat    
-    from PROCESS 
-    join (               
-    SELECT task,taskname  FROM TASK
-    start with Task=?  connect by prior Task = ParentTask
-    )  using (task)
-    join PROCESSINSTANCE using (PROCESS) 
-    where isLatest=1 and PII.GetStreamIsLatestPath(stream)=1 
-    and stream in (
-    SELECT stream
-    FROM stream 
-    start with stream  = ?
-    connect by prior stream = parentstream)
-    group by task, taskname
-    order by task    
-    <sql:param value="${task}"/>
-    <sql:param value="${param.stream}"/>
-</sql:query>   
-
-
-<display:table class="datatable" name="${sumstats.rows}" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
-    <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
-    <display:column property="Done" title="Done" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	       
-    <display:column property="S" title="Success" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	       
-    <display:column property="Failed" title="Failed" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	       
-    <display:column property="Running" title="Running" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	       
-    <display:column property="LineUp" title="InLine" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	   
-    <display:column property="TerminateStat" title="Cancelled/Terminated" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	   
-    <display:column property="Skipped" title="Skipped" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	   
-</display:table> 
-
-
-
 <h3>All Substreams</h3>
 <!--
 Show all substreams summaries for the task in table form

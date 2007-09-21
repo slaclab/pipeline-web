@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <pomVersion>3</pomVersion>
+   <pomVersion>3</pomVersion>
    <artifactId>org-glast-pipeline-web</artifactId>
    <groupId>glast</groupId>
    <currentVersion>2.3</currentVersion>
@@ -311,7 +311,7 @@
       <dependency>
          <groupId>glast</groupId>
          <artifactId>org-glast-base-web</artifactId>
-         <version>0.3.17</version>
+         <version>0.3.22</version>
          <type>jar</type>
          <properties>
             <war.bundle>true</war.bundle>

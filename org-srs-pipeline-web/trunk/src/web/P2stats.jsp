@@ -1,12 +1,12 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib prefix="tab" uri="http://java.freehep.org/tabs-taglib" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
     <head>

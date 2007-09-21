@@ -1,11 +1,11 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
     <head>
@@ -15,10 +15,9 @@
         <h2>Running jobs for: ${taskName}</h2>
 
         <sql:query var="test">
-                    select streampath, streamIdPath, jobid, process, processname, processinstance from processinstance
-                                 join streampath using (stream)
-                                 join process using (process)
-                                 where processingstatus='RUNNING' and task=? 
+                    select PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath, jobid, process, processname, processinstance from processinstance
+                           join process using (process)
+                           where processingstatus='RUNNING' and task=? 
             <sql:param value="${param.task}"/>
         </sql:query>  
         

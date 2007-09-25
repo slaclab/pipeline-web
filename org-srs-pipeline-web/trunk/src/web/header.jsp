@@ -28,7 +28,7 @@
          <p><jsp:useBean id="now" class="java.util.Date" />
          Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <utils:refresh /></p>
          <p><utils:login/> Mode: [ <utils:dataSourceChooser href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><a href="myPreferences.jsp">Preferences</a></c:if> </p>
-         <p><a href="batchShares.jsp">Batch Fair Shares</a>&nbsp;.&nbsp;<a href="index.jsp">Task List</a>&nbsp;.&nbsp;<a href="logViewer.jsp">Message Viewer</a>&nbsp;.&nbsp;<a href="JobProcessingStats.jsp">Usage Plots</a>&nbsp;.&nbsp;<a href="admin.jsp?login=true">Pipeline Admin</a></p>
+         <p><a href="index.jsp">Task List</a>&nbsp;.&nbsp;<a href="logViewer.jsp">Message Viewer</a>&nbsp;.&nbsp;<a href="JobProcessingStats.jsp">Usage Plots</a>&nbsp;.&nbsp;<a href="batchShares.jsp">Fair Shares Plots</a>&nbsp;.&nbsp;<a href="admin.jsp?login=true">Pipeline Admin</a></p>
       </td>  
    </tr>
 </table>

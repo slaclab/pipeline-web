@@ -8,6 +8,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 --%>
 <%-- --%>
 <%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <%-- --%>
 
@@ -21,7 +22,14 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <h1>Set User Preferences Form</h1>
         This form allows you to set the default settings to be used when you first logon to Pipeline-II.<br>
         Select items from the pull down menus and then click the <strong>Update Preferences</strong> button.<p>
+        
         <utils:preferences name="preferences">
+            
+            <tr>
+                <th colspan="3">
+                   Preferences For Pipeline II Main Page
+                </th>
+            </tr>
             <utils:preference name="task"  size="50" title="Default Task">
                 <utils:value value="all" text="All Tasks"/>
                 <utils:value value="runs" text="Tasks with Runs"/>
@@ -29,7 +37,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <utils:value value="active" text="Tasks with Active Runs"/>
                 <utils:value value="last30" text="Active in Last 30 days"/>
             </utils:preference>
-          
+           
             <utils:preference name="taskVersion" size="50" title="Default Version ">
                 <utils:value value="latestVersions" text="Latest Task Versions"/>
                 <utils:value value="allVersions" text="All Task Versions"/>
@@ -51,15 +59,22 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <utils:value value="12" text="Canceled"/> 
             </utils:preference> 
             
+            
             <utils:preference name="defaultOrder" size="50" title="Default Sort Order ">
                 <utils:value value="ascending"/>
                 <utils:value value="descending"/>
             </utils:preference> 
-            
+             <tr>
+                <th colspan="3">
+                    Preferences For Streams Processing<br>
+                    If there are more than 50 records all 50 will be shown under certain conditions
+                </th>
+            </tr> 
             <utils:preference name="showStreams" size="5" title="Number of Streams">
             </utils:preference>  
             
         </utils:preferences>
+        
         
         <%--
         <table>

@@ -145,8 +145,11 @@
 </c:when>
 <c:otherwise>
 <form name="selectForm" action="confirm.jsp" method="post">
-<display:table class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-<display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
+
+    <display:table class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+
+    
+    <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
 <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
 <c:if test="${!showLatest}">
    <display:column title="#">

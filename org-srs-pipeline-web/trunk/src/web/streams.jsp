@@ -107,9 +107,16 @@
       <td>Status: <select size="3" name="status" multiple>
          <option value="" ${status=="" ? "selected" : ""}>All</option>
       <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option> 
-      <c:forEach var="row" items="${statii.rows}">
-         <option value="${row.STREAMSTATUS}" ${status==row.STREAMSTATUS ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>
-      </c:forEach>
+       <c:forEach var="row" items="${statii.rows}">
+            <c:set var= "found" value = "0" /> 
+            <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
+                <c:if test = "${seletedStatus ==  row.STREAMSTATUS}">
+                    <c:set var= "found" value = "1" />    
+                </c:if>                                                    
+            </c:forEach>   
+             <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
+        </c:forEach>                         
+
       
       <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
          <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>

@@ -18,7 +18,7 @@
                join taskpath using (task)
                where taskversion like ? 
                and streamid = ?
-               order by version desc,revision desc
+               order by version desc,revision desc, islatest desc
                <sql:param value="${param.taskname}%"/>
                <sql:param value="${param.streamid}"/>
             </sql:query>

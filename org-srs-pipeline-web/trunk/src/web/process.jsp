@@ -92,7 +92,7 @@
             </c:if>   
             
             )
-            select p.PROCESSINSTANCE, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, p.JOBID, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
+            select p.PROCESSINSTANCE, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
             <c:if test="${!showLatest}">, p.ExecutionNumber || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
             from processinstance2 p
             join stream s using (stream)

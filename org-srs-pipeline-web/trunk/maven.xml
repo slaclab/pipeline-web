@@ -20,18 +20,18 @@
         <u:properties file="${user.home}/tomcat03.properties" />
         <attainGoal name="tomcat:remove"/>
     </goal>   
-<!--    
-    <goal name="tomcat01Redeploy">
-        <u:properties file="${user.home}/tomcat01.properties" />
+   
+    <goal name="tomcat02Redeploy">
+        <u:properties file="${user.home}/tomcat02.properties" />
         <attainGoal name="clean"/>
         <attainGoal name="tomcat:remove"/>
         <attainGoal name="tomcat:deploy"/>
     </goal>   
     
-    <goal name="tomcat01Deploy">
-        <u:properties file="${user.home}/tomcat01.properties" />
+    <goal name="tomcat02Deploy">
+        <u:properties file="${user.home}/tomcat02.properties" />
         <attainGoal name="clean"/>
         <attainGoal name="tomcat:deploy"/>
     </goal>   
-    -->
+
 </project>

@@ -49,7 +49,8 @@ public class ProcessDecorator extends TableDecorator
    {
       Map map = (Map) getCurrentRowObject();
       Object pid = map.get("JobID");
-      return pid == null ? null : "<a href=\"job.jsp?id="+pid+"\">"+pid+"</a>";
+      Object site = map.get("JobSite");
+      return pid == null ? null : String.format("<a href=\"job.jsp?id=%s&site=%s\">%1$s</a>",pid,site);
    }
    private JobStatus getJobStatus() throws JobControlException
    {

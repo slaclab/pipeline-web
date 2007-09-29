@@ -15,7 +15,7 @@
         <h2>Running jobs for: ${taskName}</h2>
 
         <sql:query var="test">
-                    select PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath, jobid, process, processname, processinstance from processinstance
+                    select PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath, jobid, process, processname, processinstance, jobsite from processinstance
                            join process using (process)
                            where processingstatus='RUNNING' and task=? 
             <sql:param value="${param.task}"/>
@@ -25,6 +25,7 @@
             <display:column property="streamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
             <display:column property="processName" title="Process" sortable="true" headerClass="sortable" href="process.jsp" paramId="process" paramProperty="process"/>
             <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/> 
+            <display:column property="jobSite" title="Site" sortable="true" headerClass="sortable"/> 
             <display:column property="started" title="Started" sortable="true" headerClass="sortable"/>  
             <display:column property="host" title="Host" sortable="true" headerClass="sortable"/>  
             <display:column property="cpuUsed" title="CPU (secs)" sortable="true" headerClass="sortable"/> 

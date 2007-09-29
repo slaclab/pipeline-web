@@ -1,14 +1,20 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib prefix="jc" uri="http://glast-ground.slac.stanford.edu/JobControl" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/sql"  prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
         <title>Job status</title>
     </head>
     <body>   
-        <h1>Job ${param.id}</h1>
-        <jc:status var="jobStatus" id="${param.id}"/>
+        <h1>Job ${param.id} at ${param.site}</h1>
+        <sql:query var="rs">
+           select host, jobsiteuser, port, servicename from jobsite where jobsite=?
+           <sql:param value="${param.site}"/>
+        </sql:query>
+        <jc:status var="jobStatus" id="${param.id}" host="${rs.rows[0].host}" user="${rs.rows[0].jobsiteuser}"
+                   port="${rs.rows[0].port}" serviceName="${rs.rows[0].servicename}"/>
         <c:choose>
             <c:when test="${empty jobStatus}">
                 <p>No information currently available for job ${param.id}.</p>

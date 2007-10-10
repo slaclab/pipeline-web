@@ -11,7 +11,7 @@
 
 <html>
 <head>
-    <title>Pipeline status</title>
+    <title>111 Pipeline status</title>
 </head>
 <body>
 
@@ -25,6 +25,7 @@
     <sql:param value="${param.stream}"/>
 </sql:query>
 <c:set var="data" value="${rs1.rows[0]}"/>
+
 
 <table>        
 <tr><td>Stream</td><td>${pl:linkToStreams(streamIdPath,streamPath,".","si.jsp?stream=")}</td></tr>   
@@ -111,31 +112,14 @@ Show all substreams summaries for the task in table form
     select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
 </sql:query>
 
-<sql:query var="streamset">
-    select
-    <c:forEach var="row" items="${process_stats.rows}">
-        SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
-    </c:forEach>
-    taskname,task,processname,process
-    from stream
-    join task using (task)
-    join process using (task)
-    where stream in  (
-    SELECT stream
-    FROM stream 
-    start with stream  = ?
-    connect by prior stream = parentstream)
-    GROUP BY taskname, TASK, processname,process
-    order by task
-    
-    <sql:param value="${param.stream}"/>    
-</sql:query>
+
 
 <sql:query var="streamset">select 
     <c:forEach var="row" items="${proc_stats.rows}">
         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
     </c:forEach>
-    lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
+    lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task,
+    Initcap(ProcessType) type, processname, process,displayorder,max(stream) ProcessStream
     from PROCESS 
     join (               
     SELECT task,taskname,level lev FROM TASK
@@ -154,13 +138,49 @@ Show all substreams summaries for the task in table form
     <sql:param value="${param.stream}"/>    
 </sql:query>    
 
-<display:table class="datatable" name="${streamset.rows}" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
+<c:set var="waitingSum" value = "0"/>
+<c:set var="readySum" value = "0"/>
+<c:set var="queuedSum" value = "0"/>
+<c:set var="submittedSum" value = "0"/>
+<c:set var="runningSum" value = "0"/>
+<c:set var="successSum" value = "0"/>
+<c:set var="failedSum" value = "0"/>
+<c:set var="cancelledSum" value = "0"/>
+<c:set var="terminatedSum" value = "0"/>
+<c:set var="skippedSum" value = "0"/>
+ 
+
+
+<c:forEach var="row" items="${streamset.rows}">
+<c:set var="waitingSum" value = "${row.waiting + waitingSum}"/>
+<c:set var="readySum" value = "${row.ready + readySum}"/>
+<c:set var="queuedSum" value = "${row.queued + queuedSum}"/>
+<c:set var="submittedSum" value = "${row.submitted + submittedSum}"/>
+<c:set var="runningSum" value ="${row.running + runningSum}"/>
+<c:set var="successSum" value ="${row.success + successSum}"/>
+<c:set var="failedSum" value ="${row.failed + failedSum}"/>
+<c:set var="cancelledSum" value = "${row.cancelled + cancelledSum}"/>
+<c:set var="terminatedSum" value = "${row.terminated + terminatedSum}"/>
+<c:set var="skippedSum" value = "${row.skipped + skippedSum}"/>
+
+</c:forEach>  
+
+<display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1"  defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
+       <display:column property="ProcessStream" title="ProcessStream" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  /> 
     <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
     <display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	    
     <c:forEach var="row" items="${proc_stats.rows}">
-        <display:column property="${row.PROCESSINGSTATUS}" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
+        <display:column sortProperty="${row.PROCESSINGSTATUS}" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true"  headerClass="sortable"  >
+            <a href="process.jsp?status=${row.PROCESSINGSTATUS}&stream=${tableRow.ProcessStream}&process=${tableRow.Process}">${tableRow[row.PROCESSINGSTATUS]}</a>      
+        </display:column>
     </c:forEach>   
+  <display:footer>
+    <tr><td>Summary</td><td></td><td></td>   
+        <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
+        <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${cancelledSum}</td>
+           <td>${terminatedSum}</td>  <td>${skippedSum}</td> <tr>    
+  </display:footer>
 </display:table>
-
+ 
 </body>
 </html>

@@ -6,6 +6,7 @@
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <html>
     <head>
@@ -17,7 +18,7 @@
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
         
-        <h2>Task Summary: ${taskNamePath} 
+        <h2> Task Summary: ${taskNamePath} 
             <c:if test="${!fn:contains(taskNamePath,'.')}">      
                 (<a href="xml.jsp?task=${task}">XML</a>)
             </c:if>
@@ -138,16 +139,16 @@
                         <tr>  <td>Summary</td>
                         <td></td>  
                          <td></td> 
-                            <td><c:out value="${totals.column4}" /></td>
-                            <td><c:out value="${totals.column5}" /></td>
-                            <td><c:out value="${totals.column6}" /></td>
-                            <td><c:out value="${totals.column7}" /></td>
-                            <td><c:out value="${totals.column8}" /></td>
-                            <td><c:out value="${totals.column9}" /></td>
-                            <td><c:out value="${totals.column10}" /></td>
-                            <td><c:out value="${totals.column11}" /></td>
-                            <td><c:out value="${totals.column12}" /></td>
-                           <td><c:out value="${totals.column13}" /></td>  <tr>                       
+                            <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
+                            <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column7}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column8}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column9}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column10}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column11}" /></td>
+                            <td><fmt:formatNumber type="number" value="${totals.column12}" /></td>
+                           <td><fmt:formatNumber type="number"value="${totals.column13}" /></td>  <tr>                       
                     </display:footer> 
                 </display:table>            
             </c:otherwise>

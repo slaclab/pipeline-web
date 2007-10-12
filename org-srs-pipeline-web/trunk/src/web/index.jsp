@@ -7,7 +7,7 @@
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
     <head>
         <title>Pipeline status</title>  
@@ -140,17 +140,17 @@
                                     total="true" sortable="true" headerClass="sortable"   href="streams.jsp?status=${row.streamSTATUS}" paramId="task" paramProperty="task" />             
                 </c:forEach> 
             </c:if>
-            <display:footer> <td></td>
-               <tr>  <td>Summary</td><td></td>               
-                  <td><c:out value="${totals.column4}" /></td>
-                  <td><c:out value="${totals.column5}" /></td>
-                  <td><c:out value="${totals.column6}" /></td>
-                  <td><c:out value="${totals.column7}" /></td>
-                  <td><c:out value="${totals.column8}" /></td>
-                  <td><c:out value="${totals.column9}" /></td>
-                  <td><c:out value="${totals.column10}" /></td>
-                  <td><c:out value="${totals.column11}" /></td>
-                  <td><c:out value="${totals.column12}" /></td> <tr>                       
+            <display:footer>  
+                <tr>  <td>Summary</td><td></td> <td></td>               
+                    <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
+                    <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
+                    <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>
+                    <td><fmt:formatNumber type="number" value="${totals.column7}" /></td>
+                    <td><fmt:formatNumber type="number" value="${totals.column8}" /></td>
+                    <td><fmt:formatNumber type="number" value="${totals.column9}" /></td>
+                    <td><fmt:formatNumber type="number" value="${totals.column10}" /></td>
+                    <td><fmt:formatNumber type="number" value="${totals.column11}" /></td>
+                <td><fmt:formatNumber type="number" value="${totals.column12}" /></td></tr>   
             </display:footer> 
         </display:table>
     </body>

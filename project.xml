@@ -106,36 +106,40 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <dependency>
-      <groupId>aidatld</groupId>
-      <artifactId>aidatld</artifactId>
-      <version>1.2.0</version>
-      <type>jar</type>
-      <url>http://aidatld.freehep.org</url>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>aida</groupId>
-      <artifactId>aida</artifactId>
-      <version>06102005</version>
-      <type>jar</type>
-      <url>http://aida.freehep.org</url>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    <dependency>
-      <groupId>aida</groupId>
-      <artifactId>aida-dev</artifactId>
-      <version>06102005</version>
-      <type>jar</type>
-      <url>http://aida.freehep.org</url>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
+        <dependency>
+            <groupId>aida</groupId>
+            <artifactId>aida</artifactId>
+            <version>3.3.1</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+                <comment>
+                    Required for AIDA support at build time and run time.
+                </comment>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.freehep</groupId>
+            <artifactId>freehep-jaida</artifactId>
+            <version>3.3.0-1</version>
+            <type>jar</type>
+            <url>http://java.freehep.org</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+                <dependency>
+            <groupId>org.freehep</groupId>
+            <artifactId>freehep-aidatld</artifactId>
+            <version>1.2.5</version>
+            <type>jar</type>
+            <url>http://aidatld.freehep.org</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
     <dependency>
       <groupId>freehep</groupId>
       <artifactId>freehep-base</artifactId>

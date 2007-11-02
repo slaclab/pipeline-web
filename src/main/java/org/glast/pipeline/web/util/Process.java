@@ -62,7 +62,14 @@ public class Process
    }
    
    public void buildProcessCompletionDependencyList(Connection conn) throws SQLException {
-      PreparedStatement stmt = conn.prepareStatement("select Process from ProcessCompletionCondition where DependentProcess = ?");
+      buildProcessCompletionDependencyList(conn, false/*by default, don't show hidden dependencies*/);
+   }
+
+   public void buildProcessCompletionDependencyList(Connection conn, boolean includeHiddenDependencies) throws SQLException {
+      String query = "select Process from ProcessCompletionCondition where DependentProcess = ?";
+      if (!includeHiddenDependencies)
+         query += " and Hidden=0"; // Only select visible dependencies (those for which hidden=0/false)
+      PreparedStatement stmt = conn.prepareStatement(query);
       try {
          stmt.setLong(1, getProcessPK());
          ResultSet rs = stmt.executeQuery();

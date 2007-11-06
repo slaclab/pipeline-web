@@ -10,7 +10,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
     <head>
-        <title>Pipeline status ktest</title>  
+        <title>Pipeline status</title>  
     </head>
     <body>    
         

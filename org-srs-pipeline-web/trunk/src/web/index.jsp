@@ -10,7 +10,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
     <head>
-        <title>Pipeline status</title>  
+        <title>Pipeline status ktest</title>  
     </head>
     <body>    
         
@@ -141,7 +141,7 @@
                 </c:forEach> 
             </c:if>
             <display:footer>  
-                <tr>  <td>Summary</td><td></td> <td></td>               
+                <tr> <strong> <td></td><td><strong>Totals</strong></td> <td></td>               
                     <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
                     <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
                     <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>

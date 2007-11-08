@@ -136,9 +136,8 @@
                     </c:forEach>
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> <td></td>
-                        <tr>  <td>Summary</td>
-                        <td></td>  
-                         <td></td> 
+                        <tr>  <td></td>
+                        <td></td>   <td><strong>Totals</strong></td>                         
                             <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
                             <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
                             <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>

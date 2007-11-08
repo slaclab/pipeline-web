@@ -175,7 +175,7 @@ Show all substreams summaries for the task in table form
         </display:column>
     </c:forEach>   
   <display:footer>
-    <tr><td>Summary</td><td></td><td></td>   
+        <tr><td></td><td></td><td><strong>Totals</strong></td>   
         <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
         <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${cancelledSum}</td>
            <td>${terminatedSum}</td>  <td>${skippedSum}</td> <tr>    

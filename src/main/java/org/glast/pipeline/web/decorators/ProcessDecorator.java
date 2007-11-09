@@ -146,7 +146,7 @@ public class ProcessDecorator extends TableDecorator
    public String getLastActive()
    {
       Map map = (Map) getCurrentRowObject();
-      Date date = (Date) map.get("Last Active");
+      Date date = (Date) map.get("LastActive");
       return date == null ? "-" : dateFormat.format(date);
    }
    public String getSubmitted()

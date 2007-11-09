@@ -6,8 +6,8 @@
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
         <title>Pipeline status</title>  
@@ -52,7 +52,7 @@
             <c:forEach var="row" items="${stream_stats.rows}">
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
             </c:forEach>
-            taskname, tasktype, 
+            taskname, tasktype, lastactive, 
             <c:if test="${versionGroup != 'allVersions'}">
                 Max(t.TASK) Task
             </c:if>
@@ -71,10 +71,10 @@
             </c:if>
             group by 
             <c:if test="${versionGroup == 'mergeVersions'}">
-                TaskName, TaskType 
+                TaskName, TaskType, LastActive
             </c:if>
             <c:if test="${versionGroup != 'mergeVersions'}">
-                TaskName, TaskType, t.TASK,VERSION,REVISION
+                TaskName, TaskType, LastActive, t.TASK,VERSION,REVISION
             </c:if>
             )
             where TASK>0 
@@ -94,7 +94,10 @@
             </c:if>
             <c:if test="${include=='active'}">
                 and ("RUNNING">0 or "QUEUED">0 or "WAITING">0)
-            </c:if>     
+            </c:if>    
+            <c:if test="${include=='last30'}">
+                and SYSDATE-LastActive<interval '30' day 
+            </c:if>   
         </sql:query>    
         
         <h2>Task Summary </h2>

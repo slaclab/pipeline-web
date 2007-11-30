@@ -35,19 +35,26 @@ public class Process
    
    
    /** Creates a new instance of Process */
-   public Process(Task _task, ResultSet rs) throws SQLException {
+   public Process(Task task, ResultSet rs) throws SQLException {
       try {
          processPK = rs.getLong("PROCESS");
          taskPK = rs.getLong("TASK");
          name = rs.getString("PROCESSNAME");
          type = rs.getString("PROCESSTYPE");
          
-         task = _task;
+         this.task = task;
       } finally {};
    }
 
    public void buildProcessStatusDependencyList(Connection conn) throws SQLException {
-      PreparedStatement stmt = conn.prepareStatement("select Process, ProcessingStatus from ProcessStatusCondition where DependentProcess = ?");
+      buildProcessCompletionDependencyList(conn, false/*by default, don't show hidden dependencies*/);
+   }
+
+   public void buildProcessStatusDependencyList(Connection conn, boolean displayHiddenDependencies) throws SQLException {
+      String query = "select Process, ProcessingStatus from ProcessStatusCondition where DependentProcess = ?";
+      if (!displayHiddenDependencies)
+         query += " and Hidden=0"; // Only select visible dependencies (those for which hidden=0/false)
+      PreparedStatement stmt = conn.prepareStatement(query);
       try {
          stmt.setLong(1, getProcessPK());
          ResultSet rs = stmt.executeQuery();
@@ -65,9 +72,9 @@ public class Process
       buildProcessCompletionDependencyList(conn, false/*by default, don't show hidden dependencies*/);
    }
 
-   public void buildProcessCompletionDependencyList(Connection conn, boolean includeHiddenDependencies) throws SQLException {
+   public void buildProcessCompletionDependencyList(Connection conn, boolean displayHiddenDependencies) throws SQLException {
       String query = "select Process from ProcessCompletionCondition where DependentProcess = ?";
-      if (!includeHiddenDependencies)
+      if (!displayHiddenDependencies)
          query += " and Hidden=0"; // Only select visible dependencies (those for which hidden=0/false)
       PreparedStatement stmt = conn.prepareStatement(query);
       try {

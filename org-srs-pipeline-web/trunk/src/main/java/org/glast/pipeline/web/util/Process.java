@@ -47,7 +47,7 @@ public class Process
    }
 
    public void buildProcessStatusDependencyList(Connection conn) throws SQLException {
-      buildProcessCompletionDependencyList(conn, false/*by default, don't show hidden dependencies*/);
+      buildProcessStatusDependencyList(conn, false/*by default, don't show hidden dependencies*/);
    }
 
    public void buildProcessStatusDependencyList(Connection conn, boolean displayHiddenDependencies) throws SQLException {

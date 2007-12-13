@@ -20,6 +20,24 @@
         session.setAttribute("plotColors",plotColors);
         session.setAttribute("numberPlotColors",plotColors.length);
         %>
+        <%-- see if all or only one plot is to be displayed and 
+         then set plotter ny & nx values accordingly --%>
+         
+        <c:if test = "${empty param.selectedPlot}"> 
+            <c:set var ="selectedPlot" value="ALL"/>
+            <c:set var="plotnumX" value="2" /> 
+            <c:set var="plotnumY" value="2"/>
+            <c:set var="plotheight" value="600"/>
+            <c:set var="plotwidth" value="600"/>
+        </c:if>
+        <c:if test = "${!empty param.selectedPlot}"> 
+            <c:set var ="selectedPlot" value="${param.selectedPlot}"/>
+            <c:set var="plotnumX" value="2" /> 
+            <c:set var="plotnumY" value="1" />
+            <c:set var="plotheight" value="400"/>
+            <c:set var="plotwidth" value="800"/>
+        </c:if>
+        
         <c:set var="lineSize" value="2"/>
         <sql:query var="datacheck">
             select createdate,startdate,enddate
@@ -69,45 +87,63 @@
                     <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp" value="${row.PROCESS}">
                         
                         <sql:query var="data">
-                            select enddate,startdate,submitdate,cpusecondsused,regexp_substr(lower(PI.executionhost), '^[a-z]+')executionhost
+                            select enddate,startdate,submitdate,cpusecondsused,
+                            regexp_substr(lower(PI.executionhost), '^[a-z]+')executionhost
                             from processinstance PI
                             where PI.process = ?
                             and PI.processingstatus = 'SUCCESS'
                             <sql:param value="${row.PROCESS}"/>
-                        </sql:query> 
+                        </sql:query>             
                         
                         <aida:tuple var="tuple" query="${data}" />    
-                        <aida:tupleProjection var="wallPlot" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60" />
                         
-                        <aida:plotter nx="2" ny="2" height="600" width="600">
-                            <aida:style>
-                                <aida:attribute name="statisticsBoxFontSize" value="8"/>
-                                <aida:style type="data">
-                                    <aida:attribute name="showErrorBars" value="false"/>   
-                                </aida:style>  
-                            </aida:style>
-                            <aida:region title="Wall Clock time (mins)">
-                                <aida:plot var="${wallPlot}"/>                     
-                            </aida:region>
-                            <c:if test="${row.processtype !='SCRIPT'}"> 
-                                <aida:region title="Pending time (mins)">
-                                    <aida:tupleProjection var="waitPlot" tuple="${tuple}" xprojection="(STARTDATE-SUBMITDATE)/60"/>
-                                    <aida:plot var="${waitPlot}"/>    			             
-                                </aida:region>
-                                <aida:region title="CPU time (mins)">
-                                    <aida:tupleProjection var="cpuSeconds" tuple="${tuple}" xprojection="CPUSECONDSUSED/60"/>   
-                                    <aida:plot var="${cpuSeconds}"/>    			             
-                                </aida:region>
-                                <aida:region title="CPU time/Wall Clock">
-                                    <aida:tupleProjection var="wallCpu" tuple="${tuple}" xprojection="CPUSECONDSUSED/(ENDDATE-STARTDATE)"/>               
-                                    <aida:plot var="${wallCpu}"/>    			             
-                                </aida:region>
-                            </c:if>  
-                        </aida:plotter>                         
-                        
+                        <%-- Don't plot this section if an single NODE plot is to be displayed
+                             to display plot at top of the web page ....--%>
+                        <c:if test="${param.nodeplot ne 'y'}">
+                            
+                            <aida:tupleProjection var="wallPlot" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60" />            
+                            <aida:plotter nx="${plotnumX}" ny="${plotnumY}" height="${plotheight}" width="${plotwidth}" createImageMap="true">
+                                <aida:style>
+                                    <aida:attribute name="statisticsBoxFontSize" value="8"/>
+                                    <aida:style type="data">
+                                        <aida:attribute name="showErrorBars" value="false"/>   
+                                    </aida:style>  
+                                </aida:style>
+                                
+                                <c:set var ="plotName" value ="wallPlot"/>
+                                <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >
+                                    <aida:region title="Wall Clock time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}" >
+                                        <aida:plot var="${wallPlot}"/>                     
+                                    </aida:region>
+                                </c:if>
+                                <c:if test="${row.processtype !='SCRIPT'}"> 
+                                    <c:set var ="plotName" value ="pendingPlot"/>
+                                    <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >                    
+                                        <aida:region title="Pending time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}" >
+                                            <aida:tupleProjection var="waitPlot" tuple="${tuple}" xprojection="(STARTDATE-SUBMITDATE)/60"/>
+                                            <aida:plot var="${waitPlot}"/>    			             
+                                        </aida:region>
+                                    </c:if>                          
+                                    <c:set var ="plotName" value ="cpuSecondsPlot"/>
+                                    <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >
+                                        <aida:region title="CPU time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}" >
+                                            <aida:tupleProjection var="cpuSeconds" tuple="${tuple}" xprojection="CPUSECONDSUSED/60"/>   
+                                            <aida:plot var="${cpuSeconds}"/>    			             
+                                        </aida:region>
+                                    </c:if>                          
+                                    <c:set var ="plotName" value ="cpuWallPlot"/>
+                                    <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >
+                                        <aida:region title="CPU time/Wall Clock" var="region" href="?selectedPlot=${plotName}&process=${row.process}" >
+                                            <aida:tupleProjection var="wallCpu" tuple="${tuple}" xprojection="CPUSECONDSUSED/(ENDDATE-STARTDATE)"/>               
+                                            <aida:plot var="${wallCpu}"/>    			             
+                                        </aida:region>
+                                    </c:if>  
+                                </c:if>  
+                            </aida:plotter>                         
+                        </c:if>  
                         <c:if test="${row.processtype !='SCRIPT'}">                                                         
                             <sql:query var="hostnode">           
-                                select distinct(regexp_substr(lower(PI.executionhost), '^[a-z]+') ) executionhost , P.task
+                                select distinct(regexp_substr(lower(PI.executionhost), '^[a-z]+') ) executionhost 
                                 from processinstance PI  ,process P
                                 where PI.process = P.process
                                 and PI.process = ?
@@ -119,7 +155,7 @@
                                 
                                 <br> <strong>  PLOTS by BATCH NODES</strong><br>
                                 
-                                <aida:plotter nx="2" ny="2" height="600" width="600">
+                                <aida:plotter nx="${plotnumX}" ny="${plotnumY}" height="${plotheight}" width="${plotwidth}" createImageMap="true">
                                     <aida:style>
                                         <aida:style type="statisticsBox">
                                             <aida:attribute name="isVisible" value="false"/>   
@@ -133,59 +169,72 @@
                                             </aida:style>  
                                         </aida:style>  
                                     </aida:style>
-                                    <aida:region title="Wall Clock time (mins)">
-                                        <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
-                                            <aida:tupleProjection  name="${rowB.executionhost}" var="wallPlot" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>
-                                            <aida:plot var="${wallPlot}">
-                                                <aida:style>
-                                                    <aida:style type="line">
-                                                        <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
-                                                        <aida:attribute name="thickness" value="${lineSize}"/>    
-                                                    </aida:style>                                                                  
-                                                </aida:style>                                                                                  
-                                            </aida:plot>                     
-                                        </c:forEach>                                        
-                                    </aida:region>
+                                    <c:set var ="plotName" value ="wallPlotNodes"/>
+                                    <c:if test="${selectedPlot == plotName or selectedPlot =='ALL'}" > 
+                                        <aida:region title="Wall Clock time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}&nodeplot=y" >
+                                            <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
+                                                <aida:tupleProjection  name="${rowB.executionhost}" var="wallPlot" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>
+                                                <aida:plot var="${wallPlot}">
+                                                    <aida:style>
+                                                        <aida:style type="line">
+                                                            <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
+                                                            <aida:attribute name="thickness" value="${lineSize}"/>    
+                                                        </aida:style>                                                                  
+                                                    </aida:style>                                                                                  
+                                                </aida:plot>                     
+                                            </c:forEach>                                        
+                                        </aida:region>
+                                    </c:if>
                                     <c:if test="${row.processtype !='SCRIPT'}"> 
-                                        <aida:region title="Pending time (mins)">
-                                            <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
-                                                <aida:tupleProjection  name="${rowB.executionhost}" var="waitPlot" tuple="${tuple}" xprojection="(STARTDATE-SUBMITDATE)/60" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>
-                                                <aida:plot var="${waitPlot}">
-                                                    <aida:style>
-                                                        <aida:style type="line">
-                                                            <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
-                                                            <aida:attribute name="thickness" value="${lineSize}"/>    
-                                                        </aida:style>                                                                  
-                                                    </aida:style>                                                                                                                                      
-                                                </aida:plot>    			             
-                                            </c:forEach>                                        
-                                        </aida:region>
-                                        <aida:region title="CPU time (mins)">
-                                            <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
-                                                <aida:tupleProjection name="${rowB.executionhost}" var="cpuSeconds" tuple="${tuple}" xprojection="CPUSECONDSUSED/60" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>   
-                                                <aida:plot var="${cpuSeconds}">
-                                                    <aida:style>
-                                                        <aida:style type="line">
-                                                            <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
-                                                            <aida:attribute name="thickness" value="${lineSize}"/>    
-                                                        </aida:style>                                                                  
-                                                    </aida:style>                                                                                                                                      
-                                                </aida:plot>
-                                            </c:forEach>                                        
-                                        </aida:region>
-                                        <aida:region title="CPU time/Wall Clock">
-                                            <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
-                                                <aida:tupleProjection name="${rowB.executionhost}" var="wallCpu" tuple="${tuple}" xprojection="CPUSECONDSUSED/(ENDDATE-STARTDATE)" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>               
-                                                <aida:plot var="${wallCpu}">                                               
-                                                    <aida:style>
-                                                        <aida:style type="line">
-                                                            <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
-                                                            <aida:attribute name="thickness" value="${lineSize}"/>    
-                                                        </aida:style>                                                                  
-                                                    </aida:style>                                                                                                                                      
-                                                </aida:plot>    			             
-                                            </c:forEach>                                        
-                                        </aida:region>  
+                                        <c:set var ="plotName" value ="waitPlotNodes"/>
+                                        <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >
+                                            
+                                            <aida:region title="Pending time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}&nodeplot=y">
+                                                <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
+                                                    <aida:tupleProjection  name="${rowB.executionhost}" var="waitPlot" tuple="${tuple}" xprojection="(STARTDATE-SUBMITDATE)/60" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>
+                                                    <aida:plot var="${waitPlot}">
+                                                        <aida:style>
+                                                            <aida:style type="line">
+                                                                <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
+                                                                <aida:attribute name="thickness" value="${lineSize}"/>    
+                                                            </aida:style>                                                                  
+                                                        </aida:style>                                                                                                                                      
+                                                    </aida:plot>    			             
+                                                </c:forEach>                                        
+                                            </aida:region>
+                                        </c:if>
+                                        <c:set var ="plotName" value ="cpuSecondsPlotNodes"/>
+                                        <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >
+                                            <aida:region title="CPU time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}&nodeplot=y">
+                                                <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
+                                                    <aida:tupleProjection name="${rowB.executionhost}" var="cpuSeconds" tuple="${tuple}" xprojection="CPUSECONDSUSED/60" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>   
+                                                    <aida:plot var="${cpuSeconds}">
+                                                        <aida:style>
+                                                            <aida:style type="line">
+                                                                <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
+                                                                <aida:attribute name="thickness" value="${lineSize}"/>    
+                                                            </aida:style>                                                                  
+                                                        </aida:style>                                                                                                                                      
+                                                    </aida:plot>
+                                                </c:forEach>                                        
+                                            </aida:region>
+                                        </c:if>
+                                        <c:set var ="plotName" value ="wallCpuPlotNodes"/>
+                                        <c:if test="${selectedPlot == plotName or selectedPlot =='ALL' }" >
+                                            <aida:region title="CPU time/Wall Clock" var="region" href="?selectedPlot=${plotName}&process=${row.process}&nodeplot=y">
+                                                <c:forEach var="rowB" items="${hostnode.rows}" varStatus="status">
+                                                    <aida:tupleProjection name="${rowB.executionhost}" var="wallCpu" tuple="${tuple}" xprojection="CPUSECONDSUSED/(ENDDATE-STARTDATE)" filter="EXECUTIONHOST == \"${rowB.executionhost}\" "/>               
+                                                    <aida:plot var="${wallCpu}">                                               
+                                                        <aida:style>
+                                                            <aida:style type="line">
+                                                                <aida:attribute name="color" value="${plotColors[status.index%numberPlotColors]}"/>    
+                                                                <aida:attribute name="thickness" value="${lineSize}"/>    
+                                                            </aida:style>                                                                  
+                                                        </aida:style>                                                                                                                                      
+                                                    </aida:plot>    			             
+                                                </c:forEach>                                        
+                                            </aida:region>  
+                                        </c:if>
                                     </c:if>  
                                 </aida:plotter> 
                             </c:if>

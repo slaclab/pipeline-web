@@ -1,3 +1,4 @@
+
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%--
@@ -21,6 +22,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
     </head>
     
     <body>
+        <%-- data is collected by Randy Melen/SCCS and dumped into /nfs/farm/g/glast/u15/BatchShares --%>
         
         <h1>Batch Fair Shares Page</h1>
         
@@ -47,8 +49,6 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             <c:set var="selectedData" value="cpu_secs" scope="session" />
             <c:set var="availableData" value="${fn:split('cpu_secs,priority,reserved,shares,started,wall_clock',',')}" scope="session"/>
             <c:set var="availableColors" value="${fn:split('blue,red,orange,black,green,brown,yellow,pink',',')}" scope="session"/>
-            
-            
         </c:if>   
         
         <%--
@@ -93,6 +93,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         
         <c:set var="maxbins" value="100"/>
         
+        <%-- 900 epoch seconds is Jan. 1st, 1970 , unix time --%>
         <c:set var="deltatime" value="${ ( (fairShareEndTime - fairShareBeginTime )/1000 )/maxbins }"/>
         <c:set var="deltatime" value="${ deltatime > 900 ? deltatime : 900 }"/>
         
@@ -142,7 +143,9 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <%--
         <table>
         --%>
+  
             <c:forEach items="${paramValues.listofdata}" var="listOfDataItem">
+             
                 <%--
                 <tr>
                     <td>
@@ -251,22 +254,29 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                                         <sql:dateParam value="${stopTime}"/>
                                         <sql:param value="${deltatime}" />
                                     </sql:query>
-                                    
-                                    <aida:tuple var="tuple" query="${batchDBInfo}"/>        
-                                    <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
-                                    
-                                    <aida:plot var="${plot}">
-                                        <aida:style>        
-                                            <aida:style type="marker">
-                                                <aida:attribute name="color" value="${availableColors[status.index]}"/>
-                                                <aida:attribute name="shape" value="dot"/>
-                                            </aida:style>
-                                            <aida:style type="outline">
-                                                <aida:attribute name="color" value="${availableColors[status.index]}"/>
-                                            </aida:style>
-                                        </aida:style>
-                                    </aida:plot>
-                                    
+           
+                                    <%-- show data otherwise put out "no data message" --%>
+                                    <c:choose>
+                                        <c:when test="${fn:length(batchDBInfo.rows) > 0 }" >
+                                            <aida:tuple var="tuple" query="${batchDBInfo}"/>        
+                                            <aida:datapointset var="plot" tuple="${tuple}" yaxisColumn="${fn:toUpperCase(listOfDataItem)}" xaxisColumn="SNAPSHOT_DATE" title="${group}"/>   
+                                            
+                                            <aida:plot var="${plot}">
+                                                <aida:style>        
+                                                    <aida:style type="marker">
+                                                        <aida:attribute name="color" value="${availableColors[status.index]}"/>
+                                                        <aida:attribute name="shape" value="dot"/>
+                                                    </aida:style>
+                                                    <aida:style type="outline">
+                                                        <aida:attribute name="color" value="${availableColors[status.index]}"/>
+                                                    </aida:style>
+                                                </aida:style>
+                                            </aida:plot>
+                                        </c:when>
+                                        <c:when test="${fn:length(batchDBInfo.rows) < 1 }" >
+                                            <h3><font color=red>No data for "${group}".</font> Batch shares data uploaded once an evening around midnight.</h3>
+                                        </c:when>
+                                    </c:choose>
                                 </c:forEach>
                                 
                             </aida:region>

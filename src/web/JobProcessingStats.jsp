@@ -1,6 +1,5 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -8,6 +7,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
    <head>
       <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
@@ -63,7 +63,6 @@
       
       <form name="DateForm">        
          <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
-            
             <tr bordercolor="#000000" bgcolor="#FFCC66">               
                <td colspan="5"><strong>Select Task</strong>:                 
                <select name="taskName">
@@ -161,10 +160,12 @@
             <aida:tuple var="tuple" query="${data}"/>        
             <aida:datapointset var="ready" tuple="${tuple}" yaxisColumn="READY" xaxisColumn="ENTERED" />   
             <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="ENTERED" />   
-            <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />   
+            <aida:datapointset var="running" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />
             <aida:region title= "Task: ${sessionTaskName}" >
                <aida:style>
-                  <aida:attribute name="showStatisticsBox" value="false"/>		        
+                  <aida:style type="legendBox">
+                     <aida:attribute name="isVisible" value="false"/>
+                  </aida:style>
                   <aida:style type="xAxis">
                      <aida:attribute name="label" value=""/>
                      <aida:attribute name="type" value="date"/>
@@ -175,29 +176,51 @@
                </aida:style>   
                
                <aida:plot var="${ready}">
-                  <aida:style>        
-                     <aida:attribute name="lineBetweenPointsColor" value="blue"/>
-                     <aida:style type="marker">
-                        <aida:attribute name="color" value="blue"/>
-                        <aida:attribute name="shape" value="box"/>
+                  <aida:style type="plotter"> 
+                     <aida:style type="yAxis">
+                        <aida:attribute name="yAxis" value="Y1"/>
+                        <aida:attribute name="label" value="Ready"/>
+                        <aida:attribute name="allowZeroSuppression" value="false"/>
+                     </aida:style>
+                     <aida:style type="data">
+                        <aida:style type="outline">
+                           <aida:attribute name="color" value="blue"/>
+                        </aida:style>
+                        <aida:style type="marker">
+                           <aida:attribute name="color" value="blue"/>
+                           <aida:attribute name="shape" value="box"/>
+                        </aida:style>
                      </aida:style>
                   </aida:style>
                </aida:plot>
                <aida:plot var="${submitted}">
-                  <aida:style>        
-                     <aida:attribute name="lineBetweenPointsColor" value="red"/>
-                     <aida:style type="marker">
-                        <aida:attribute name="color" value="red"/>
-                        <aida:attribute name="shape" value="triangle"/>
+                  <aida:style type="plotter">
+                     <aida:style type="yAxis">
+                        <aida:attribute name="yAxis" value="Y0"/>
+                        <aida:attribute name="label" value="Running/Submitted"/>
+                        <aida:attribute name="allowZeroSuppression" value="false"/>
+                     </aida:style>
+                     <aida:style type="data">
+                        <aida:style type="outline">
+                           <aida:attribute name="color" value="red"/>
+                        </aida:style>
+                        <aida:style type="marker">
+                           <aida:attribute name="color" value="red"/>
+                           <aida:attribute name="shape" value="triangle"/>
+                        </aida:style>
                      </aida:style>
                   </aida:style>
                </aida:plot>
                <aida:plot var="${running}">
-                  <aida:style>        
-                     <aida:attribute name="lineBetweenPointsColor" value="green"/>
-                     <aida:style type="marker">
-                        <aida:attribute name="color" value="green"/>
-                        <aida:attribute name="shape" value="dot"/>
+                  <aida:style type="plotter">   
+                     <aida:style type="data">
+                        <aida:style type="outline">
+                           <aida:attribute name="color" value="green"/>
+                        </aida:style>
+                        <aida:style type="marker">
+                           <aida:attribute name="color" value="green"/>
+                           <aida:attribute name="shape" value="dot"/>
+                        </aida:style>
                      </aida:style>
                   </aida:style>
                </aida:plot>
@@ -247,9 +270,9 @@
                         <sql:param value="${groupby}"/>
                      </c:if>   		 
                   </sql:query>
-                                    
+                  
                   <c:if test="${fn:length(taskdata.rows) > 0}"> 
-                                          
+                     
                      <aida:tuple var="tuple" query="${taskdata}"/>        
                      <aida:datapointset var="running" title="${tasklist}" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />   
                      

@@ -28,7 +28,7 @@
          <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
       </c:catch>
       <c:if test="${!empty error}">
-         <p>Log file not found at</p>
+         <p>Log file not found.</p>
       </c:if>
    </body>
 </html>

@@ -13,10 +13,14 @@
       <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 
       <sql:query var="name">
-         select WORKINGDIR from PROCESSINSTANCE where PROCESSINSTANCE=?
+         select WORKINGDIR,JOBSITE from PROCESSINSTANCE where PROCESSINSTANCE=?
          <sql:param value="${processInstance}"/>           
       </sql:query>
-      <c:set var="logURL" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
+      <c:set var="workingDir" value="${name.rows[0]['WORKINGDIR']}"/>
+      <c:if test="${name.rows[0]['JOBSITE']=='LYON'}">
+         <c:set var="workingDir" value="${fn:replace(workingDir,'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
+      </c:if>
+      <c:set var="logURL" value="${fn:replace(workingDir,'/nfs/farm/g/glast/','ftp://ftp-glast.slac.stanford.edu/glast.')}"/>
       <c:if test="${!empty logURL}">
          <c:redirect url="${logURL}"/>
       </c:if>

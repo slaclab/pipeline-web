@@ -13,7 +13,7 @@
         <title>Pipeline status</title>
     </head>
     <body>
-        
+        TEST TEST TEST
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
@@ -113,8 +113,12 @@
                 
                 <sql:query var="test">select 
                     <c:forEach var="row" items="${proc_stats.rows}">
-                        SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
+                        SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",                        
                     </c:forEach>
+                    <c:forEach var="row" items="${proc_stats.rows}">
+                        SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) +                       
+                    </c:forEach>
+                     0 "totalProcesses",
                     lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
                     from PROCESS 
                     join (               
@@ -127,18 +131,19 @@
                     order by task, process               
                     <sql:param value="${task}"/>
                 </sql:query>
-                <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+                <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
                     <display:column property="TaskName" title="Task"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/>     
                     <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
                     <display:column property="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
                     <c:forEach var="row" items="${proc_stats.rows}">
                         <display:column property="${row.PROCESSINGSTATUS}"total="true" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
+                      <display:column property="totalProcesses" title="Total Processes" />
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> <td></td>
                         <tr>  <td></td>
-                        <td></td>   <td><strong>Totals</strong></td>                         
-                            <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
+                        <td></td>   <td><strong>Totals</strong></td>                                                
+                           <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
                             <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
                             <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>
                             <td><fmt:formatNumber type="number" value="${totals.column7}" /></td>
@@ -148,7 +153,7 @@
                             <td><fmt:formatNumber type="number" value="${totals.column11}" /></td>
                             <td><fmt:formatNumber type="number" value="${totals.column12}" /></td>
                            <td><fmt:formatNumber type="number"value="${totals.column13}" /></td>  <tr>                       
-                    </display:footer> 
+                    </display:footer>                  
                 </display:table>            
             </c:otherwise>
         </c:choose>

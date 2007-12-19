@@ -46,6 +46,14 @@
             <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == '0' ? '' : param.status}" scope="session"/></c:if>
          </c:otherwise>
       </c:choose>
+      <c:choose>
+           <c:when test="${!empty param.dateCategory}">
+               <c:set var="dateCategory" value="${param.dateCategory}"  scope="session"/>
+      </c:when>
+         <c:otherwise>
+             <c:set var="dateCategory" value="createdate"  scope="session"/>
+         </c:otherwise>  
+         </c:choose> 
       
       <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
       <sql:query var="test">
@@ -109,12 +117,12 @@
             <sql:param value="${param.pstream}"/>
          </c:if>
          <c:if test="${!empty minDate && minDate!='None'}"> 
-            and CREATEDATE>=?
+            and ${dateCategory}  >=?
             <fmt:parseDate value="${minDate}" pattern="MM/dd/yyyy" var="minDateUsed"/>
             <sql:dateParam value="${minDateUsed}" type="date"/> 
          </c:if>
          <c:if test="${!empty maxDate && maxDate!='None'}">
-            and CREATEDATE<=?
+            and ${dateCategory} <=?
             <fmt:parseDate value="${maxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
             <% java.util.Date d = (java.util.Date) pageContext.getAttribute("maxDateUsed");
             d.setTime(d.getTime()+24*60*60*1000);
@@ -129,7 +137,7 @@
       
       <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
       <form name="DateForm">
-         <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
+         <table class="filtertable"><tr><th>Stream</th><td>Min <input type="text" name="min" value="${min}"></td><td>Max <input type="text" name="max" value="${max}"></td> 
                <td>Status: <select size="3" name="status" multiple>
                      <option value="" ${status=="" ? "selected" : ""}>All</option>
                      <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option>                            
@@ -144,8 +152,16 @@
                      </c:forEach>                         
                      
             </select></td></tr>
-            <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
-               <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
+             <tr>  
+             <td><th>Select     <select size="1" name="dateCategory">
+                  <option value="createdate"${dateCategory == "createdate" ? "selected" : "" }>Created Date</option>
+                  <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
+                  <option value="startdate"${dateCategory == "startdate" ? "selected" : "" }>Started Date</option>
+                  <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
+             </select> </th></td>
+           
+            <td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
+               <td>End <td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
                <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
             <input type="hidden" name="process" value="${process}"></td></tr>
             <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>

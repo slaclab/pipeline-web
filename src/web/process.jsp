@@ -167,14 +167,14 @@
                             
                 </select></td></tr>
                 <tr>  
-                    <td><th>Select     <select size="1" name="dateCategory">
+                    <td><select size="1" name="dateCategory">
                                 <option value="createdate"${dateCategory == "createdate" ? "selected" : "" }>Created Date</option>
                                 <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
                                 <option value="startdate"${dateCategory == "startdate" ? "selected" : "" }>Started Date</option>
                                 <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
-                    </select> </th></td>
-                    <td>  <utils:dateTimePicker value="${minDate}" size="18" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-                    <td>  <utils:dateTimePicker value="${maxDate}" size="18" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                    </select> </td>
+                    <td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                    <td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
                     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                 <input type="hidden" name="process" value="${process}"></td></tr>
                 <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>

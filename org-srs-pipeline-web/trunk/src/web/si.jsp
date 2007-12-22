@@ -11,7 +11,7 @@
 
 <html>
 <head>
-   <title>111 Pipeline status</title>
+   <title>Pipeline status</title>
 </head>
 <body>
 

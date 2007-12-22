@@ -170,8 +170,8 @@ Show all substreams summaries for the task in table form
   <display:footer>
         </td><td></td><td><strong>Totals</strong></td>   
         <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
-        <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${cancelledSum}</td>
-           <td>${terminatedSum}</td>  <td>${skippedSum}</td> <tr>    
+        <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${terminatedSum}</td>
+           <td>${cancelledSum}</td>  <td>${skippedSum}</td> <tr>    
   </display:footer>
 </display:table>
 

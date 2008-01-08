@@ -26,23 +26,14 @@
         <p><a href="P2stats.jsp?process=${process}">Processing plots</a><!--&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a>--></p>
         
         <pt:taskSummary streamCount="runCount"/>
-        
-        <c:set var="minDate" value="${param.minDate}" />
-        <c:set var="maxDate" value="${param.maxDate}" />
-        <c:if test="${empty minDate}" > 
-            <c:set var="minDate" value="-1" />
-        </c:if>
-        <c:if test="${empty maxDate}" > 
-            <c:set var="maxDate" value="-1" />
-        </c:if>
-        
-        <c:set var="startNumber" value="${ empty param.minDate ? minDate : param.minDate}" scope="session"/>
-        <c:set var="endNumber" value="${ empty param.maxDate ? maxDate : param.maxDate}" scope="session"/>       
+   
+        <c:set var="minDate" value="${ empty param.minDate ? '-1' : param.minDate}" scope="session"/>
+        <c:set var="maxDate" value="${ empty param.maxDate ? '-1' : param.maxDate}" scope="session"/>       
         
         <jsp:useBean id="startDate" class="java.util.Date" /> 
-        <jsp:setProperty name="startDate" property="time" value="${startNumber}" /> 	  
+        <jsp:setProperty name="startDate" property="time" value="${minDate}" /> 	  
         <jsp:useBean id="endDate" class="java.util.Date" /> 
-        <jsp:setProperty name="endDate" property="time" value="${endNumber}" /> 	  
+        <jsp:setProperty name="endDate" property="time" value="${maxDate}" /> 	  
         
         <c:choose>
             <c:when test="${!empty param.clear}">
@@ -73,7 +64,7 @@
         </c:choose> 
         
         <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
-        
+  
         <sql:query var="test">
             select * from 
             ( 
@@ -135,13 +126,13 @@
                 <sql:param value="${param.pstream}"/>
             </c:if>        
             
-            <c:if test="${minDate != -1}"> 
+            <c:if test="${minDate != '-1'}"> 
                 and ${dateCategory}  >=  ?            
-                <sql:dateParam value="${startDate}" type="date"/> 
+                <sql:dateParam value="${startDate}" type="timestamp"/> 
             </c:if>
-            <c:if test="${ maxDate != -1}">
+            <c:if test="${maxDate != '-1'}">
                 and ${dateCategory} <=  ?              
-                <sql:dateParam value="${endDate}" type="date"/> 
+                <sql:dateParam value="${endDate}" type="timestamp"/> 
             </c:if>            
         </sql:query>
         
@@ -151,7 +142,9 @@
         
         <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
         <form name="DateForm">
-            <table class="filtertable"><tr><th>Stream</th><td>Min <input type="text" name="min" value="${min}"></td><td>Max <input type="text" name="max" value="${max}"></td> 
+            <table class="filtertable" >
+                <tr><th>Stream</th><td>Min <input type="text" name="min" value="${min}"></td>
+                <td>Max <input type="text" name="max" value="${max}"></td> 
                     <td>Status: <select size="3" name="status" multiple>
                             <option value="" ${status=="" ? "selected" : ""}>All</option>
                             <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option>                            
@@ -164,17 +157,21 @@
                                 </c:forEach>   
                                 <option value="${row.PROCESSINGSTATUS}" ${found == "1" ? "selected" : "" }>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>                                                                
                             </c:forEach>                         
-                            
-                </select></td></tr>
+                       </select>      
+               </td></tr>
                 <tr>  
+
                     <td><select size="1" name="dateCategory">
+
                                 <option value="createdate"${dateCategory == "createdate" ? "selected" : "" }>Created Date</option>
                                 <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
                                 <option value="startdate"${dateCategory == "startdate" ? "selected" : "" }>Started Date</option>
                                 <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
+
                     </select> </td>
                     <td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
                     <td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+
                     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                 <input type="hidden" name="process" value="${process}"></td></tr>
                 <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>

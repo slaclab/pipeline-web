@@ -111,14 +111,10 @@
                 <p>To filter by status click on the count in the status column. To see all streams click on the name in the Name column.</p>   
                 <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}&status=0">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
                 
-                <sql:query var="test">select 
+                <sql:query var="test">select   SUM(1) "ALL",
                     <c:forEach var="row" items="${proc_stats.rows}">
                         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",                        
                     </c:forEach>
-                    <c:forEach var="row" items="${proc_stats.rows}">
-                        SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) +                       
-                    </c:forEach>
-                     0 "totalProcesses",
                     lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
                     from PROCESS 
                     join (               
@@ -138,7 +134,7 @@
                     <c:forEach var="row" items="${proc_stats.rows}">
                         <display:column property="${row.PROCESSINGSTATUS}"total="true" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
-                      <display:column property="totalProcesses" title="Total Processes" />
+                             <display:column property="all" title="Total Processes" />
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> <td></td>
                         <tr>  <td></td>

@@ -52,10 +52,7 @@
             <c:forEach var="row" items="${stream_stats.rows}">
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
             </c:forEach>
-             <c:forEach var="row" items="${stream_stats.rows}">
-                        SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) +                       
-                    </c:forEach>
-                     0 "totalStreams",
+             
             taskname, tasktype, lastactive, 
             <c:if test="${versionGroup != 'allVersions'}">
                 Max(t.TASK) Task
@@ -147,7 +144,8 @@
                                     total="true" sortable="true" headerClass="sortable"   href="streams.jsp?status=${row.streamSTATUS}" paramId="task" paramProperty="task" />             
                 </c:forEach> 
             </c:if>
-             <display:column property="totalStreams" title="Total Streams" sortable="true" headerClass="sortable" />
+          
+         <display:column property="all" title="ALL Streams" sortable="true" headerClass="sortable" />
          
             <display:footer>  
                 <tr> <strong> <td></td><td></td><td><strong>Totals</strong></td>              

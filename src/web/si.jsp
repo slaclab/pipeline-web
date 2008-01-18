@@ -111,7 +111,7 @@ Show all substreams summaries for the task in table form
    select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
 </sql:query>
 
-<sql:query var="streamset">select 
+<sql:query var="streamset">select SUM(1) "ALL",
    <c:forEach var="row" items="${proc_stats.rows}">
       SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",
    </c:forEach>
@@ -167,6 +167,7 @@ Show all substreams summaries for the task in table form
             <a href="process.jsp?status=${row.PROCESSINGSTATUS}&pstream=${param.stream}&process=${tableRow.Process}">${tableRow[row.PROCESSINGSTATUS]}</a>      
         </display:column>
     </c:forEach>   
+     <display:column property="all" title="Total Processes" />
   <display:footer>
         </td><td></td><td><strong>Totals</strong></td>   
         <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>

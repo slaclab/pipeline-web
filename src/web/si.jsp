@@ -89,6 +89,9 @@
 <sql:query var="test">SELECT taskname, stream, streamid, Initcap(streamstatus) streamStatus, createDate, StartDate, EndDate FROM stream 
    join task using (task)
    where  parentstream = ? 
+   <c:if test="${showLatest}"> 
+      and isLatest=1
+   </c:if >
    order by task, streamid
    <sql:param value="${param.stream}"/>    
 </sql:query>

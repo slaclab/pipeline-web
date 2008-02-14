@@ -5,8 +5,9 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
-<%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
+<%@taglib tagdir="/WEB-INF/tags" prefix="pt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
@@ -125,7 +126,12 @@
             </table>
         </form>      
         <br> 
-        <display:table class="datatable" name="${test.rows}"  id="tableRow" varTotals="totals"  defaultsort="${preferences.defaultSort}" defaultorder="${empty preferences.defaultOrder ? 'descending' : preferences.defaultOrder}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+        <utils:listFilter var="filtered" items="${test.rows}">
+           <utils:accept test="${item.taskType=='MC'}"/>
+        </utils:listFilter>
+        
+        
+        <display:table class="datatable" name="${filtered}"  id="tableRow" varTotals="totals"  defaultsort="${preferences.defaultSort}" defaultorder="${empty preferences.defaultOrder ? 'descending' : preferences.defaultOrder}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
             <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
             <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
             <display:column property="taskType" title="Type" sortable="true" headerClass="sortable" />

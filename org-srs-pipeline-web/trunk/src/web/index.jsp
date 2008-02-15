@@ -61,8 +61,10 @@
                 t.TASK,VERSION,REVISION 
             </c:if>		
             from TASK t
+            
             left outer join STREAM s on s.TASK=t.TASK and s.isLatest=1
-            where PARENTTASK = 0
+            where PARENTTASK = 0 
+              and t.TASKSTATUS = 'ACTIVE' 
             <c:if test="${versionGroup == 'latestVersions'}">
                 and t.version = 
                 (select distinct max(version) from  task t1 where t1.taskname = t.taskname)
@@ -79,6 +81,7 @@
             </c:if>
             )
             where TASK>0 
+          
             <c:if test="${!empty taskFilter && !regExp}">
                 and lower("TASKNAME") like lower(?)
                 <sql:param value="%${taskFilter}%"/>

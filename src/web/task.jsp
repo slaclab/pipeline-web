@@ -13,7 +13,6 @@
         <title>Pipeline status</title>
     </head>
     <body>
-        TEST TEST TEST
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>

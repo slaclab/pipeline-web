@@ -9,14 +9,52 @@
       
       See also the <a href="https://jira.slac.stanford.edu/browse/PFE?report=com.atlassian.jira.plugin.system.project:changelog-panel">JIRA change log</a>.
       
-      <h1>Release Notes - Pipeline Front End - Version 2.3</h1>
-        
+      <h1>Release Notes - Pipeline Front End - Version 2.5</h1>
+      
+      <h2>Bug</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-120'>PFE-120</a>] - Stream Execution Number column header label is "Stream#"  should be "Exec#" or similar.</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-137'>PFE-137</a>] - Clicking on summary plots for L1Proc does not work</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-143'>PFE-143</a>] - Show CPU split by node type in usage plots</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-144'>PFE-144</a>] - Add ability to filter on time range to the message log viewer</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-146'>PFE-146</a>] - Links to working dirs, log files does not work for remote sites (IN2P3)</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-147'>PFE-147</a>] - On fair-share page the "time" component of the end-date does not appear to work</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-151'>PFE-151</a>] - "Show only latest execution" toggle doesn't fully work in stream view</li>
+      </ul>
+      
       <h2>Improvement</h2>
       <ul>
-      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-84'>PFE-84</a>] - User customizations</li>
-      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-128'>PFE-128</a>] - apply stream filter to task view</li>
-      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-130'>PFE-130</a>] - "not SUCCESS" filter</li>
-      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-131'>PFE-131</a>] - Pipeline II Status page poor performance</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-117'>PFE-117</a>] - Reorder streams on PII web page</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-148'>PFE-148</a>] - Add "total" column to process table</li>
+      </ul>
+      
+      <h2>New Feature</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-31'>PFE-31</a>] - Save user preferences to a database, and init new sessions with this data</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-40'>PFE-40</a>] - Processing Display by Run & TP</li>
+      </ul>
+      
+      <h1>Release Notes - Pipeline Front End - Version 2.4</h1>
+      
+      <h2>Improvement</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-138'>PFE-138</a>] - Add heirarhical display of processes to stream view</li>
+      </ul>
+      
+      <h2>Task</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-141'>PFE-141</a>] - Don't display hidden dependencies</li>
+      </ul>
+      
+      
+      <h1>Release Notes - Pipeline Front End - Version 2.3</h1>
+      
+      <h2>Improvement</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-84'>PFE-84</a>] - User customizations</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-128'>PFE-128</a>] - apply stream filter to task view</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-130'>PFE-130</a>] - "not SUCCESS" filter</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-131'>PFE-131</a>] - Pipeline II Status page poor performance</li>
       </ul>
       
       <h1>Release Notes - Pipeline Front End - Version 2.2.2</h1>

@@ -91,9 +91,8 @@
                         <aida:region title="Wait time (mins)">
                             <aida:plot var="${wait}"/>                     
                         </aida:region>
-
-                     
-                        <aida:region title= "Task Throughput" >
+                   
+                        <aida:region title= "Task Throughput" colSpan="2">
                            <aida:style>
                               <aida:style type="legendBox">
                                  <aida:attribute name="isVisible" value="false"/>

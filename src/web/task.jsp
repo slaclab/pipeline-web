@@ -133,7 +133,7 @@
                     <c:forEach var="row" items="${proc_stats.rows}">
                         <display:column property="${row.PROCESSINGSTATUS}"total="true" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
-                             <display:column property="all" title="Total Processes" />
+                             <display:column property="all" title="Total" />
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> <td></td>
                         <tr>  <td></td>

@@ -170,7 +170,7 @@ Show all substreams summaries for the task in table form
             <a href="process.jsp?status=${row.PROCESSINGSTATUS}&pstream=${param.stream}&process=${tableRow.Process}">${tableRow[row.PROCESSINGSTATUS]}</a>      
         </display:column>
     </c:forEach>   
-     <display:column property="all" title="Total Processes" />
+     <display:column property="all" title="Total" />
   <display:footer>
         </td><td></td><td><strong>Totals</strong></td>   
         <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>

@@ -148,7 +148,7 @@
                 </c:forEach> 
             </c:if>
           
-         <display:column property="all" title="Total Streams" sortable="true" headerClass="sortable" />
+         <display:column property="all" title="Total" sortable="true" headerClass="sortable" />
          
             <display:footer>  
                 <tr> <strong> <td></td><td></td><td><strong>Totals</strong></td>              

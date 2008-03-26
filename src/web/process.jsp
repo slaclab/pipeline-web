@@ -25,44 +25,22 @@
         
         <p><a href="P2stats.jsp?process=${process}">Processing plots</a><!--&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a>--></p>
         
-        <pt:taskSummary streamCount="runCount"/>
-   
-        <c:set var="minDate" value="${ empty param.minDate ? '-1' : param.minDate}" scope="session"/>
-        <c:set var="maxDate" value="${ empty param.maxDate ? '-1' : param.maxDate}" scope="session"/>       
-        
-        <jsp:useBean id="startDate" class="java.util.Date" /> 
-        <jsp:setProperty name="startDate" property="time" value="${minDate}" /> 	  
-        <jsp:useBean id="endDate" class="java.util.Date" /> 
-        <jsp:setProperty name="endDate" property="time" value="${maxDate}" /> 	  
-        
-        <c:choose>
-            <c:when test="${!empty param.clear}">
-                <c:set var="min" value=""  scope="session"/>
-                <c:set var="max" value="" scope="session"/>
-                <c:set var="minDate" value="" scope="session"/>
-                <c:set var="maxDate" value="" scope="session"/> 
-                <c:set var="status" value="" scope="session"/>
-            </c:when>
-            <c:when test="${!empty param.submit}">
-                <c:set var="min" value="${param.min}" scope="session"/>
-                <c:set var="max" value="${param.max}" scope="session"/>
-                <c:set var="minDate" value="${param.minDate}" scope="session"/>
-                <c:set var="maxDate" value="${param.maxDate}" scope="session"/>
-                <c:set var="status" value="${param.status}" scope="session"/>
-            </c:when>
-            <c:otherwise>
-                <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == '0' ? '' : param.status}" scope="session"/></c:if>
-            </c:otherwise>
-        </c:choose>
-        <c:choose>
-            <c:when test="${!empty param.dateCategory}">
-                <c:set var="dateCategory" value="${param.dateCategory}"  scope="session"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="dateCategory" value="createdate"  scope="session"/>
-            </c:otherwise>  
-        </c:choose> 
-        
+        <pt:taskSummary streamCount="runCount"/>      
+
+        <c:set var="min" value="${param.min}"/>
+        <c:set var="max" value="${param.max}"/>
+        <c:set var="minDate" value="${!empty param.minDate ? param.minDate : -1}"/>
+        <c:set var="maxDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
+        <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
+
+        <c:if test="${!empty param.clear}">
+          <c:set var="min" value=""/>
+          <c:set var="max" value=""/>
+          <c:set var="minDate" value="-1"/>
+          <c:set var="maxDate" value="-1"/> 
+          <c:set var="status" value=""/>
+        </c:if>
+        <c:set var="dateCategory" value="${empty param.dateCategory ? 'createdate' : param.dateCategory}"/>        
         <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
   
         <sql:query var="test">
@@ -127,12 +105,16 @@
             </c:if>        
             
             <c:if test="${minDate != '-1'}"> 
-                and ${dateCategory}  >=  ?            
+                and ${dateCategory}  >=  ?
+                <jsp:useBean id="startDate" class="java.util.Date" /> 
+                <jsp:setProperty name="startDate" property="time" value="${minDate}" /> 	  
                 <sql:dateParam value="${startDate}" type="timestamp"/> 
             </c:if>
             <c:if test="${maxDate != '-1'}">
-                and ${dateCategory} <=  ?              
-                <sql:dateParam value="${endDate}" type="timestamp"/> 
+                and ${dateCategory} <=  ?
+                <jsp:useBean id="endDate" class="java.util.Date" />
+                <jsp:setProperty name="endDate" property="time" value="${maxDate}" />
+                <sql:dateParam value="${endDate}" type="timestamp"/>
             </c:if>            
         </sql:query>
         

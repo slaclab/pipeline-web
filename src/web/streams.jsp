@@ -4,7 +4,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="util" %>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
@@ -20,25 +20,19 @@
 
 <h2>Streams for task: ${taskName}</h2>
 
-<c:choose>
-   <c:when test="${!empty param.clear}">
-      <c:set var="min" value=""  scope="session"/>
-      <c:set var="max" value="" scope="session"/>
-      <c:set var="minDate" value="" scope="session"/>
-      <c:set var="maxDate" value="" scope="session"/> 
-      <c:set var="status" value="" scope="session"/>
-   </c:when>
-   <c:when test="${!empty param.submit}">
-      <c:set var="min" value="${param.min}" scope="session"/>
-      <c:set var="max" value="${param.max}" scope="session"/>
-      <c:set var="minDate" value="${param.minDate}" scope="session"/>
-      <c:set var="maxDate" value="${param.maxDate}" scope="session"/>
-      <c:set var="status" value="${param.status}" scope="session"/>
-   </c:when>
-   <c:otherwise>
-      <c:if test="${!empty param.status}"><c:set var="status" value="${param.status == '0' ? '' : param.status}" scope="session"/></c:if>
-   </c:otherwise>
-</c:choose>
+<c:set var="min" value="${param.min}"/>
+<c:set var="max" value="${param.max}"/>
+<c:set var="minDate" value="${!empty param.minDate ? param.minDate : -1}"/>
+<c:set var="maxDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
+<c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
+
+<c:if test="${!empty param.clear}">
+   <c:set var="min" value=""/>
+   <c:set var="max" value=""/>
+   <c:set var="minDate" value="-1"/>
+   <c:set var="maxDate" value="-1"/> 
+   <c:set var="status" value=""/>
+</c:if>
 
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 
@@ -82,20 +76,18 @@
       and StreamId<=?
       <sql:param value="${max}"/>
    </c:if>
-   <c:if test="${!empty minDate && minDate!='None'}"> 
-      and CREATEDATE>=?
-      <fmt:parseDate value="${minDate}" pattern="MM/dd/yyyy" var="minDateUsed"/>
-      <sql:dateParam value="${minDateUsed}" type="date"/> 
+   <c:if test="${minDate>0}"> 
+      and STARTDATE>=?
+      <jsp:useBean id="minDateUsed" class="java.util.Date" />
+      <jsp:setProperty name="minDateUsed" property="time" value="${minDate}" />       
+      <sql:dateParam value="${minDateUsed}" type="timestamp"/> 
    </c:if>
-   <c:if test="${!empty maxDate && maxDate!='None'}">
-      and CREATEDATE<=?
-      <fmt:parseDate value="${maxDate}" pattern="MM/dd/yyyy" var="maxDateUsed"/>
-      <% java.util.Date d = (java.util.Date) pageContext.getAttribute("maxDateUsed");
-      d.setTime(d.getTime()+24*60*60*1000);
-      %>
-      <sql:dateParam value="${maxDateUsed}" type="date"/> 
+   <c:if test="${maxDate>0}">
+      and ENDDATE<=?
+      <jsp:useBean id="maxDateUsed" class="java.util.Date" />
+      <jsp:setProperty name="maxDateUsed" property="time" value="${maxDate}" />
+      <sql:dateParam value="${maxDateUsed}" type="timestamp"/> 
    </c:if>
-   
 </sql:query>
 
 <sql:query var="statii">
@@ -118,8 +110,9 @@
       </c:forEach>                         
       
       
-      <tr><th>Date</th><td>Start</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","minDate","${empty minDate ? 'None' : minDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
-         <td>End</td><td><script language="JavaScript">FSfncWriteFieldHTML("DateForm","maxDate","${empty maxDate ? 'None' : maxDate}",100,"http://glast-ground.slac.stanford.edu/Commons/images/FSdateSelector/","US",false,true)</script></td>
+      <tr><th>Date</th>
+         <td>Start</td><td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+         <td>End</td><td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
          <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
       <input type="hidden" name="task" value="${task}"></td></tr>
       <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
@@ -168,7 +161,7 @@
 <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
 <display:column title="Progress">
    <c:set var="p" value="${fn:split(row.progress,':')}"/>
-   <util:progressBar donePercentage="${100*p[0]/(p[0]+p[1]+p[2])}" errorPercentage="${100*p[1]/(p[0]+p[1]+p[2])}" />
+   <utils:progressBar donePercentage="${100*p[0]/(p[0]+p[1]+p[2])}" errorPercentage="${100*p[1]/(p[0]+p[1]+p[2])}" />
 </display:column>
 <c:if test="${adminMode}">
    <display:column property="streamSelector" title=" " class="admin"/>

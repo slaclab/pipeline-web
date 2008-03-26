@@ -22,38 +22,36 @@
 <jsp:useBean id="logStartDate" class="java.util.Date" />
 <jsp:useBean id="logEndDate" class="java.util.Date" />
 
-<c:if test="${! empty param.minDate}">
-    <c:set var="minDate" value="${param.minDate}" scope="session"/>
+<c:if test="${!empty param.minDate}">
+    <c:set var="minDate" value="${param.minDate=='None' ? -1 : param.minDate}"/>
 </c:if>
-<c:if test="${! empty param.maxDate}">
-    <c:set var="maxDate" value="${param.maxDate}" scope="session"/>
+<c:if test="${!empty param.maxDate}">
+    <c:set var="maxDate" value="${param.maxDate=='None' ? -1 : param.maxDate}"/>
 </c:if>
 <%-- If clear button selected set start and end dates to default values --%>
 <c:set var="clear"   value="${param.clear}" /> 
 <c:if test= "${clear =='Default'}"> 
-    <c:set var="minDate" value="" scope="session"/>
-    <c:set var="maxDate" value="" scope="session"/>
+    <c:set var="minDate" value=""/>
+    <c:set var="maxDate" value=""/>
 </c:if> 
-<%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = current date/time --%>
-<c:if test="${empty minDate || minDate == -1}">
-    <c:set var="minDate" value="${logStartDate.time-24*60*60*1000}" scope="session"/>
+<%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = None --%>
+<c:if test="${empty minDate}">
+    <c:set var="minDate" value="${logStartDate.time-24*60*60*1000}"/>
 </c:if>
-<c:if test="${empty maxDate || maxDate == -1}">
-    <c:set var="maxDate" value="${logEndDate.time}" scope="session"/>
+<c:if test="${empty maxDate}">
+    <c:set var="maxDate" value="-1"/>
 </c:if>
-<jsp:setProperty name="logStartDate" property="time" value="${minDate}"/>   
-<jsp:setProperty name="logEndDate" property="time" value="${maxDate}" /> 	
 
-<c:set var="severity" value="${param.severity}" scope="session"/> 
-<c:set var="logTask" value="${task}" scope="session"/>
-<c:set var="logProcess" value="${process}" scope="session"/>
-<c:set var="logProcessInstance" value="${processInstance}" scope="session"/>
+<c:set var="severity" value="${param.severity}"/> 
+<c:set var="logTask" value="${task}"/>
+<c:set var="logProcess" value="${process}" />
+<c:set var="logProcessInstance" value="${processInstance}"/>
 
 <c:if test="${!empty clear || empty severity}">
-    <c:set var="severity" value="800" scope="session"/> 
-    <c:set var="logTask" value="" scope="session"/>
-    <c:set var="logProcess" value="" scope="session"/>
-    <c:set var="logProcessInstance" value="" scope="session"/>
+    <c:set var="severity" value="800" /> 
+    <c:set var="logTask" value=""/>
+    <c:set var="logProcess" value=""/>
+    <c:set var="logProcessInstance" value=""/>
 </c:if>
 
 <form name="DateForm">
@@ -87,7 +85,6 @@
 </tr>
 </table>
 </form>
-
 <gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
     select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
     case when exception is null then 0 else 1 end hasException,
@@ -97,23 +94,31 @@
     left outer join process p using (process)
     left outer join taskpath t using (task)
     where log_level > 0 
-    <c:if test="${!empty severity}"> and log_level>=? 
-        <gsql:param value="${severity}"/>
-    </c:if>    
-    and timeentered>=?        
-    <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
-    
-    <c:if test="${!empty logEndDate  && logEndDate!='-1'  }"> and timeentered<=?       
-        <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
+    <c:if test="${!empty severity}"> 
+       and log_level>=? 
+       <gsql:param value="${severity}"/>
+    </c:if> 
+    <c:if test="${minDate !='-1'}">
+       and timeentered>=?       
+       <jsp:setProperty name="logStartDate" property="time" value="${minDate}"/>   
+       <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
+    </c:if>
+    <c:if test="${maxDate!='-1'}"> 
+       and timeentered<=?      
+       <jsp:setProperty name="logEndDate" property="time" value="${maxDate}" /> 	
+       <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
     </c:if>   
-    <c:if test="${!empty logTask}">and task=?
-        <gsql:param value="${logTask}"/>
+    <c:if test="${!empty logTask}">
+       and task=?
+       <gsql:param value="${logTask}"/>
     </c:if>
-    <c:if test="${!empty logProcess}">and process=?
-        <gsql:param value="${logProcess}"/>
+    <c:if test="${!empty logProcess}">
+       and process=?
+       <gsql:param value="${logProcess}"/>
     </c:if>
-    <c:if test="${!empty logProcessInstance}">and processinstance=?
-        <gsql:param value="${logProcessInstance}"/>
+    <c:if test="${!empty logProcessInstance}">
+       and processinstance=?
+       <gsql:param value="${logProcessInstance}"/>
     </c:if>
 </gsql:query>
 

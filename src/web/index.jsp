@@ -48,7 +48,7 @@
         <sql:query var="test">
             select * from (
             select 
-            SUM(1) "ALL",
+            SUM(case when STREAMSTATUS is not null then 1 else 0 end) "ALL",
             <c:forEach var="row" items="${stream_stats.rows}">
                 SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
             </c:forEach>

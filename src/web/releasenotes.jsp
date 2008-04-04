@@ -9,6 +9,20 @@
       
       See also the <a href="https://jira.slac.stanford.edu/browse/PFE?report=com.atlassian.jira.plugin.system.project:changelog-panel">JIRA change log</a>.
       
+      <h1>Release Notes - Pipeline Front End - Version 2.5.1</h1>
+      
+      <h2>Bug</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-132'>PFE-132</a>] - login page deposits one in limbo</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-159'>PFE-159</a>] - Clicking on "messages" no longer works</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-161'>PFE-161</a>] - Total Streams column in Task Summary page shows 1 when total is actually 0</li>
+      </ul>
+      
+      <h2>Improvement</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-160'>PFE-160</a>] - Throughput plot should span two columns</li>
+      </ul>
+      
       <h1>Release Notes - Pipeline Front End - Version 2.5</h1>
       
       <h2>Bug</h2>

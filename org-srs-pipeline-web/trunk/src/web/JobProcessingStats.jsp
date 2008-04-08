@@ -237,7 +237,7 @@
       <br>
       <c:if test="${sessionTaskName == 'ALL'}">
          <span class="style4"> Tasks running during requested time period </span><br>
-         <aida:plotter height="400"> 
+         <aida:plotter height="600"> 
             <aida:region  title="Running processes by task">
                <aida:style>
                   <aida:attribute name="showStatisticsBox" value="false"/>		        

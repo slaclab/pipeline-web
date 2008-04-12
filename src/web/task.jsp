@@ -74,7 +74,7 @@
         <c:if test="${ ! empty param.gvOrientation }" >
             <c:set var="gvOrientation" value="${param.gvOrientation}" scope="session"/> 
         </c:if>
-        <p><iframe "width=100%"  frameborder="0"  height="200"   
+        <p><iframe width="100%"  frameborder="0"  height="200"   
                        src= "taskout.jsp?task=${task}&gvOrientation=${gvOrientation}  ">
                    </iframe> </p>
         <p>

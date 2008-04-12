@@ -227,8 +227,8 @@
                 
                 <c:if test="${test.rowCount>0}">
                     <ul>
-                        <li><a href="process.jsp?process=${process}&format=stream">Dump stream id list</a>.</li>
-                        <li><a href="process.jsp?process=${process}&format=id">Dump job id list</a>.</li>
+                        <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
+                        <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=id">Dump job id list</a>.</li>
                     </ul>
                 </c:if>
             </c:otherwise>                                                                                                                                                                                                           

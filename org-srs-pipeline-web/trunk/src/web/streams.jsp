@@ -184,7 +184,7 @@
 
 <c:if test="${test.rowCount>0}">
    <ul>
-      <li><a href="streams.jsp?task=${param.task}&format=stream">Dump stream id list</a>.</li>
+      <li><a href="streams.jsp?task=${param.task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
    </ul>
 </c:if>
 </c:otherwise>                                                                                                                                                                                                           

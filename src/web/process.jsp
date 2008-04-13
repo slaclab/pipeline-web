@@ -29,15 +29,15 @@
 
         <c:set var="min" value="${param.min}"/>
         <c:set var="max" value="${param.max}"/>
-        <c:set var="minDate" value="${!empty param.minDate ? param.minDate : -1}"/>
-        <c:set var="maxDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
+        <c:set var="minimumDate" value="${!empty param.minDate ? param.minDate : -1}"/>
+        <c:set var="maximumDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
         <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
 
         <c:if test="${!empty param.clear}">
           <c:set var="min" value=""/>
           <c:set var="max" value=""/>
-          <c:set var="minDate" value="-1"/>
-          <c:set var="maxDate" value="-1"/> 
+          <c:set var="minimumDate" value="-1"/>
+          <c:set var="maximumDate" value="-1"/> 
           <c:set var="status" value=""/>
         </c:if>
         <c:set var="dateCategory" value="${empty param.dateCategory ? 'createdate' : param.dateCategory}"/>        
@@ -104,16 +104,16 @@
                 <sql:param value="${param.pstream}"/>
             </c:if>        
             
-            <c:if test="${minDate != '-1'}"> 
+            <c:if test="${minimumDate != '-1'}"> 
                 and ${dateCategory}  >=  ?
                 <jsp:useBean id="startDate" class="java.util.Date" /> 
-                <jsp:setProperty name="startDate" property="time" value="${minDate}" /> 	  
+                <jsp:setProperty name="startDate" property="time" value="${minimumDate}" /> 	  
                 <sql:dateParam value="${startDate}" type="timestamp"/> 
             </c:if>
-            <c:if test="${maxDate != '-1'}">
+            <c:if test="${maximumDate != '-1'}">
                 and ${dateCategory} <=  ?
                 <jsp:useBean id="endDate" class="java.util.Date" />
-                <jsp:setProperty name="endDate" property="time" value="${maxDate}" />
+                <jsp:setProperty name="endDate" property="time" value="${maximumDate}" />
                 <sql:dateParam value="${endDate}" type="timestamp"/>
             </c:if>            
         </sql:query>
@@ -151,8 +151,8 @@
                                 <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
 
                     </select> </td>
-                    <td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-                    <td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                    <td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                    <td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
 
                     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                 <input type="hidden" name="process" value="${process}"></td></tr>

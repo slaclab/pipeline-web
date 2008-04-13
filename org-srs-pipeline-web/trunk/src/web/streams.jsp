@@ -22,15 +22,15 @@
 
 <c:set var="min" value="${param.min}"/>
 <c:set var="max" value="${param.max}"/>
-<c:set var="minDate" value="${!empty param.minDate ? param.minDate : -1}"/>
-<c:set var="maxDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
+<c:set var="minimumDate" value="${!empty param.minDate ? param.minDate : -1}"/>
+<c:set var="maximumDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
 <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
 
 <c:if test="${!empty param.clear}">
    <c:set var="min" value=""/>
    <c:set var="max" value=""/>
-   <c:set var="minDate" value="-1"/>
-   <c:set var="maxDate" value="-1"/> 
+   <c:set var="minimumDate" value="-1"/>
+   <c:set var="maximumDate" value="-1"/> 
    <c:set var="status" value=""/>
 </c:if>
 
@@ -76,16 +76,16 @@
       and StreamId<=?
       <sql:param value="${max}"/>
    </c:if>
-   <c:if test="${minDate>0}"> 
+   <c:if test="${minimumDate>0}"> 
       and STARTDATE>=?
       <jsp:useBean id="minDateUsed" class="java.util.Date" />
-      <jsp:setProperty name="minDateUsed" property="time" value="${minDate}" />       
+      <jsp:setProperty name="minDateUsed" property="time" value="${minimumDate}" />       
       <sql:dateParam value="${minDateUsed}" type="timestamp"/> 
    </c:if>
-   <c:if test="${maxDate>0}">
+   <c:if test="${maximumDate>0}">
       and ENDDATE<=?
       <jsp:useBean id="maxDateUsed" class="java.util.Date" />
-      <jsp:setProperty name="maxDateUsed" property="time" value="${maxDate}" />
+      <jsp:setProperty name="maxDateUsed" property="time" value="${maximumDate}" />
       <sql:dateParam value="${maxDateUsed}" type="timestamp"/> 
    </c:if>
 </sql:query>
@@ -111,8 +111,8 @@
       
       
       <tr><th>Date</th>
-         <td>Start</td><td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-         <td>End</td><td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+         <td>Start</td><td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+         <td>End</td><td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
          <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
       <input type="hidden" name="task" value="${task}"></td></tr>
       <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>

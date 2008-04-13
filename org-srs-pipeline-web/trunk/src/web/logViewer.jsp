@@ -23,23 +23,23 @@
 <jsp:useBean id="logEndDate" class="java.util.Date" />
 
 <c:if test="${!empty param.minDate}">
-    <c:set var="minDate" value="${param.minDate=='None' ? -1 : param.minDate}"/>
+    <c:set var="minimumDate" value="${param.minDate=='None' ? -1 : param.minDate}"/>
 </c:if>
 <c:if test="${!empty param.maxDate}">
-    <c:set var="maxDate" value="${param.maxDate=='None' ? -1 : param.maxDate}"/>
+    <c:set var="maximumDate" value="${param.maxDate=='None' ? -1 : param.maxDate}"/>
 </c:if>
 <%-- If clear button selected set start and end dates to default values --%>
 <c:set var="clear"   value="${param.clear}" /> 
 <c:if test= "${clear =='Default'}"> 
-    <c:set var="minDate" value=""/>
-    <c:set var="maxDate" value=""/>
+    <c:set var="minimumDate" value=""/>
+    <c:set var="maximumDate" value=""/>
 </c:if> 
 <%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = None --%>
-<c:if test="${empty minDate}">
-    <c:set var="minDate" value="${logStartDate.time-24*60*60*1000}"/>
+<c:if test="${empty minimumDate}">
+    <c:set var="minimumDate" value="${logStartDate.time-24*60*60*1000}"/>
 </c:if>
-<c:if test="${empty maxDate}">
-    <c:set var="maxDate" value="-1"/>
+<c:if test="${empty maximumDate}">
+    <c:set var="maximumDate" value="-1"/>
 </c:if>
 
 <c:set var="severity" value="${param.severity}"/> 
@@ -77,8 +77,8 @@
     </td>
 </tr>
 <tr>
-    <td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-    <td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
     
     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
     </td>
@@ -98,14 +98,14 @@
        and log_level>=? 
        <gsql:param value="${severity}"/>
     </c:if> 
-    <c:if test="${minDate !='-1'}">
+    <c:if test="${minimumDate !='-1'}">
        and timeentered>=?       
-       <jsp:setProperty name="logStartDate" property="time" value="${minDate}"/>   
+       <jsp:setProperty name="logStartDate" property="time" value="${minimumDate}"/>   
        <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
     </c:if>
-    <c:if test="${maxDate!='-1'}"> 
+    <c:if test="${maximumDate!='-1'}"> 
        and timeentered<=?      
-       <jsp:setProperty name="logEndDate" property="time" value="${maxDate}" /> 	
+       <jsp:setProperty name="logEndDate" property="time" value="${maximumDate}" /> 	
        <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
     </c:if>   
     <c:if test="${!empty logTask}">

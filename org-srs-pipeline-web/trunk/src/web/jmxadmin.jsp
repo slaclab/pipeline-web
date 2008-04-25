@@ -48,6 +48,12 @@
          
          <h2>Logger</h2>
          <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server.logger:type=JDBCHandler"/>              
+
+         <h2>Mail Processing</h2>
+         <c:catch var="x">
+            <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server:type=MailReceiver"/>              
+         </c:catch>
+      
       </p:JMXConnect>
       
    </body>

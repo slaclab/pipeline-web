@@ -1,7 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://www.servletsuite.com/servlets/jmxtag" prefix="jmx"%> 
-<%@taglib tagdir="/WEB-INF/tags" prefix="bean"%>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/jmx" prefix="bean"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
@@ -20,7 +20,7 @@
       <sql:query var="result">
          select HOST,PORT from ServerStatus
       </sql:query>
-      <p:JMXConnect var="server" serverURL="service:jmx:rmi:///jndi/rmi://${result.rows[0].host}:${result.rows[0].port}/jmxrmi">
+      <bean:JMXConnect var="server" serverURL="service:jmx:rmi:///jndi/rmi://${result.rows[0].host}:${result.rows[0].port}/jmxrmi">
          
          <h2>Control</h2>
          <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server:type=Main" updateable="${admin}"/>  
@@ -54,7 +54,7 @@
             <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server:type=MailReceiver"/>              
          </c:catch>
       
-      </p:JMXConnect>
+      </bean:JMXConnect>
       
    </body>
 </html>

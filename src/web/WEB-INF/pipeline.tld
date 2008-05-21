@@ -133,22 +133,6 @@
       <type>java.lang.String</type>
     </attribute>
   </tag>
-  <tag>
-    <name>JMXConnect</name>
-    <tag-class>org.glast.pipeline.web.taglib.jmx.JMXConnect</tag-class>
-    <body-content>scriptless</body-content>
-    <attribute>
-      <name>serverURL</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.String</type>
-    </attribute>
-    <attribute>
-      <name>var</name>
-      <required>true</required>
-      <type>java.lang.String</type>
-    </attribute>
-  </tag>
   <function>
     <description>Convert a RUN or PROCESS status to pretty format</description>
     <name>prettyStatus</name>

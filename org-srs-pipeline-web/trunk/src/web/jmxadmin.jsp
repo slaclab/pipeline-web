@@ -40,9 +40,10 @@
          <jmx:forEachMBean connection="${server}" id="bean" pattern="org.glast.pipeline.server.batch:type=BatchManager,name=*">
             
             <h3><jmx:getAttribute connection="${server}" mbean="${bean}" attribute="Site"/></h3>
-            <bean:mbeanAttributesTable connection="${server}" mbean="${bean}" updateable="${admin}"/>   
-            <bean:mbeanOperationsTable connection="${server}" mbean="${bean}"/>         
-            
+            <bean:mbeanAttributesTable connection="${server}" mbean="${bean}" updateable="${admin}"/>
+            <c:if test="${admin}">
+                <bean:mbeanOperationsTable connection="${server}" mbean="${bean}"/>         
+            </c:if>
          </jmx:forEachMBean>   
          
          

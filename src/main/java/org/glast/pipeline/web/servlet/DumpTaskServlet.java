@@ -26,6 +26,9 @@ public class DumpTaskServlet extends HttpServlet
             long task = Long.valueOf(request.getParameter("task"));
             String fromDB = request.getParameter("fromDB");
             boolean forceDump = fromDB!=null && Boolean.valueOf(fromDB);
+            String asFile = request.getParameter("asFile");
+            if (asFile != null) response.setHeader("Content-disposition","attachment; filename="+asFile);
+            response.setContentType("application/xml");
             Exporter exporter = new Exporter(connection);
             exporter.export(response.getWriter(),task,forceDump);
             exporter.close();

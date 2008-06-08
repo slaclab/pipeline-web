@@ -3,7 +3,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>org-glast-pipeline-web</artifactId>
     <groupId>glast</groupId>
-    <currentVersion>2.6-SNAPSHOT</currentVersion>
+    <currentVersion>2.6</currentVersion>
     <shortDescription>Pipeline Web Front End</shortDescription>
     <url>http://glast-ground.slac.stanford.edu/Pipeline/</url>
     <name>Glast Pipeline II Front End</name>
@@ -383,7 +383,7 @@
         <dependency>
             <groupId>glast</groupId>
             <artifactId>org-glast-base-web</artifactId>
-            <version>0.4.13-SNAPSHOT</version>
+            <version>0.4.13</version>
             <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>

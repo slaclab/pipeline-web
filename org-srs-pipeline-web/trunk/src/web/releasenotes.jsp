@@ -9,6 +9,23 @@
       
       See also the <a href="https://jira.slac.stanford.edu/browse/PFE?report=com.atlassian.jira.plugin.system.project:changelog-panel">JIRA change log</a>.
       
+      <h1>Release Notes - Pipeline Front End - Version 2.6</h1>
+      
+      <h2>Bug</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-163'>PFE-163</a>] - Dump job id list no longer works</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-164'>PFE-164</a>] - Refreshing log viewer page does not update the time as expected</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-168'>PFE-168</a>] - Log Detail page should point back to task that created the error</li>
+      </ul>
+      
+      <h2>Improvement</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-150'>PFE-150</a>] - Add page for MBean properties</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-162'>PFE-162</a>] - need to expand the list of tasks in processing plots to include all tasks</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-169'>PFE-169</a>] - Downloading XML file should result in Save As dialog</li>
+      </ul>
+      
+      
       <h1>Release Notes - Pipeline Front End - Version 2.5.1</h1>
       
       <h2>Bug</h2>

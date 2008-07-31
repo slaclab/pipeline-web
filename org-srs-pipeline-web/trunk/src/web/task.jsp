@@ -16,30 +16,36 @@
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
+      
+        <sql:query var="versions">
+            select task, version, revision from task where taskName=? order by version, revision
+            <sql:param value="${taskName}"/>
+        </sql:query>        
         
-        <h2> Task Summary: ${taskNamePath} 
-            <c:if test="${!fn:contains(taskNamePath,'.')}">      
-                (<a href="xml.jsp?task=${task}">XML</a>)
-            </c:if>
-        </h2> 
-        
+        <c:if test="${versions.rowCount>0}">
+            
+            <c:forEach var="row" items="${versions.rows}">
+                <c:choose>
+                    <c:when test="${row.task == task}">
+                        <h2> Task Summary: ${taskNamePath} ${row.version}.${row.revision}
+                            <c:if test="${!fn:contains(taskNamePath,'.')}">      
+                                (<a href="xml.jsp?task=${task}">XML</a>)
+                            </c:if>
+                        </h2>        
+                    </c:when>
+                </c:choose>
+            </c:forEach>
+        </c:if>
         <c:if test="${!fn:contains(taskNamePath,'.')}">      
             <sql:query var="notation">
                 select * from notation where task=?
                 <sql:param value="${task}"/>
             </sql:query>  
             
-            
             <c:if test="${notation.rowCount>0}">
                 <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
             </c:if>
-            
-            
-            <sql:query var="versions">
-                select task, version, revision from task where taskName=? order by version, revision
-                <sql:param value="${taskName}"/>
-            </sql:query>        
-            
+                        
             <c:if test="${versions.rowCount>0}">
                 Versions:  
                 <c:forEach var="row" items="${versions.rows}">
@@ -56,7 +62,7 @@
         </c:if>
         
         <sql:query var="subtasks"> 
-            select task, taskname,parenttask  from task 
+            select task, taskname,parenttask, version,revision from task 
             start with task = ?  connect by  parenttask = prior task
             <sql:param value="${task}"/>
         </sql:query>
@@ -76,7 +82,7 @@
         </c:if>
         <p><iframe width="100%"  frameborder="0"  height="200"   
                        src= "taskout.jsp?task=${task}&gvOrientation=${gvOrientation}  ">
-                   </iframe> </p>
+        </iframe> </p>
         <p>
         <script type="text/javascript" language="JavaScript">function DoOrientationSubmission() { document.OrientationForm.submit(); }</script>
         
@@ -117,7 +123,7 @@
                     lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, Initcap(ProcessType) type, processname, process,displayorder
                     from PROCESS 
                     join (               
-                    SELECT task,taskname,level lev FROM TASK
+                    SELECT task,taskname,version,revision,level lev FROM TASK
                     start with Task=? connect by prior Task = ParentTask
                     )  using (task)
                     join PROCESSINSTANCE using (PROCESS) 
@@ -127,27 +133,29 @@
                     <sql:param value="${task}"/>
                 </sql:query>
                 <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
-                    <display:column property="TaskName" title="Task"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/>     
+                    <display:column property="TaskName" title="Task"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/> 
+                    <display:column property="Version" title="Version"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/>     
+                    <display:column property="Revision" title="Revision"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/>     
                     <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>
                     <display:column property="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
                     <c:forEach var="row" items="${proc_stats.rows}">
                         <display:column property="${row.PROCESSINGSTATUS}"total="true" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
-                             <display:column property="all" title="Total" />
+                    <display:column property="all" title="Total" />
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> <td></td>
                         <tr>  <td></td>
                         <td></td>   <td><strong>Totals</strong></td>                                                
-                           <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
-                            <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column7}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column8}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column9}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column10}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column11}" /></td>
-                            <td><fmt:formatNumber type="number" value="${totals.column12}" /></td>
-                           <td><fmt:formatNumber type="number"value="${totals.column13}" /></td>  <tr>                       
+                        <td>< fmt:formatNumber type="number" value="${totals.column4}" /> </td>
+                        <td><fmt:formatNumber type="number" value="${totals.column5}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column6}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column7}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column8}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column9}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column10}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column11}" /></td>
+                        <td><fmt:formatNumber type="number" value="${totals.column12}" /></td>
+                        <td><fmt:formatNumber type="number"value="${totals.column13}" /></td>  <tr>                       
                     </display:footer>                  
                 </display:table>            
             </c:otherwise>

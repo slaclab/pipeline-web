@@ -9,7 +9,7 @@
 
 <html>
     <head>
-        <title>Pipeline status</title>       
+        <title>Running jobs for: ${taskName}</title>       
     </head>
     <body>        
         <h2>Running jobs for: ${taskName}</h2>

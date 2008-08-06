@@ -10,9 +10,13 @@
 
 <html>
     <head>
-        <title>Pipeline status</title>
+        <title>Task Summary: ${taskName} </title>
     </head>
     <body>
+        <!--
+         <c:set var="title" value="Task Summary" />                         
+        <img src="http://glast-ground.slac.stanford.edu/Commons/logoServlet.jsp?title=${title}"/>
+        --> 
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
@@ -27,6 +31,7 @@
             <c:forEach var="row" items="${versions.rows}">
                 <c:choose>
                     <c:when test="${row.task == task}">
+                       
                         <h2> Task Summary: ${taskNamePath} ${row.version}.${row.revision}
                             <c:if test="${!fn:contains(taskNamePath,'.')}">      
                                 (<a href="xml.jsp?task=${task}">XML</a>)

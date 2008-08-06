@@ -7,15 +7,15 @@
 
 <html>
    <head>
-      <title>Pipeline Statistics</title>
+      <title>Pipeline Statistics for ${param.task}</title>
    </head>
    <body>
 
-      <h1>Pipeline Statistics</h1>
+      <h1>Pipeline Statistics for ${param.task}</h1>
 
       <tab:tabs name="ProcessTabs" param="process">
          <tab:tab name="Summary" value="0" href="stats.jsp?task=${param.task}">
-            <sql:query var="data">
+            <sql:query var="data" >
                select RUNNAME, (tpi2.ended-tpi1.submitted)*24*60  "jobtime" from TASK 
                join run r on task_fk=task_pk
                join TPINSTANCE tpi1 on run_pk = tpi1.run_fk 
@@ -51,7 +51,7 @@
          </sql:query> 
          <c:forEach var="row" items="${processes.rows}">
             <tab:tab name="${row.TASKPROCESSNAME}" href="stats.jsp?task=${param.task}" value="${row.TASKPROCESS_PK}">
-               <sql:query var="data">
+               <sql:query var="data"  dataSource="jdbc/pipeline-ii">
                   select (STARTED-SUBMITTED)*24*60 "WaitTime", (ENDED-STARTED)*24*60*60 "WallClock", MEMORYBYTES/1000 "Bytes", CPUSECONDS/1000 "Cpu",case when ended=started then null else CPUSECONDS/(ENDED-STARTED)/24/60/60/1000 end "Ratio"  
                   from TPINSTANCE i, PROCESSINGSTATUS s where TASKPROCESS_FK=? and PROCESSINGSTATUSNAME='END_SUCCESS'
                   and i.PROCESSINGSTATUS_FK=s.PROCESSINGSTATUS_PK  

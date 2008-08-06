@@ -6,7 +6,7 @@
 
 <html>
    <head>
-      <title>Pipeline status</title>
+      <title>Task ${taskName} Process ${processName} Stream ${streamIdPath}</title>
    </head>
    <body>
 

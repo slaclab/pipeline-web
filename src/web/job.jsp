@@ -5,7 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
-        <title>Job status</title>
+        <title>Job ${param.id} at ${param.site}</title>
     </head>
     <body>   
         <h1>Job ${param.id} at ${param.site}</h1>

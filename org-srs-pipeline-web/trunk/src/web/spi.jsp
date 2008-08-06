@@ -2,9 +2,9 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 
 <html>
    <head>
@@ -18,14 +18,13 @@
          select * from processinstance
          join process using (process)
          where processinstance=?
-         <sql:param value="${param.pi}"/>
+         <sql:param value="${param.spi}"/>
       </sql:query>
       <c:set var="data" value="${rs.rows[0]}"/>
       
       <table>
-         <tr><td>Type</td><td>${pl:prettyStatus(data.processtype)}</td></tr>
-         <tr><td>Status</td><td>${pl:prettyStatus(data.processingstatus)}</td></tr> 
-         <tr><td>Stream</td><td>${pl:linkToStreams(streamIdPath,streamPath,".","si.jsp?stream=")}</td></tr> 
+         <tr><td>Type</td><td>${data.processtype}</td></tr>
+         <tr><td>Status</td><td>${pl:prettyStatus(data.processingstatus)}</td></tr>          
          <tr><td>CreateDate</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
          <tr><td>SubmitDate</td><td>${pl:formatTimestamp(data.submitDate)}</td></tr>          
          <tr><td>StartDate</td><td>${pl:formatTimestamp(data.startDate)}</td></tr>                   
@@ -39,7 +38,7 @@
          <tr><td>Log File</td><td><a href="log.jsp?pi=${param.pi}">${data.LogFile}</a></td></tr>
          <tr><td>Execution Number</td><td>${data.ExecutionNumber}</td></tr>
          <tr><td>Is Latest</td><td>${data.IsLatest}</td></tr>   
-         <tr><td>Batch Job ID</td><td><a href="job.jsp?id=${data.JobId}&site=${data.JobSite}">${data.JobId}</a></td></tr>                                     
+         <tr><td>Batch Job ID</td><td><a href="job.jsp?id=${data.JobId}">${data.JobId}</a></td></tr>                                     
       </table>
       
       <p>Links: <a href="logViewer.jsp?pi=${param.pi}&severity=500&minDate=None&maxDate=None">View Messages</a></p>
@@ -51,10 +50,10 @@
          <sql:param value="${param.pi}"/>
       </sql:query>      
       
-      <display:table class="datatable" name="${rs.rows}" defaultsort="1" defaultorder="ascending">
+      <display:table class="dataTable" name="${rs.rows}" defaultsort="1" defaultorder="ascending">
          <display:column property="varname" title="Name" sortable="true" headerClass="sortable" />
          <display:column property="vartype" title="Type" sortable="true" headerClass="sortable"/>
-         <display:column property="value" title="Value" sortable="true" headerClass="sortable" class="leftAligned"/>
+         <display:column property="value" title="Value" sortable="true" headerClass="sortable"/>
       </display:table>      
       
    </body>

@@ -12,14 +12,51 @@
 
 <html>
 <head>
-    <title>Task ${taskName} Stream ${streamIdPath}</title>
-    
+    <title>Task ${taskName} Stream ${streamIdPath}</title>    
 </head>
 <body>
+<script language="JavaScript" type="text/javascript">
+         function subStreamShowAll(set) {
+           for (var i = 0; i < document.subStreamSelectForm.elements.length; i++) {
+             if(document.subStreamSelectForm.elements[i].type == 'checkbox'){
+               document.subStreamSelectForm.elements[i].checked = set;
+             }
+           }
+         }
+         function subStreamToggleAll() {
+           for (var i = 0; i < document.subStreamSelectForm.elements.length; i++) {
+             if(document.subStreamSelectForm.elements[i].type == 'checkbox'){
+               document.subStreamSelectForm.elements[i].checked = !(document.subStreamSelectForm.elements[i].checked);
+             }
+           }
+         }
+         function piShowAll(set) {
+           for (var i = 0; i < document.piSelectForm.elements.length; i++) {
+             if(document.piSelectForm.elements[i].type == 'checkbox'){
+               document.piSelectForm.elements[i].checked = set;
+             }
+           }
+         }
+         function piToggleAll() {
+           for (var i = 0; i < document.piSelectForm.elements.length; i++) {
+             if(document.piSelectForm.elements[i].type == 'checkbox'){
+               document.piSelectForm.elements[i].checked = !(document.piSelectForm.elements[i].checked);
+             }
+           }
+         }
+        </script>   
 
-<h2>Task ${taskName} Stream ${streamIdPath}</h2>
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
+    <h2>Task ${taskName} Stream ${streamIdPath}</h2>
+    <c:if test="${adminMode}">        
+        <form name="RollBackStreamForm" action="confirm.jsp" method="post">
+            <input type="hidden" name="stream" value="${param.stream}">
+            <input type="hidden" name="task" value="${task}">
+            <input type="hidden" name="select" value="${param.stream}">
+            <input type="submit" value="Rollback Stream" name="submit">
+        </form>
+    </c:if>
 
 <sql:query var="rs1">
     select stream.*,PII.GetStreamIsLatestPath(stream) isLatestPath from stream 
@@ -67,27 +104,50 @@
     <sql:param value="${param.stream}"/>    
 </sql:query>   
 
-<display:table class="datatable" name="${testprocess.rows}" id="row" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
-    <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="pi.jsp" paramId="pi" paramProperty="ProcessInstance"/>
-    <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
-    <c:if test="${!showLatest}">
-        <display:column title="#">
-            ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
-        </display:column>
-    </c:if>
-    <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
-    <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-    <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-    <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-    <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-    <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
-    <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
-    <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
-    <display:column property="links" title="Links" class="leftAligned"/>
-    
-</display:table>   
+<form name="piSelectForm" action="confirm.jsp" method="post">
+    <display:table class="datatable" name="${testprocess.rows}" id="row" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+        <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="pi.jsp" paramId="pi" paramProperty="ProcessInstance"/>
+        <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
+        <c:if test="${!showLatest}">
+            <display:column title="#">
+                ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
+            </display:column>
+        </c:if>
+        <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
+        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
+        <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
+        <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
+        <display:column property="links" title="Links" class="leftAligned"/>
+        
+        <c:if test="${adminMode}">
+            
+            <display:column property="selector" title=" " class="admin"/>
+        </c:if>    
+        <display:footer>
+            
+            <c:if test="${adminMode}">        
+                <tr>
+                    <td colspan="20" class="admin">                
+                        <a href="javascript:void(0)" onClick="piShowAll(true);">Select all</a>&nbsp;.&nbsp;
+                        <a href="javascript:void(0)" onClick="piShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
+                        <a href="javascript:void(0)" onClick="piToggleAll();">Toggle selection</a>
+                        <input type="hidden" name="stream" value="${param.stream}">
+                        <input type="hidden" name="task" value="${task}">
+                        <input type="submit" value="Rollback Selected" name="submit">
+                    </td>
+                </tr> 
+            </c:if>
+        </display:footer>
+    </display:table>   
+</form>
 
 <h3>Substreams</h3>
+
+
 
 <sql:query var="test">SELECT taskname, stream, streamid, Initcap(streamstatus) streamStatus, createDate, StartDate, EndDate FROM stream 
     join task using (task)
@@ -99,34 +159,39 @@
     <sql:param value="${param.stream}"/>    
 </sql:query>
 
-
-<display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-    <display:column property="Taskname" title="taskname" sortable="true" group = "1" headerClass="sortable" />              			    
-    <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" href="si.jsp" paramId="stream" paramProperty="stream"/>                  
-    <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
-    <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-    <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-    <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-</display:table>
+<form name="subStreamSelectForm" action="confirm.jsp" method="post">
+    
+    <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+        <display:column property="Taskname" title="taskname" sortable="true" group = "1" headerClass="sortable" />              			    
+        <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" href="si.jsp" paramId="stream" paramProperty="stream"/>                  
+        <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
+        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+        <c:if test="${adminMode}">
+            
+            <display:column property="streamSelector" title=" " class="admin"/>
+        </c:if>    
+        <display:footer>
+            
+            <c:if test="${adminMode}">        
+                <tr>
+                    <td colspan="20" class="admin">                
+                        <a href="javascript:void(0)" onClick="subStreamShowAll(true);">Select all</a>&nbsp;.&nbsp;
+                        <a href="javascript:void(0)" onClick="subStreamShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
+                        <a href="javascript:void(0)" onClick="subStreamToggleAll();">Toggle selection</a>
+                        <input type="hidden" name="stream" value="${param.stream}">
+                        <input type="hidden" name="task" value="${task}">
+                        <input type="submit" value="Rollback Selected SubStreams" name="submit">
+                    </td>
+                </tr> 
+            </c:if>
+        </display:footer>
+    </display:table>
+</form>
 
 <h3>All Substreams</h3>
- <script language="JavaScript" type="text/javascript">
-         function ShowAll(set) {
-           for (var i = 0; i < document.selectForm.elements.length; i++) {
-             if(document.selectForm.elements[i].type == 'checkbox'){
-               document.selectForm.elements[i].checked = set;
-             }
-           }
-         }
-         function ToggleAll() {
-           for (var i = 0; i < document.selectForm.elements.length; i++) {
-             if(document.selectForm.elements[i].type == 'checkbox'){
-               document.selectForm.elements[i].checked = !(document.selectForm.elements[i].checked);
-             }
-           }
-         }
-        </script>   
-
+ 
 <!--
 Show all substreams summaries for the task in table form
 -->
@@ -191,28 +256,13 @@ Show all substreams summaries for the task in table form
     </display:column>
 </c:forEach>   
 <display:column property="all" title="Total" />
-<c:if test="${adminMode}">
-    
-      <display:column property="streamSelector" title=" " class="admin"/>
-</c:if>    
+
 
 <display:footer>
     </td><td></td><td><strong>Totals</strong></td>   
     <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
     <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${terminatedSum}</td>
     <td>${cancelledSum}</td>  <td>${skippedSum}</td> <tr>       
-    <c:if test="${adminMode}">        
-        <tr>
-            <td colspan="20" class="admin">                
-                <a href="javascript:void(0)" onClick="ShowAll(true);">Select all</a>&nbsp;.&nbsp;
-                <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
-                <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
-                <input type="hidden" name="stream" value="${param.stream}">
-                <input type="hidden" name="task" value="${task}">
-                <input type="submit" value="Rollback Selected" name="submit">
-            </td>
-        </tr> 
-    </c:if>
 </display:footer>
 </display:table>
 </form>

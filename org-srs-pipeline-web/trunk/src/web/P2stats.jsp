@@ -41,7 +41,7 @@
         <c:set var="lineSize" value="2"/>
         <sql:query var="datacheck">
             select createdate,startdate,enddate
-            from stream where task=? and streamstatus='SUCCESS' and isLatest=1
+            from stream where task=? and streamstatus='SUCCESS' and PII.GetStreamIsLatestPath(Stream)=1
             <sql:param value="${task}"/>
         </sql:query>
         
@@ -60,7 +60,7 @@
                 <tab:tab name="Summary" href="P2stats.jsp?task=${task}" value="0">                    
                     <sql:query var="data">
                         select createdate,startdate,enddate
-                        from stream where task=? and streamstatus='SUCCESS' and isLatest=1
+                        from stream where task=? and streamstatus='SUCCESS' and  PII.GetStreamIsLatestPath(Stream)=1
                         <sql:param value="${task}"/>
                     </sql:query>                                         
                     <aida:tuple var="tuple" query="${data}" />    

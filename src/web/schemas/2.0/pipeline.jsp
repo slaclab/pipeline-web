@@ -9,7 +9,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns="http://glast-ground.slac.stanford.edu/pipeline" 
            elementFormDefault="qualified" 
-           version="1.2">
+           version="1.2.1">
    <xs:element name="pipeline">
       <xs:annotation>
          <xs:documentation>Defines one or more Pipeline II tasks, as well as global variables</xs:documentation>
@@ -129,6 +129,7 @@
             </xs:element>
          </xs:sequence>
          <xs:attribute name="name" type="NameType" use="required"/>
+         <xs:attribute name="autoRetryMaxAttempts" use="optional" default="0"/>
       </xs:complexType>
    </xs:element>
    <xs:element name="script">

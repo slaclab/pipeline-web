@@ -9,7 +9,7 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns="http://glast-ground.slac.stanford.edu/pipeline" 
            elementFormDefault="qualified" 
-           version="1.2.1">
+           version="1.2">
    <xs:element name="pipeline">
       <xs:annotation>
          <xs:documentation>Defines one or more Pipeline II tasks, as well as global variables</xs:documentation>

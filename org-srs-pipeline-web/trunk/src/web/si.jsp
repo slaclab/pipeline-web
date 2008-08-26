@@ -94,7 +94,7 @@
 
 <sql:query var="testprocess">
     select processinstance, process, stream, processName, Initcap(processingStatus) status, Initcap(ProcessType) ProcessType, CreateDate, SubmitDate, StartDate,
-    EndDate, jobid, jobsite, cpuSecondsUsed, executionHost, executionNumber, isLatest from processinstance
+    EndDate, jobid, jobsite, cpuSecondsUsed, executionHost, executionNumber, autoRetryNumber, autoRetryMaxAttempts, isLatest from processinstance
     join process using (process)
     where stream = ?		
     <c:if test="${showLatest}"> 
@@ -110,7 +110,7 @@
         <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
         <c:if test="${!showLatest}">
             <display:column title="#">
-                ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
+                ${row.executionNumber}(${row.autoRetryNumber}|${row.autoRetryMaxAttempts})${row.isLatest>0 ? "(*)" : ""}
             </display:column>
         </c:if>
         <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>

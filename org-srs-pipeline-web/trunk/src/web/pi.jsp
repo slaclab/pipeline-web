@@ -38,6 +38,7 @@
          <tr><td>Working Dir</td><td><a href="run.jsp?pi=${param.pi}">${data.WorkingDir}</a></td></tr>
          <tr><td>Log File</td><td><a href="log.jsp?pi=${param.pi}">${data.LogFile}</a></td></tr>
          <tr><td>Execution Number</td><td>${data.ExecutionNumber}</td></tr>
+         <tr><td>Retry Number</td><td>${data.AutoRetryNumber}</td></tr>
          <tr><td>Is Latest</td><td>${data.IsLatest}</td></tr>   
          <tr><td>Batch Job ID</td><td><a href="job.jsp?id=${data.JobId}&site=${data.JobSite}">${data.JobId}</a></td></tr>                                     
       </table>

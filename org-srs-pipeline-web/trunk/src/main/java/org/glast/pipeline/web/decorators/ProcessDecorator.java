@@ -1,5 +1,6 @@
 package org.glast.pipeline.web.decorators;
 
+import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -124,6 +125,15 @@ public class ProcessDecorator extends TableDecorator
       Map map = (Map) getCurrentRowObject();
       Object processinstance = map.get("processinstance");
       return "<input type=\"checkbox\" name=\"select\" value=\""+processinstance+"\">";
+   }
+   public String getIsLatestSelector()
+   {
+      Map map = (Map) getCurrentRowObject();
+      BigDecimal isLatest = (BigDecimal)map.get("islatest");
+      if ( isLatest.intValue() == 1 )
+          return getSelector();
+      else
+          return "";
    }
    public String getStreamSelector()
    {

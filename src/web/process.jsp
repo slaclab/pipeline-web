@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
     </head>
     <body>
-        
+     
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS displayorder
         </sql:query>
@@ -83,8 +83,10 @@
                 </c:choose>
             </c:if>               
             )
-            select p.PROCESSINSTANCE, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
+
+            select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
             <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
+ 
             from processinstance2 p
             join stream s using (stream)
             join process x using (process)         
@@ -193,9 +195,9 @@
             </c:when>
             <c:otherwise>
                 <form name="selectForm" action="confirm.jsp" method="post">
-                    <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+                    <display:table class="datatable" name="${test.rows}" id="Row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                         <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
-                        <display:column property="Status" sortable="true" headerClass="sortable"/>
+                        <display:column property="Status" sortable="true" headerClass="sortable"/>             
                         <c:if test="${!showLatest}">
                             <display:column property="ProcessExecutionNumber" title="Process #"/>
                             <display:column property="StreamExecutionNumber" title="Stream #"/>
@@ -211,9 +213,9 @@
                             <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
                             <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
                         </c:if>
-                        <display:column property="links" title="Links" class="leftAligned"/>
-                        <c:if test="${adminMode}">
-                            <display:column property="selector" title=" " class="admin"/>
+                        <display:column property="links" title="Links" class="leftAligned"/>                    
+                        <c:if test="${adminMode}">                  
+                                   <display:column title="selector" property="isLatestSelector" class="admin"/>                        
                             <display:footer>
                                 <tr>
                                     <td colspan="20" class="admin">                
@@ -226,9 +228,8 @@
                                 </tr>
                             </display:footer>
                         </c:if>
-                    </display:table>
-                </form>
-                
+                    </display:table>                 
+                </form>          
                 <c:if test="${test.rowCount>0}">
                     <ul>
                         <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>

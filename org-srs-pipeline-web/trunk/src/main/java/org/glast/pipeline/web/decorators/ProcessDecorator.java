@@ -141,6 +141,15 @@ public class ProcessDecorator extends TableDecorator
       Object stream = map.get("stream");
       return "<input type=\"checkbox\" name=\"select\" value=\""+stream+"\">";
    }
+    public String getIsLatestStreamSelector()
+   {
+      Map map = (Map) getCurrentRowObject();
+      BigDecimal isLatest = (BigDecimal)map.get("islatest");
+      if ( isLatest.intValue() == 1 )
+          return getStreamSelector();
+      else
+          return "";
+    }
    public String getTaskLinks()
    {
       Map map = (Map) getCurrentRowObject();

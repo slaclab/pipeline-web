@@ -215,7 +215,7 @@
                         </c:if>
                         <display:column property="links" title="Links" class="leftAligned"/>                    
                         <c:if test="${adminMode}">                  
-                                   <display:column title="selector" property="isLatestSelector" class="admin"/>                        
+                                   <display:column title="" property="isLatestSelector" class="admin"/>                        
                             <display:footer>
                                 <tr>
                                     <td colspan="20" class="admin">                

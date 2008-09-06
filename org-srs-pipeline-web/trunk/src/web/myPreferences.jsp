@@ -72,44 +72,14 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </tr> 
             <utils:preference name="showStreams" size="5" title="Number of Streams">
             </utils:preference>  
+              <tr>
+                <th colspan="3">
+                    Preferences For Message Viewer
+                </th>
+            </tr>            
+            <utils:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"/>
             
         </utils:preferences>
-        
-        
-        <%--
-        <table>
-            <td>Task Filter: <input type="text" name="taskFilter" value="${taskFilter}"></td>
-            <td><input type="checkbox" name="regExp" ${regExp ? 'checked' : ''}> Regular Expression (<a href="http://www.oracle.com/technology/oramag/webcolumns/2003/techarticles/rischert_regexp_pt1.html">?</a>)</td>
-            <td><select name="include">
-                    <utils:value="all" ${include=='all' ? "selected" : ""}>All tasks</option>
-                    <utils:value="runs" ${include=='runs' ? "selected" : ""}>Tasks with Runs</option>
-                    <option value="noruns" ${include=='noruns' ? "selected" : ""}>Tasks without Runs</option>
-                    <option value="active" ${include=='active' ? "selected" : ""}>Tasks with Active Runs</option>
-                    <option value="last30" ${include=='last30' ? "selected" : ""}>Active in Last 30 days</option>
-            </select></td>
-            <td><select name="versionGroup">
-                    <option value="latestVersions" ${versionGroup=='latestVersions' ? "selected" : ""}>Latest Task Versions</option>
-                    <option value="allVersions" ${versionGroup=='allVersions' ? "selected" : ""}>All Task Versions</option>
-                    <option value="mergeVersions" ${versionGroup=='mergeVersions' ? "selected" : ""}>Merge Task Versions</option>
-            </select></td>
-            <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"></td>
-        </table> 
-        
-        <utils:preference name="timeSelection"             title="Time Selection: ">
-            <utils:value value="Event"/>
-            <utils:value value="Posted"/>
-        </utils:preference> 
-    </utils:preferences> --%>
-        <%--
-    This example uses JSTL, uncomment the taglib directive above.
-    To test, display the page like this: index.jsp?sayHello=true&name=Murphy
-    --%>
-        <%--
-    <c:if test="${param.sayHello}">
-        <!-- Let's welcome the user ${param.name} -->
-        Hello ${param.name}!
-    </c:if>
-    --%>
     
     </body>
 </html>

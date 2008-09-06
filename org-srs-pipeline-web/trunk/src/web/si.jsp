@@ -110,7 +110,7 @@
         <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
         <c:if test="${!showLatest}">
             <display:column title="#">
-                ${row.executionNumber}(${row.autoRetryNumber}|${row.autoRetryMaxAttempts})${row.isLatest>0 ? "(*)" : ""}
+                ${row.executionNumber}(${row.autoRetryNumber}/${row.autoRetryMaxAttempts})${row.isLatest>0 ? "(*)" : ""}
             </display:column>
         </c:if>
         <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>

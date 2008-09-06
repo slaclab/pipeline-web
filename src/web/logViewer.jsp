@@ -37,7 +37,7 @@
 </c:if> 
 <%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = None --%>
 <c:if test="${empty minimumDate}">
-    <c:set var="minimumDate" value="${logStartDate.time-24*60*60*1000}"/>
+    <c:set var="minimumDate" value="${logStartDate.time-preferences.defaultMessagePeriodMinutes*60*1000}"/>
 </c:if>
 <c:if test="${empty maximumDate}">
     <c:set var="maximumDate" value="-1"/>

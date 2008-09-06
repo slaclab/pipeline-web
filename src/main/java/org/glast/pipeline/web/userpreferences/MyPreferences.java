@@ -1,16 +1,3 @@
-/*
- * MyPreferences.java
- *
- * Created on July 16, 2007, 10:39 AM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- *
- * PipelineUserPrefs allows the user to customize the default settings
- * that are displayed the first time a user logs in or whenever the user
- * clears the default settings by clicking the clear button.
- */
-
 package org.glast.pipeline.web.userpreferences;
 
 /**
@@ -21,11 +8,12 @@ package org.glast.pipeline.web.userpreferences;
 
 /* defaultSort defines what column to use for sorting, the default is to use column 1 */
 public class MyPreferences {
-    String task = "all";
-    String taskVersion = "latestVersions";
-    String defaultOrder = "descending";
-    String defaultSort = "1";
-    int showStreams = 20;
+    private String task = "all";
+    private String taskVersion = "latestVersions";
+    private String defaultOrder = "descending";
+    private String defaultSort = "1";
+    private int showStreams = 20;
+    private int defaultMessagePeriodMinutes = 10;
     
     /** Creates a new instance of MyPreferences */
     public MyPreferences() {
@@ -73,5 +61,15 @@ public class MyPreferences {
     public int getShowStreams(){
         return showStreams;
     }
+
+   public int getDefaultMessagePeriodMinutes()
+   {
+      return defaultMessagePeriodMinutes;
+   }
+
+   public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes)
+   {
+      this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
+   }
     
 }

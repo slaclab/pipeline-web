@@ -14,13 +14,6 @@
     </head>
     <body>    
         
-        <!-- If userPrefInput is empty then we know to initialize their preferences and we set
-       the value to 'true'.
-       --> 
-        <c:if test="${empty userPrefInput}">
-            <c:set var="userPrefInput" value="true" scope="session"/>
-        </c:if>
-        
         <c:choose>
             <c:when test="${!empty param.submit}"> 
                 <c:set var="taskFilter" value="${param.taskFilter}" scope="session"/>
@@ -36,10 +29,8 @@
             </c:when>
         </c:choose>
         
-        <c:if test="${userPrefInput}">
-            <c:set var="versionGroup" value="${preferences.taskVersion}" scope="session"/>
-            <c:set var="include" value="${preferences.task}" scope="session"/>
-        </c:if>
+        <c:set var="versionGroup" value="${preferences.taskVersion}" scope="session"/>
+        <c:set var="include" value="${preferences.task}" scope="session"/>
         
         <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER

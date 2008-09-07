@@ -179,7 +179,7 @@
                   <aida:style type="plotter"> 
                      <aida:style type="yAxis">
                         <aida:attribute name="yAxis" value="Y1"/>
-                        <aida:attribute name="label" value="Ready"/>
+                        <aida:attribute name="label" value="<html><span color=\"blue\">Ready</span>"/>
                         <aida:attribute name="allowZeroSuppression" value="false"/>
                      </aida:style>
                      <aida:style type="data">
@@ -197,7 +197,7 @@
                   <aida:style type="plotter">
                      <aida:style type="yAxis">
                         <aida:attribute name="yAxis" value="Y0"/>
-                        <aida:attribute name="label" value="Running/Submitted"/>
+                        <aida:attribute name="label" value="<html><span color=\"green\">Running</span>/<span color=\"red\">Submitted</span>"/>
                         <aida:attribute name="allowZeroSuppression" value="false"/>
                      </aida:style>
                      <aida:style type="data">

@@ -20,17 +20,21 @@
                 <c:set var="include" value="${param.include}" scope="session"/>
                 <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
                 <c:set var="versionGroup" value="${param.versionGroup}" scope="session"/>
-                <c:set var="userPrefInput" value="false" scope="session"/>
             </c:when>
             
-            <c:when test="${!empty param.clear}">
+            <c:when test="${!empty param.reset}">
                 <c:set var="taskFilter" value="" scope="session"/>
-                <c:set var="userPrefInput" value="true" scope="session"/>
-            </c:when>
-        </c:choose>
+                <c:set var="versionGroup" value="${preferences.taskVersion}" scope="session"/>
+                <c:set var="include" value="${preferences.task}" scope="session"/>
+             </c:when>
         
-        <c:set var="versionGroup" value="${preferences.taskVersion}" scope="session"/>
-        <c:set var="include" value="${preferences.task}" scope="session"/>
+             <c:otherwise>
+                <c:set var="versionGroup" value="${empty versionGroup ? preferences.taskVersion : versionGroup}" scope="session"/>
+                <c:set var="include" value="${empty include ? preferences.task : include}" scope="session"/>
+             </c:otherwise>
+             
+          </c:choose>
+        
         
         <sql:query var="stream_stats">
             select STREAMSTATUS from STREAMSTATUS order by DISPLAYORDER

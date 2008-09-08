@@ -8,7 +8,7 @@ package org.glast.pipeline.web.userpreferences;
 
 /* defaultSort defines what column to use for sorting, the default is to use column 1 */
 public class MyPreferences {
-    private String task = "all";
+    private String task = "last30";
     private String taskVersion = "latestVersions";
     private String defaultOrder = "descending";
     private String defaultSort = "1";

@@ -11,13 +11,13 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Message Viewer: Task: ${task} Process: ${process} Instance: ${processInstance}</title> 
+    <title>Message Viewer</title> 
     <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
     <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css"> 
 </head>
 <body>
 
-<h2>Message Viewer: Task: ${task} Process: ${process} Instance: ${processInstance} </h2>
+<h2>Message Viewer</h2>
 
 <%-- set date object for starting and ending dates --%>
 <jsp:useBean id="logStartDate" class="java.util.Date" />

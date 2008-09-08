@@ -67,7 +67,7 @@
                <td colspan="5"><strong>Select Task</strong>:                 
                <select name="taskName">
                   <sql:query var="taskdata">
-                     select  distinct taskname
+                     select distinct taskname
                      from ${datatbl}  
                      order by taskname  
                   </sql:query>
@@ -250,6 +250,16 @@
                   </aida:style>
                </aida:style>  
                
+
+               <sql:query var="taskdata">
+                     select taskname
+                     from ${datatbl}
+                     where entered>=? and entered<=?
+                     <sql:dateParam value="${startRange}"/>
+                     <sql:dateParam value="${endRange}"/>
+                     group by taskname 
+                     order by taskname  
+               </sql:query>
                <c:forEach items="${taskdata.rows}" var="taskrow"> 
                   <c:set var="tasklist" value="${taskrow.taskname}"/>  		 
                   <sql:query var="taskdata">   

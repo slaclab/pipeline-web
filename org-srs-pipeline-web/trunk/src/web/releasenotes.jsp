@@ -8,6 +8,33 @@
    <body>
       
       See also the <a href="https://jira.slac.stanford.edu/browse/PFE?report=com.atlassian.jira.plugin.system.project:changelog-panel">JIRA change log</a>.
+           
+      <h1>Release Notes - Pipeline Front End - Version 2.7</h1>
+      
+      <h2>Bug</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-145'>PFE-145</a>] - Rollback checkboxs should not be displayed next to non latest streams/processes</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-165'>PFE-165</a>] - Symbol explanation for top plot ('Task: All') in Usage Plots is missing.</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-171'>PFE-171</a>] - It should be possible to rollback substreams from the "Stream" page (si.jsp)</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-179'>PFE-179</a>] - Is something not right in the PFE or Pipeline?</li>
+      </ul>
+      
+      <h2>Improvement</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-133'>PFE-133</a>] - grid lines for usage plots</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-140'>PFE-140</a>] - Consistently add the total number of processes displayed</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-152'>PFE-152</a>] - redirect should support stream paths</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-175'>PFE-175</a>] - Page titles</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-176'>PFE-176</a>] - Show task version</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-180'>PFE-180</a>] - Change some default values</li>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-181'>PFE-181</a>] - Speed up usage plots</li>
+      </ul>
+      
+      <h2>New Feature</h2>
+      <ul>
+         <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-178'>PFE-178</a>] - Add support for auto-rollback of failed processes</li>
+      </ul>
+      
       
       <h1>Release Notes - Pipeline Front End - Version 2.6</h1>
       

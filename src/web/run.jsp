@@ -6,7 +6,7 @@
 
 <html>
    <head>
-      <title>Task ${taskName} Process ${processName} Stream ${streamIdPath</title>
+      <title>Files: Task ${taskName} Process ${processName} Stream ${streamIdPath}</title>
    </head>
    <body>
 

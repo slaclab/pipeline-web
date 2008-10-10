@@ -120,7 +120,14 @@
             <c:otherwise>
                 <p>To filter by status click on the count in the status column. To see all streams click on the name in the Name column.</p>   
                 <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}&status=0">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
-                
+                <p>
+                  Show processes by status: 
+                  <c:forEach var="row" items="${proc_stats.rows}">
+                     &nbsp;<a href="process.jsp?task=${task}&status=${row.PROCESSINGSTATUS}">${row.PROCESSINGSTATUS}</a>
+                  </c:forEach>
+                  &nbsp;<a href="process.jsp?task=${task}&status=0">[ALL]</a>                  
+                  &nbsp;<a href="process.jsp?task=${task}&status=NOTSUCCESS">[All not SUCCESS]</a>
+                </p>
                 <sql:query var="test">select   SUM(1) "ALL",
                     <c:forEach var="row" items="${proc_stats.rows}">
                         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",                        

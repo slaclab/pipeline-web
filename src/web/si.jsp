@@ -65,9 +65,26 @@
 </sql:query>
 <c:set var="data" value="${rs1.rows[0]}"/>
 
+<sql:query var="executions">
+   select executionnumber, stream from stream
+   join task using (task)
+   where task=? and streamId=? and ExecutionNumber != ?
+   <sql:param value="${data.task}"/>
+   <sql:param value="${data.streamId}"/>
+   <sql:param value="${data.ExecutionNumber}"/>
+</sql:query>
+
+
 <table>        
 <tr><td>Stream</td><td>${pl:linkToStreams(streamIdPath,streamPath,".","si.jsp?stream=")}</td></tr>   
-<tr><td>Execution</td></td><td>${data.executionNumber}</td></tr>
+<tr>
+   <td>Execution</td>
+   <td><b>${data.executionNumber}</b>
+      <c:forEach var="row" items="${executions.rows}">
+         ,&nbsp;<a href="si.jsp?stream=${row.stream}">${row.executionnumber}</a>
+      </c:forEach>
+   </td>
+</tr>
 <tr><td>Is Latest</td><td>${data.isLatestPath}</td></tr>
 <tr><td>Status</td><td>${pl:prettyStatus(data.streamStatus)}</td></tr>
 <tr><td>Submitted</td><td>${pl:formatTimestamp(data.createDate)}</td></tr>          
@@ -249,7 +266,7 @@ Show all substreams summaries for the task in table form
 <form name="selectForm" action="confirm.jsp" method="post">
 <display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1"  defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
 <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
-<display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	    
+<display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0&pstream=${param.stream}" paramId="process" paramProperty="Process" />              	    
 <c:forEach var="row" items="${proc_stats.rows}">
     <display:column sortProperty="${row.PROCESSINGSTATUS}" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true"  headerClass="sortable"  >
         <a href="process.jsp?status=${row.PROCESSINGSTATUS}&pstream=${param.stream}&process=${tableRow.Process}">${tableRow[row.PROCESSINGSTATUS]}</a>      

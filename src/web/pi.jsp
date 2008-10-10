@@ -22,6 +22,26 @@
          <sql:param value="${param.pi}"/>
       </sql:query>
       <c:set var="data" value="${rs.rows[0]}"/>
+
+      <sql:query var="executions">
+         select executionnumber, processinstance from processinstance
+         join process using (process)
+         where process=? and stream=? and AutoRetryNumber=0 and ExecutionNumber != ?
+         <sql:param value="${data.process}"/>
+         <sql:param value="${data.stream}"/>
+         <sql:param value="${data.ExecutionNumber}"/>
+      </sql:query>
+
+      <sql:query var="retries">
+         select processinstance, AutoRetryNumber from processinstance
+         join process using (process)
+         where process=? and stream=? and ExecutionNumber=? and AutoRetryNumber != ?
+         <sql:param value="${data.process}"/>
+         <sql:param value="${data.stream}"/>
+         <sql:param value="${data.ExecutionNumber}"/>
+         <sql:param value="${data.AutoRetryNumber}"/>
+      </sql:query>
+      
       
       <table>
          <tr><td>Type</td><td>${pl:prettyStatus(data.processtype)}</td></tr>
@@ -38,8 +58,22 @@
          <tr><td>Exit Code</td><td>${data.ExitCode}</td></tr>    
          <tr><td>Working Dir</td><td><a href="run.jsp?pi=${param.pi}">${data.WorkingDir}</a></td></tr>
          <tr><td>Log File</td><td><a href="log.jsp?pi=${param.pi}">${data.LogFile}</a></td></tr>
-         <tr><td>Execution Number</td><td>${data.ExecutionNumber}</td></tr>
-         <tr><td>Retry Number</td><td>${data.AutoRetryNumber}</td></tr>
+         <tr>
+            <td>Execution Number</td>
+            <td><b>${data.ExecutionNumber}</b>
+               <c:forEach var="row" items="${executions.rows}">
+                  ,&nbsp;<a href="pi.jsp?pi=${row.processinstance}">${row.executionnumber}</a>
+               </c:forEach>
+            </td>
+         </tr>
+         <tr>
+            <td>Retry Number</td>
+            <td><b>${data.AutoRetryNumber}</b>
+               <c:forEach var="row" items="${retries.rows}">
+                  ,&nbsp;<a href="pi.jsp?pi=${row.processinstance}">${row.AutoRetryNumber}</a>
+               </c:forEach>
+            </td>
+         </tr>
          <tr><td>Is Latest</td><td>${data.IsLatest}</td></tr>   
          <tr><td>Batch Job ID</td><td><a href="job.jsp?id=${data.JobId}&site=${data.JobSite}">${data.JobId}</a></td></tr>                                     
       </table>

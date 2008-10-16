@@ -11,36 +11,43 @@
 <%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <html>
     <head>
-      <c:choose>
-         <c:when test="${!empty processName}">
-            <title>Streams for process: ${processName}</title>
-         </c:when>
-         <c:when test="${!empty task}">
-            <title>Streams for task: ${taskName}</title>
-         </c:when>
-      </c:choose>
-      <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-      <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
+        <c:choose>
+            <c:when test="${!empty processName}">
+                <title>Streams for process: ${processName}</title>
+            </c:when>
+            <c:when test="${!empty task}">
+                <title>Streams for task: ${taskName}</title>
+            </c:when>
+        </c:choose>
+        <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
+        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
     </head>
     <body>
-     
+        
+        
+    
+        
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by displayorder
         </sql:query>
         
         <c:choose>
-           <c:when test="${!empty processName}">
-              <h2>Streams for process: ${processName}</h2>
-              <p><a href="P2stats.jsp?process=${process}">Processing plots</a><!--&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a>--></p>
-           </c:when>
-           <c:when test="${!empty task}">
-              <h2>Streams for task: ${taskName}</h2>
-              <p><a href="JobProcessingStats.jsp?taskName=${taskName}">Processing plots</a></p>
-           </c:when>
+            <c:when test="${!empty processName}">
+                <h2>Streams for process: ${processName}</h2>
+                <p><a href="P2stats.jsp?process=${process}">Processing plots</a><!--&nbsp;.&nbsp;<a href="meta.jsp?process=${process}">Meta Data</a>--></p>
+            </c:when>
+            <c:when test="${!empty task}">
+                <h2>Streams for task: ${taskName}</h2>
+                <p><a href="JobProcessingStats.jsp?taskName=${taskName}">Processing plots</a></p>
+            </c:when>
         </c:choose>
         
         <pt:taskSummary streamCount="runCount"/>      
-
+        
+        <c:set var="streamIdFilter" value="${param.streamIdFilter}" scope="session"/>
+        <c:set var="include" value="${param.include}" scope="session"/>
+        <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
+        
         <c:set var="min" value="${param.min}"/>
         <c:set var="max" value="${param.max}"/>
         <c:set var="minimumDate" value="${!empty param.minDate ? param.minDate : -1}"/>
@@ -63,20 +70,20 @@
             with processinstance2 as
             (
             select * from processinstance
-
-           <c:choose>
-              <c:when test="${!empty processName}">
-                  where process=?
-                  <sql:param value="${param.process}"/>
-              </c:when>
-              <c:when test="${!empty task}">
-                  where process in (
+            
+            <c:choose>
+                <c:when test="${!empty processName}">
+                    where process=?
+                    <sql:param value="${param.process}"/>
+                </c:when>
+                <c:when test="${!empty task}">
+                    where process in (
                     select process from process where task in (select task from task start with task=? connect by parenttask = prior task)
                     )
-                  <sql:param value="${param.task}"/>
-              </c:when>
-           </c:choose>
-
+                    <sql:param value="${param.task}"/>
+                </c:when>
+            </c:choose>
+            
             
             <c:if test="${showLatest}">and islatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
             
@@ -110,10 +117,10 @@
                 </c:choose>
             </c:if>               
             )
-
+            
             select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessName, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
             <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
- 
+            
             from processinstance2 p
             join stream s using (stream)
             join process x using (process)         
@@ -126,6 +133,16 @@
                 and StreamId<=?
                 <sql:param value="${max}"/>
             </c:if>
+               <c:if test="${!empty taskFilter && !regExp}">
+                and PII.GetStreamIdPath(stream) like ?
+                <sql:param value="%${streamIdFilter}%"/>
+            </c:if>
+           
+            <c:if test="${!empty streamIdFilter }">                 
+                and regexp_like(PII.GetStreamIdPath(stream),?)
+                <sql:param value="${streamIdFilter}"/>
+            </c:if>
+            
             <c:if test="${!empty param.pstream}">
                 and ? in (select ss.stream from stream ss start with ss.stream=q.stream connect by ss.stream = prior ss.parentstream)
                 <sql:param value="${param.pstream}"/>
@@ -148,11 +165,11 @@
         <c:if test = "${empty NumStatusReqs}">       
             <c:set var="NumStatusReqs" value="0"/> 
         </c:if>
-        
+      
         <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
         <form name="DateForm">
             <table class="filtertable" >
-                <tr><th>Stream</th><td>Min <input type="text" name="min" value="${min}"></td>
+                <tr><th>Top Level Stream: </th><td>Min <input type="text" name="min" value="${min}"></td>
                     <td>Max <input type="text" name="max" value="${max}"></td> 
                     <td>Status: <select size="3" name="status" multiple>
                             <option value="" ${status=="" ? "selected" : ""}>All</option>
@@ -169,8 +186,10 @@
                         </select>      
                     </td>
                 </tr>
-                <tr>  
-                    <td><select size="1" name="dateCategory">
+                <tr>                      
+                    <th>Stream Filter:</th><td> <input type="text" name="streamIdFilter" value="${streamIdFilter}"></td>
+                    <td><input type="checkbox" name="regExp" ${regExp ? 'checked' : ''}> Regular Expression (<a href="http://www.oracle.com/technology/oramag/webcolumns/2003/techarticles/rischert_regexp_pt1.html">?</a>)</td>
+                </tr> <tr>  <td><select size="1" name="dateCategory">
                             <option value="createdate"${dateCategory == "createdate" ? "selected" : "" }>Created Date</option>
                             <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
                             <option value="startdate"${dateCategory == "startdate" ? "selected" : "" }>Started Date</option>
@@ -183,14 +202,14 @@
                     </td>   
                     <td>
                         <input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
-                       <c:choose>
-                          <c:when test="${!empty processName}">
-                             <input type="hidden" name="process" value="${process}">
-                          </c:when>
-                          <c:when test="${!empty task}">
-                             <input type="hidden" name="task" value="${task}">
-                          </c:when>
-                       </c:choose>
+                        <c:choose>
+                            <c:when test="${!empty processName}">
+                                <input type="hidden" name="process" value="${process}">
+                            </c:when>
+                            <c:when test="${!empty task}">
+                                <input type="hidden" name="task" value="${task}">
+                            </c:when>
+                        </c:choose>
                     </td>
                 </tr>
                 <tr>
@@ -232,7 +251,7 @@
                     <display:table class="datatable" name="${test.rows}" id="Row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                         <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                         <c:if test="${empty process && !empty task}">
-                           <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable"/>
+                            <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable"/>
                         </c:if>
                         <display:column property="Status" sortable="true" headerClass="sortable"/>             
                         <c:if test="${!showLatest}">
@@ -252,21 +271,21 @@
                         </c:if>
                         <display:column property="links" title="Links" class="leftAligned"/>                    
                         <c:if test="${adminMode}">                  
-                                   <display:column title="" property="isLatestSelector" class="admin"/>                        
+                            <display:column title="" property="isLatestSelector" class="admin"/>                        
                             <display:footer>
                                 <tr>
                                     <td colspan="20" class="admin">                
                                         <a href="javascript:void(0)" onClick="ShowAll(true);">Select all</a>&nbsp;.&nbsp;
                                         <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
                                         <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
-                                         <c:choose>
+                                        <c:choose>
                                             <c:when test="${!empty processName}">
-                                              <input type="hidden" name="process" value="${process}">
+                                                <input type="hidden" name="process" value="${process}">
                                             </c:when>
                                             <c:when test="${!empty task}">
-                                              <input type="hidden" name="task" value="${task}">
+                                                <input type="hidden" name="task" value="${task}">
                                             </c:when>
-                                         </c:choose>
+                                        </c:choose>
                                         <input type="submit" value="Rollback Selected" name="submit">
                                     </td>
                                 </tr>
@@ -276,20 +295,20 @@
                 </form>          
                 <c:if test="${test.rowCount>0}">
                     <ul>
-                       <c:choose>
-                          <c:when test="${!empty processName}">
-                              <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
-                              <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=id">Dump job id list</a>.</li>
-                          </c:when>
-                          <c:when test="${!empty task}">
-                              <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
-                              <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=id">Dump job id list</a>.</li>
-                          </c:when>
-                       </c:choose>
+                        <c:choose>
+                            <c:when test="${!empty processName}">
+                                <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
+                                <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=id">Dump job id list</a>.</li>
+                            </c:when>
+                            <c:when test="${!empty task}">
+                                <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
+                                <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=id">Dump job id list</a>.</li>
+                            </c:when>
+                        </c:choose>
                     </ul>
                 </c:if>
             </c:otherwise>                                                                                                                                                                                                           
         </c:choose>
-
+        
     </body>
 </html>

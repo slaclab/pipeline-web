@@ -189,7 +189,9 @@
                 <tr>                      
                     <th>Stream Filter:</th><td> <input type="text" name="streamIdFilter" value="${streamIdFilter}"></td>
                     <td><input type="checkbox" name="regExp" ${regExp ? 'checked' : ''}> Regular Expression (<a href="http://www.oracle.com/technology/oramag/webcolumns/2003/techarticles/rischert_regexp_pt1.html">?</a>)</td>
-                </tr> <tr>  <td><select size="1" name="dateCategory">
+                </tr> 
+                <tr>  
+                    <td><select size="1" name="dateCategory">
                             <option value="createdate"${dateCategory == "createdate" ? "selected" : "" }>Created Date</option>
                             <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
                             <option value="startdate"${dateCategory == "startdate" ? "selected" : "" }>Started Date</option>
@@ -217,6 +219,8 @@
                     </td>
                 </tr>
             </table>
+            <input type="hidden" name="pstream" value="${param.pstream}">
+            <input type="hidden" name="process" value="${param.process}">
         </form>
         
         <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox>

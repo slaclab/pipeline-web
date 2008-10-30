@@ -9,6 +9,16 @@
       
       See also the <a href="https://jira.slac.stanford.edu/browse/PFE?report=com.atlassian.jira.plugin.system.project:changelog-panel">JIRA change log</a>.
            
+      <h1>Release Notes - Pipeline Front End - Version 2.8</h1>
+            
+      <h2>Improvement</h2>
+      <ul>
+      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-127'>PFE-127</a>] - stream filter</li>
+      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-139'>PFE-139</a>] - Add regular expression searching in process view</li>
+      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-183'>PFE-183</a>] - Allow filtering of processes by status and Task</li>
+      <li>[<a href='https://jira.slac.stanford.edu/browse/PFE-184'>PFE-184</a>] - Show other executions (and auto-retry-attempts) in process/stream detail pages.</li>
+      </ul>
+      
       <h1>Release Notes - Pipeline Front End - Version 2.7</h1>
       
       <h2>Bug</h2>

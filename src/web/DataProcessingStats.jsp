@@ -15,14 +15,14 @@
     <body>
         
         <sql:query var="data">
-            select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-n.metavalue)/3600+8 as hours from verdataset d 
+            select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-n.metavalue)/3600+7 as hours from verdataset d 
             join datasetversion dv on (d.latestversion=dv.datasetversion) 
             join verdatasetmetanumber n on (n.datasetversion=dv.datasetversion and n.metaname='nMetStop')
             where datasetgroup=39684247 and n.metaValue>239907864.08432
         </sql:query>
         <aida:plotter height="400">            
             <aida:tuple var="tuple" query="${data}"/>    
-            <aida:tupleProjection var="hours" tuple="${tuple}" xprojection="HOURS"/>
+            <aida:tupleProjection var="hours" tuple="${tuple}" xprojection="HOURS" xbins="80" xmin="0" xmax="80"/>
             <aida:region title= "Data processing elapsed time (hours)" >
                 <aida:style>
                     <aida:style type="legendBox">

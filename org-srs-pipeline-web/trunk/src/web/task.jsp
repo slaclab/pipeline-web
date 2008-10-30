@@ -123,7 +123,7 @@
                 <p>
                   Show processes by status: 
                   <c:forEach var="row" items="${proc_stats.rows}">
-                     &nbsp;<a href="process.jsp?task=${task}&status=${row.PROCESSINGSTATUS}">${row.PROCESSINGSTATUS}</a>
+                     &nbsp;<a href="process.jsp?task=${task}&status=${row.PROCESSINGSTATUS}">${pl:prettyStatus(row.PROCESSINGSTATUS)}</a>
                   </c:forEach>
                   &nbsp;<a href="process.jsp?task=${task}&status=0">[ALL]</a>                  
                   &nbsp;<a href="process.jsp?task=${task}&status=NOTSUCCESS">[All not SUCCESS]</a>

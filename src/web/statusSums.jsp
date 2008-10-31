@@ -52,7 +52,7 @@
 <c:set var="runningSum" value = "0"/>
 <c:set var="successSum" value = "0"/>
 <c:set var="failedSum" value = "0"/>
-<c:set var="cancelledSum" value = "0"/>
+<c:set var="canceledSum" value = "0"/>
 <c:set var="terminatedSum" value = "0"/>
 <c:set var="skippedSum" value = "0"/>
  
@@ -66,7 +66,7 @@
 <c:set var="runningSum" value ="${row.running + runningSum}"/>
 <c:set var="successSum" value ="${row.success + successSum}"/>
 <c:set var="failedSum" value ="${row.failed + failedSum}"/>
-<c:set var="cancelledSum" value = "${row.cancelled + cancelledSum}"/>
+<c:set var="canceledSum" value = "${row.canceled + canceledSum}"/>
 <c:set var="terminatedSum" value = "${row.terminated + terminatedSum}"/>
 <c:set var="skippedSum" value = "${row.skipped + skippedSum}"/>
 
@@ -84,7 +84,7 @@
   <display:footer>
     <tr><td>Summary</td><td></td><td></td>   
         <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
-        <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${cancelledSum}</td>
+        <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${canceledSum}</td>
            <td>${terminatedSum}</td>  <td>${skippedSum}</td> <tr>    
   </display:footer>
 </display:table>
@@ -97,7 +97,7 @@
  
  successSum:    ${successSum} <br>
  failedSum:     ${failedSum}  <br>
- cancelledSum:  ${cancelledSum} <br>
+ canceledSum:   ${canceledSum} <br>
  terminatedSum  ${terminatedSum} <br>
  skippedSum     ${skippedSum} <br>
 

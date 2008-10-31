@@ -247,7 +247,7 @@ Show all substreams summaries for the task in table form
 <c:set var="runningSum" value = "0"/>
 <c:set var="successSum" value = "0"/>
 <c:set var="failedSum" value = "0"/>
-<c:set var="cancelledSum" value = "0"/>
+<c:set var="canceledSum" value = "0"/>
 <c:set var="terminatedSum" value = "0"/>
 <c:set var="skippedSum" value = "0"/>
 
@@ -259,7 +259,7 @@ Show all substreams summaries for the task in table form
     <c:set var="runningSum" value ="${row.running + runningSum}"/>
     <c:set var="successSum" value ="${row.success + successSum}"/>
     <c:set var="failedSum" value ="${row.failed + failedSum}"/>
-    <c:set var="cancelledSum" value = "${row.cancelled + cancelledSum}"/>
+    <c:set var="canceledSum" value = "${row.canceled + canceledSum}"/>
     <c:set var="terminatedSum" value = "${row.terminated + terminatedSum}"/>
     <c:set var="skippedSum" value = "${row.skipped + skippedSum}"/> 
 </c:forEach>  
@@ -279,7 +279,7 @@ Show all substreams summaries for the task in table form
     </td><td></td><td><strong>Totals</strong></td>   
     <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
     <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${terminatedSum}</td>
-    <td>${cancelledSum}</td>  <td>${skippedSum}</td> <tr>       
+    <td>${canceledSum}</td>  <td>${skippedSum}</td> <tr>       
 </display:footer>
 </display:table>
 </form>

@@ -36,7 +36,7 @@
                <input type="submit" value="CANCEL" name="submit">
             </form>
          </c:when>
-         <c:when test="${param.submit == 'Rollback Selected Streams'}">
+         <c:when test="${param.submit == 'Rollback Selected SubStreams'}">
             <p class="warning">
             You have requested to rollback ${fn:length(paramValues["select"])} streams 
             from task <i>${taskName}</i>. 

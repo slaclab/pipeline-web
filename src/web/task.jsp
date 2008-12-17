@@ -20,18 +20,16 @@
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
-      
+        
         <sql:query var="versions">
             select task, version, revision from task where taskName=? order by version, revision
             <sql:param value="${taskName}"/>
         </sql:query>        
         
-        <c:if test="${versions.rowCount>0}">
-            
+        <c:if test="${versions.rowCount>0}">            
             <c:forEach var="row" items="${versions.rows}">
                 <c:choose>
-                    <c:when test="${row.task == task}">
-                       
+                    <c:when test="${row.task == task}">                        
                         <h2> Task Summary: ${taskNamePath} ${row.version}.${row.revision}
                             <c:if test="${!fn:contains(taskNamePath,'.')}">      
                                 (<a href="xml.jsp?task=${task}">XML</a>)
@@ -45,40 +43,52 @@
             <sql:query var="notation">
                 select * from notation where task=?
                 <sql:param value="${task}"/>
-            </sql:query>  
-            
+            </sql:query>              
             <c:if test="${notation.rowCount>0}">
                 <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
-            </c:if>
-                        
+            </c:if>           
             <c:if test="${versions.rowCount>0}">
+                <!-- Determing how many versions to display (last 5 or all) -->
+                <c:choose>
+                    <c:when test="${empty param.showAllVersions}">
+                        <c:set var ="StartRowSpan" value="${versions.rowCount - 5}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var ="StartRowSpan" value="1"/>
+                    </c:otherwise>
+                </c:choose>                   
+                <c:set var ="EndRowSpan" value="${versions.rowCount}"/>  
+                <c:set var ="rowCounter" value="0"/>            
                 Versions:  
                 <c:forEach var="row" items="${versions.rows}">
-                    <c:choose>
-                        <c:when test="${row.task != task}">
-                            <a href="task.jsp?task=${row.task}">(${row.version}.${row.revision})</a>
-                        </c:when>
-                        <c:otherwise>
-                            <b>(${row.version}.${row.revision})</b> 
-                        </c:otherwise>
-                    </c:choose>
+                    <c:set var ="rowCounter" value="${rowCounter +1}"/>                
+                    <c:if test="${rowCounter >= StartRowSpan and rowCounter <= EndRowSpan}">
+                        <c:choose>
+                            <c:when test="${row.task != task}">
+                                <a href="task.jsp?task=${row.task}">(${row.version}.${row.revision})</a>
+                            </c:when>
+                            <c:otherwise>
+                                <b>(${row.version}.${row.revision})</b> 
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
                 </c:forEach>
+                <c:if test="${empty param.showAllVersions}">
+                    <a href="task.jsp?task=${task}&showAllVersions=Y">....more versions </a>
+                </c:if>
             </c:if>
-        </c:if>
-        
+        </c:if>                
         <sql:query var="subtasks"> 
             select task, taskname,parenttask, version,revision from task 
             start with task = ?  connect by  parenttask = prior task
             <sql:param value="${task}"/>
-        </sql:query>
-        
+        </sql:query>        
         <c:if test="${subtasks.rowCount>0}">
             <c:forEach var="row" items="${subtasks.rows}">
                 <!-- <br>  subtask ${row['task']}:  -->
                 <a href="task.jsp?task=${row['task']}">${row["taskname"]}</a>
             </c:forEach>
-        </c:if>
-        
+        </c:if>        
         <c:if test="${results.rowCount>0}">
             <c:set var="gvOrientation" value="LR" scope="session"/> 
         </c:if> 
@@ -96,8 +106,7 @@
                 <c:if test="${parameter.key!='gvOrientation'}">
                     <input type="hidden" name="${parameter.key}" value="${fn:escapeXml(parameter.value)}">
                 </c:if>
-            </c:forEach>
-            
+            </c:forEach>            
             Graph Oriention: 
             <c:choose>
                 <c:when test="${gvOrientation=='LR'}">
@@ -121,12 +130,12 @@
                 <p>To filter by status click on the count in the status column. To see all streams click on the name in the Name column.</p>   
                 <p><a href="running.jsp?task=${task}">Show running jobs</a> . <a href="streams.jsp?task=${task}&status=0">Show streams</a> . <a href="P2stats.jsp?task=${task}">Summary plots</a></p>
                 <p>
-                  Show processes by status: 
-                  <c:forEach var="row" items="${proc_stats.rows}">
-                     &nbsp;<a href="process.jsp?task=${task}&status=${row.PROCESSINGSTATUS}">${pl:prettyStatus(row.PROCESSINGSTATUS)}</a>
-                  </c:forEach>
-                  &nbsp;<a href="process.jsp?task=${task}&status=0">[ALL]</a>                  
-                  &nbsp;<a href="process.jsp?task=${task}&status=NOTSUCCESS">[All not SUCCESS]</a>
+                    Show processes by status: 
+                    <c:forEach var="row" items="${proc_stats.rows}">
+                        &nbsp;<a href="process.jsp?task=${task}&status=${row.PROCESSINGSTATUS}">${pl:prettyStatus(row.PROCESSINGSTATUS)}</a>
+                    </c:forEach>
+                    &nbsp;<a href="process.jsp?task=${task}&status=0">[ALL]</a>                  
+                    &nbsp;<a href="process.jsp?task=${task}&status=NOTSUCCESS">[All not SUCCESS]</a>
                 </p>
                 <sql:query var="test">select   SUM(1) "ALL",
                     <c:forEach var="row" items="${proc_stats.rows}">
@@ -153,7 +162,7 @@
                     <c:forEach var="row" items="${proc_stats.rows}">
                         <display:column property="${row.PROCESSINGSTATUS}"total="true" title="<img src=\"img/${row.PROCESSINGSTATUS}.gif\" alt=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\" title=\"${pl:prettyStatus(row.PROCESSINGSTATUS)}\">" sortable="true" headerClass="sortable" href="process.jsp?status=${row.PROCESSINGSTATUS}" paramId="process" paramProperty="Process"/>
                     </c:forEach>
-                    <display:column property="all" title="Total" />
+                    <display:column property="all" title="Total" href="process.jsp" paramId="process" paramProperty="Process" />
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> <td></td>
                         <tr>  <td></td>

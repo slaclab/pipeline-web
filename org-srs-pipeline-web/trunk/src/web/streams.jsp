@@ -23,10 +23,9 @@
     <sql:param value="${param.task}"/>
 </sql:query>
 
-
-
 <h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
 
+<c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
 <c:set var="min" value="${param.min}"/>
 <c:set var="max" value="${param.max}"/>
 <c:set var="minimumDate" value="${!empty param.minDate ? param.minDate : -1}"/>
@@ -44,8 +43,21 @@
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 
 <sql:query var="test">select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
-    from stream where task=?
-    <sql:param value="${param.task}"/>
+    from stream 
+    <c:if test="${empty taskFilter}">
+        where task=? 
+        <sql:param value="${param.task}"/>
+    </c:if>
+    <c:if test="${!empty taskFilter && !regExp}">
+        where lower("TASKNAME") like lower(?)
+        <sql:param value="%${taskFilter}%"/>
+    </c:if>
+    <c:if test="${!empty taskFilter && regExp}">
+        where regexp_like("TASKNAME",?)
+        <sql:param value="${taskFilter}"/>
+    </c:if>
+    
+    
     <c:if test="${showLatest}"> and isLatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
     <c:if test="${!empty status}"> 
         <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />      
@@ -151,7 +163,17 @@
 <form name="selectForm" action="confirm.jsp" method="post">
 <display:table class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
 <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
-<display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
+<c:if test="${row.StreamStatus =='FAILED'}">
+    <display:column title="Status" sortable="true" headerClass="sortable">
+        <font color="#FF0000"> ${row.StreamStatus} </font>
+    </display:column>
+</c:if>
+<c:if test="${row.StreamStatus !='FAILED'}">
+    <display:column title="Status" sortable="true" headerClass="sortable">
+        ${row.StreamStatus}  
+    </display:column>
+</c:if>  
+
 <c:if test="${!showLatest}">
     <display:column title="#">
         ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}

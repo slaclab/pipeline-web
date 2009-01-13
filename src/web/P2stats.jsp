@@ -156,11 +156,13 @@
                                     <aida:style type="outline">                                    
                                         <aida:attribute name="isVisible" value="false"/>
                                     </aida:style>
+                                    <aida:style type="marker"> 
+                                        <aida:attribute name="size" value="2"/>
+                                    </aida:style>                                    
                                 </aida:style>
                             </aida:style>
                             <aida:plot var="${elapsedTimeline}">
-                            </aida:plot>
-                            
+                            </aida:plot>                            
                         </aida:region>
                         <aida:region title="Wait time (mins) Timeline" >
                             <aida:style>
@@ -175,11 +177,13 @@
                                     <aida:style type="outline">                                    
                                         <aida:attribute name="isVisible" value="false"/>
                                     </aida:style>
+                                    <aida:style type="marker"> 
+                                        <aida:attribute name="size" value="2"/>
+                                    </aida:style>                                    
                                 </aida:style>
                             </aida:style>
                             <aida:plot var="${waitTimeline}">
-                            </aida:plot>
-                            
+                            </aida:plot>                            
                         </aida:region>
                         
                         <aida:region title= "Task Throughput" colSpan="2">
@@ -274,7 +278,10 @@
                                 <aida:style>
                                     <aida:attribute name="statisticsBoxFontSize" value="8"/>
                                     <aida:style type="data">
-                                        <aida:attribute name="showErrorBars" value="false"/>   
+                                        <aida:attribute name="showErrorBars" value="false"/>  
+                                        <aida:style type="marker"> 
+                                            <aida:attribute name="size" value="2"/>
+                                        </aida:style>                                        
                                     </aida:style>  
                                 </aida:style>
                                 
@@ -283,7 +290,7 @@
                                     <aida:region title="Wall Clock time (mins)" var="region" href="?selectedPlot=${plotName}&process=${row.process}" >
                                         <aida:plot var="${wallPlot}"/>                     
                                     </aida:region>                                                              
-                                        <aida:region title="Wall Clock Time Timeline" >
+                                    <aida:region title="Wall Clock Time Timeline" >
                                         <aida:style>
                                             <aida:style type="legendBox">
                                                 <aida:attribute name="isVisible" value="false"/>
@@ -296,6 +303,9 @@
                                                 <aida:style type="outline">                                    
                                                     <aida:attribute name="isVisible" value="false"/>
                                                 </aida:style>
+                                                <aida:style type="marker"> 
+                                                    <aida:attribute name="size" value="2"/>
+                                                </aida:style>                                                
                                             </aida:style>
                                         </aida:style>
                                         <aida:plot var="${wallPlotTimeLine}">
@@ -323,6 +333,9 @@
                                                     <aida:style type="outline">                                    
                                                         <aida:attribute name="isVisible" value="false"/>
                                                     </aida:style>
+                                                    <aida:style type="marker"> 
+                                                        <aida:attribute name="size" value="2"/>
+                                                    </aida:style>                                                    
                                                 </aida:style>
                                             </aida:style>
                                             <aida:plot var="${waitPlotTimeLine}">
@@ -349,6 +362,9 @@
                                                     <aida:style type="outline">                                    
                                                         <aida:attribute name="isVisible" value="false"/>
                                                     </aida:style>
+                                                    <aida:style type="marker"> 
+                                                        <aida:attribute name="size" value="2"/>
+                                                    </aida:style>                                                    
                                                 </aida:style>
                                             </aida:style>
                                             <aida:plot var="${cpuSecondsTimeLine}">
@@ -375,6 +391,9 @@
                                                     <aida:style type="outline">                                    
                                                         <aida:attribute name="isVisible" value="false"/>
                                                     </aida:style>
+                                                    <aida:style type="marker"> 
+                                                        <aida:attribute name="size" value="2"/>
+                                                    </aida:style>                                                    
                                                 </aida:style>
                                             </aida:style>
                                             <aida:plot var="${wallCpuTimeLine}">
@@ -383,9 +402,7 @@
                                     </c:if>  
                                 </c:if>  
                             </aida:plotter>                         
-                        </c:if>  
-                        
-                        
+                        </c:if>                                                  
                         
                         <c:if test="${row.processtype !='SCRIPT'}">                                                         
                             <sql:query var="hostnode">           

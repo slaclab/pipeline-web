@@ -16,7 +16,7 @@
       <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
          <c:redirect url="noPermission.jsp"/>
       </c:if>
-      
+
       <c:choose>
          <c:when test="${param.submit == 'CANCEL'}">
             <c:redirect url="index.jsp"/>
@@ -36,6 +36,22 @@
                <input type="submit" value="CANCEL" name="submit">
             </form>
          </c:when>
+          <c:when test="${param.submit == 'Rollback Stream'}">            
+            <p class="warning">
+               You have requested to rollback stream <i>${streamIdPath}</i>
+               from task <i>${taskName}</i>. 
+               This operation cannot be undone!
+            </p>
+            <form method="post">
+               <input type="hidden" name="task" value="${task}">
+               <input type="hidden" name="select" value="${stream}">
+               Arguments to add or override:&nbsp;<input type="text" name="args" value="" size="50" />
+               <input type="submit" value="Confirm Stream Rollback!" name="submit">
+               <input type="submit" value="CANCEL" name="submit">
+            </form>
+         </c:when>
+
+         
          <c:when test="${param.submit == 'Rollback Selected SubStreams'}">
             <p class="warning">
             You have requested to rollback ${fn:length(paramValues["select"])} streams 

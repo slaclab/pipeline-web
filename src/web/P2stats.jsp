@@ -15,8 +15,7 @@
     </head>
     <body>
         <c:set var="startTime" value="${! empty param.startTime ? param.startTime : -1}" />
-        <c:set var="endTime"   value="${! empty param.endTime ? param.endTime : -1}"   />
-        <c:set var="task"   value="${param.task}"/>    
+        <c:set var="endTime"   value="${! empty param.endTime ? param.endTime : -1}"   /> 
         
         <form name="DateForm">        
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">

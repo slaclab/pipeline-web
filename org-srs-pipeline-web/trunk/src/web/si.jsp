@@ -274,7 +274,7 @@ Show all substreams summaries for the task in table form
          <c:set var="grandTotal" value="${grandTotal + totals[stat.PROCESSINGSTATUS]}" />
       </c:forEach>
       
-      <td><strong>${grandTotal}</strong><td>
+      <td><strong>${grandTotal}</strong></td>
     </tr>  
      
 </display:footer>

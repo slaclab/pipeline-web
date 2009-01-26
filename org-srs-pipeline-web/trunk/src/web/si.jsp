@@ -240,7 +240,7 @@ Show all substreams summaries for the task in table form
     <sql:param value="${param.stream}"/>    
 </sql:query>    
 
-<!-- count 'em up.  This is the new way which handles any number of statuses gracefully -->
+<!-- count 'em up.  This handles any number of statuses gracefully -->
 <jsp:useBean id="totals" class="java.util.HashMap"/>
 <c:forEach var="row" items="${proc_stats.rows}">
    <c:set target="${totals}" property="${row.PROCESSINGSTATUS}" value="0"/>
@@ -263,14 +263,19 @@ Show all substreams summaries for the task in table form
 <display:column property="all" title="Total" />
 
 <display:footer>
-    <td></td><td><strong>Totals</strong></td>
+   <tr /> <!-- a little vertical padding -->
+   <tr>
+      <td></td> <!-- task name column -->
+      <td><strong>Totals</strong></td>
+      
       <c:set var="grandTotal" value="0" />
       <c:forEach var="stat" items="${proc_stats.rows}">
          <td>${totals[stat.PROCESSINGSTATUS]}</td>
          <c:set var="grandTotal" value="${grandTotal + totals[stat.PROCESSINGSTATUS]}" />
       </c:forEach>
+      
       <td><strong>${grandTotal}</strong><td>
-    <tr>  
+    </tr>  
      
 </display:footer>
 </display:table>

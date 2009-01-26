@@ -164,7 +164,7 @@
                     <display:column property="all" title="Total" total="true" href="process.jsp" paramId="process" paramProperty="Process" />
                     <display:column property="taskLinks" title="Links" />
                     <display:footer> 
-                        <td></td> <!-- a little vertical padding -->
+                        <tr /> <!-- a little vertical padding -->
                         <tr>  <!-- summary row of totals -->
                         <td></td>  <!-- task name column -->
                         <td></td>  <!-- version column -->

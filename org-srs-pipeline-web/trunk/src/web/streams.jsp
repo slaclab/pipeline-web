@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
 </head>
 <body>
-
+ 
 <sql:query var="taskVersion">
     select version,revision from task where task=?
     <sql:param value="${param.task}"/>
@@ -43,21 +43,10 @@
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 
 <sql:query var="test">select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
-    from stream 
-    <c:if test="${empty taskFilter}">
+    from stream    
         where task=? 
         <sql:param value="${param.task}"/>
-    </c:if>
-    <c:if test="${!empty taskFilter && !regExp}">
-        where lower("TASKNAME") like lower(?)
-        <sql:param value="%${taskFilter}%"/>
-    </c:if>
-    <c:if test="${!empty taskFilter && regExp}">
-        where regexp_like("TASKNAME",?)
-        <sql:param value="${taskFilter}"/>
-    </c:if>
-    
-    
+   
     <c:if test="${showLatest}"> and isLatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
     <c:if test="${!empty status}"> 
         <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />      
@@ -160,7 +149,7 @@
     <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
 </c:when>
 <c:otherwise>
-<form name="selectForm" action="confirm.jsp" method="post">
+<form name="selectForm" action="confirmTest.jsp" method="post">
 <display:table class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
 <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
 <c:if test="${row.StreamStatus =='FAILED'}">
@@ -195,6 +184,8 @@
                 <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
                 <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
                 <input type="hidden" name="task" value="${task}">
+                <input type="hidden" name="app" value="streams">
+                <input type="hidden" name="status" value="${param.status}">
                 <input type="submit" value="Rollback Selected Streams" name="submit">
             </td>
         </tr>
@@ -202,6 +193,7 @@
     </tr>   
 </c:if>
 </display:table>
+
 </form>
 <c:if test="${test.rowCount>0}">
     <ul>

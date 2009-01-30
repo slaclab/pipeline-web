@@ -61,7 +61,7 @@
                 <c:set var ="rowCounter" value="0"/>            
                 Versions:  
                 <c:forEach var="row" items="${versions.rows}">
-                    <c:set var ="rowCounter" value="${rowCounter +1}"/>                
+                    <c:set var ="rowCounter" value="${rowCounter+1}"/>                
                     <c:if test="${rowCounter >= StartRowSpan and rowCounter <= EndRowSpan}">
                         <c:choose>
                             <c:when test="${row.task != task}">
@@ -73,7 +73,7 @@
                         </c:choose>
                     </c:if>
                 </c:forEach>
-                <c:if test="${empty param.showAllVersions}">
+                <c:if test="${empty param.showAllVersions && versions.rowCount>5}">
                     <a href="task.jsp?task=${task}&showAllVersions=Y">....more versions </a>
                 </c:if>
             </c:if>

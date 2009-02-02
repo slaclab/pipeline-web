@@ -10,7 +10,7 @@
 <script type="text/javascript" language="JavaScript">function Do${name}Submission() { document.${name}Form.submit(); }</script>
 <form name="${name}Form" target="_self"> 
     <c:forEach var="parameter" items="${param}">
-       <c:if test="${!fn:startsWith(parameter.key,name) && !noHiddenParameters}">
+       <c:if test="${!fn:startsWith(parameter.key,name) && !fn:startsWith(parameter.key,'submit') && !noHiddenParameters}">
           <input type="hidden" name="${parameter.key}" value="${fn:escapeXml(parameter.value)}">
        </c:if>
     </c:forEach>

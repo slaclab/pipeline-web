@@ -12,8 +12,11 @@ public class MyPreferences {
     private String taskVersion = "latestVersions";
     private String defaultOrder = "descending";
     private String defaultSort = "1";
-    private int showStreams = 20;
     private int defaultMessagePeriodMinutes = 10;
+    private int defaultStreamPeriodDays = 7;
+    private int defaultPerfPlotDays = 30;
+    private int showStreams = 20;
+     
     
     /** Creates a new instance of MyPreferences */
     public MyPreferences() {
@@ -40,6 +43,19 @@ public class MyPreferences {
         showStreams = c;
     }
     
+    public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes)
+   {
+      this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
+   }
+    
+   public void setDefaultStreamPeriodDays (int defaultStreamPeriodDays){
+      this.defaultStreamPeriodDays = defaultStreamPeriodDays;
+   }
+   
+    public void setDefaultPerfPlotDays (int defaultPerfPlotDays){
+      this.defaultPerfPlotDays = defaultPerfPlotDays;
+   }
+   
     // Getters
     
     public String getTask(){
@@ -67,9 +83,13 @@ public class MyPreferences {
       return defaultMessagePeriodMinutes;
    }
 
-   public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes)
+   public int getDefaultStreamPeriodDays()
    {
-      this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
-   }
-    
+      return defaultStreamPeriodDays;
+   } 
+   
+   public int getDefaultPerfPlotDays()
+   {
+      return defaultPerfPlotDays;
+   }   
 }

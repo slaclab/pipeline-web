@@ -14,8 +14,73 @@
         <title>Performance Plots</title>
     </head>
     <body>
-        <c:set var="startTime" value="${! empty param.startTime ? param.startTime : -1}" />
-        <c:set var="endTime"   value="${! empty param.endTime ? param.endTime : -1}"   /> 
+        <c:set var="debug" value="0"/> 
+        <c:set var="startTime" value="${param.startTime}" />
+        <c:set var="endTime"   value="${param.endTime}" /> 
+        <c:set var="userSelectedStartTime" value="${! empty startTime && startTime != '-1' && startTime != sessionStartTime}" /> 
+        <c:set var="userSelectedEndTime" value="${! empty endTime && endTime != '-1' && endTime != sessionEndTime }" /> 
+        <c:set var="userSelectedNdays" value="${! empty ndays && !userSelectedStartTime && !userSelectedEndTime && !sessionStartTime && !sessionEndTime}"/> 
+        <c:set var="pref_ndays" value="${preferences.defaultPerfPlotDays}"/> 
+        <c:set var="userSelectedTask" value="${param.task}" scope="session" />  
+        <c:catch>
+            <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>
+        </c:catch> 
+        <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedStartTime && !userSelectedEndTime }"/> 
+        
+        <c:choose>
+            <c:when test="${userSelectedStartTime || userSelectedEndTime}">
+                <c:set var="sessionUseNdays" value="false" scope="session"/> 
+                <c:set var="sessionNdays" value="" scope="session"/> 
+                <c:set var="sessionStartTime" value="${startTime}" scope="session"/> 
+                <c:set var="sessionEndTime" value="${endTime}" scope="session"/> 
+            </c:when>
+            <c:when test="${userSelectedNdays}">
+                <c:set var="sessionUseNdays" value="true" scope="session"/> 
+                <c:set var="sessionNdays" value="${!empty ndays ? ndays : pref_ndays}" scope="session"/> 
+                <c:set var="sessionStartTime" value="-1" scope="session"/> 
+                <c:set var="sessionEndTime" value="-1" scope="session"/> 
+            </c:when>
+            
+            <c:when test="${empty sessionUseNdays}">
+                <c:set var ="sessionUseNdays" value="true" scope="session"/>
+                <c:set var ="sessionNdays" value="${pref_ndays}" scope="session"/>
+                <c:set var ="sessionStartTime" value="None" scope="session"/>
+                <c:set var ="sessionEndTime" value="None" scope="session"/>
+            </c:when>
+        </c:choose>
+        
+        <c:if test="${!empty param.reset}">
+            <c:set var="startTime" value="-1"/>
+            <c:set var="endTime" value="-1"/> 
+            <c:set var="startTimeDate" value="None"/> 
+            <c:set var="endTimeDate" value="None"/> 
+            <c:set var ="sessionStartTime" value="None"/>
+            <c:set var ="sessionEndTime" value="None"/> 
+            <c:set var="sessionUseNdays" value="true"/> 
+            <c:set var="sessionNdays" value="${pref_ndays}"/>
+            <c:set var="userSelectedNdays" value="false"/> 
+        </c:if>
+        
+        <c:if test="${debug == 1}"> 
+            <h3>
+                userselectedTask: ${userSelectedTask}<br>
+                userselectedNdays: ${userSelectedNdays}<br>
+                userselectedStartTime: ${userSelectedStartTime}<br>
+                userselectedEndTime: ${userSelectedEndTime}<p>
+                sessionStartTime: ${sessionStartTime}<br>
+                sessionEndTime: ${sessionEndTime}<br>
+                sessionNdays: ${sessionNdays}<br>
+                sessionUseNdays: ${sessionUseNdays}<p>
+                startTime: ${startTime}<br>
+                endTime: ${endTime}<br>
+                ndays: ${param.ndays}<br>
+                pref_ndays: ${pref_ndays}<p>
+                param.startTime=${param.startTime}<br>
+                param.endTime=${param.endTime}<br>
+                param.filter=${param.filter}<br>
+                param.reset="${param.reset}"<br>
+            </h3>
+        </c:if>
         
         <form name="DateForm">        
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
@@ -23,14 +88,16 @@
                     <td colspan="5"><strong>Select Timespan</strong>:                 
                 </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${startTime}"  timezone="PST8PDT"/></td> 
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime"   showtime="true" format="%b/%e/%y %H:%M" value="${endTime}" timezone="PST8PDT"/> </td>     
+                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseNdays ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td> 
+                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime"   showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseNdays ? -1 : sessionEndTime}" timezone="PST8PDT"/></td>
+                    <td>or last N days <input name="ndays" type="text" value="${sessionUseNdays ? sessionNdays : ''}" size="5"></td>
                 </tr> 
                 <input type="hidden" name="task" value="${task}"/>
-                
-                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"></td>
+                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter">
+                <input type="submit" value="Reset" name="reset"></td>
                 </tr> 
         </table></form>   
+        
         
         <jsp:useBean id="endTimeBean" class="java.util.Date" />
         <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" /> 	  
@@ -38,6 +105,7 @@
         <jsp:useBean id="startTimeBean" class="java.util.Date" /> 
         <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" /> 	  
         <c:set var="startRange" value="${startTimeBean}" />                
+        
         
         <%
         String[] plotColors = new String[] {"red","blue","green","black","orange","purple","brown","gray","pink"};
@@ -69,14 +137,17 @@
             and streamstatus='SUCCESS' 
             and PII.GetStreamIsLatestPath(Stream)=1
             <sql:param value="${task}"/>
-            <c:if test="${ startTime != -1}">
+            <c:if test="${ startTime > 0 && !userSelectedNdays}">
                 and startdate >= ?
                 <sql:dateParam value="${startRange}"/>
             </c:if>
-            <c:if test="${ endTime != -1}">
+            <c:if test="${ endTime > 0 && !userSelectedNdays}">
                 and enddate <= ?
                 <sql:dateParam value="${endRange}"/>
             </c:if>
+            <c:if test="${userSelectedNdays && (!userSelectedStartTime || !userSelectedEndTime)}"> 
+                and startdate > current_date - interval '${sessionUseNdays ? sessionNdays : pref_ndays}' day
+            </c:if>  
         </sql:query>
         
         <sql:query var="processes">
@@ -100,13 +171,16 @@
                         from stream where task=? 
                         <sql:param value="${task}"/>
                         and streamstatus='SUCCESS' 
-                        <c:if test="${ startTime != -1}">
+                        <c:if test="${ startTime > 0 && !userSelectedNdays}">
                             and startdate >= ?
                             <sql:dateParam value="${startRange}"/>
                         </c:if>
-                        <c:if test="${ endTime != -1}">
+                        <c:if test="${ endTime > 0 && !userSelectedNdays}">
                             and enddate <= ?
                             <sql:dateParam value="${endRange}"/>
+                        </c:if>
+                        <c:if test="${userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}">
+                            and startdate > current_date - interval '${sessionUseNdays ? sessionNdays : 7}' day
                         </c:if>
                         and  PII.GetStreamIsLatestPath(Stream)=1                                
                     </sql:query>                                         
@@ -242,7 +316,6 @@
                 
                 <c:forEach var="row" items="${processes.rows}">
                     <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${task}&startTime=${startTime}&endTime=${endTime}" value="${row.PROCESS}">
-                        
                         <sql:query var="data">
                             select enddate,startdate,submitdate,cpusecondsused,
                             cpusecondsused/60 as cpuUsedTime ,
@@ -254,14 +327,18 @@
                             where PI.process = ?
                             <sql:param value="${row.PROCESS}"/>
                             and PI.processingstatus = 'SUCCESS'
-                            <c:if test="${ startTime != -1}">
+                            <c:if test="${ startTime > 0 && !userSelectedNdays}">
                                 and startdate >= ?
                                 <sql:dateParam value="${startRange}"/>
                             </c:if>
-                            <c:if test="${ endTime != -1}">
+                            <c:if test="${ endTime > 0 && !userSelectedNdays}">
                                 and enddate <= ?
                                 <sql:dateParam value="${endRange}"/>
-                            </c:if>                                    
+                            </c:if>   
+                            <c:if test="${userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}"> 
+                                and startdate > current_date - interval '${sessionUseNdays ? sessionNdays : 7}' day
+                            </c:if>   
+                            
                         </sql:query>             
                         
                         <aida:tuple var="tuple" query="${data}" />    

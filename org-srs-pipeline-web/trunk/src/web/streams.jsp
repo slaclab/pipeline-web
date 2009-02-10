@@ -32,8 +32,8 @@
 <c:set var="maximumDate" value="${param.maxDate}"/>
 <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
 <c:set var="pref_ndays" value="${preferences.defaultStreamPeriodDays}"/> 
-<c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate}" /> 
-<c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate}" />
+<c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1'}" /> 
+<c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1'}" />
 <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
 <c:catch>
     <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>

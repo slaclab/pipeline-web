@@ -25,7 +25,7 @@
     <body>
         
         
-        
+    
         
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by displayorder
@@ -133,11 +133,11 @@
                 and StreamId<=?
                 <sql:param value="${max}"/>
             </c:if>
-            <c:if test="${!empty taskFilter && !regExp}">
+               <c:if test="${!empty taskFilter && !regExp}">
                 and PII.GetStreamIdPath(stream) like ?
                 <sql:param value="%${streamIdFilter}%"/>
             </c:if>
-            
+           
             <c:if test="${!empty streamIdFilter }">                 
                 and regexp_like(PII.GetStreamIdPath(stream),?)
                 <sql:param value="${streamIdFilter}"/>
@@ -165,7 +165,7 @@
         <c:if test = "${empty NumStatusReqs}">       
             <c:set var="NumStatusReqs" value="0"/> 
         </c:if>
-        
+      
         <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/> 
         <form name="DateForm">
             <table class="filtertable" >
@@ -215,17 +215,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page 
+                    <td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page
                     </td>
                 </tr>
             </table>
             <input type="hidden" name="pstream" value="${param.pstream}">
             <input type="hidden" name="process" value="${param.process}">
-            <input type="hidden" name="showLatest" value="${showLatest}">
-            <input type="hidden" name="showLatestChanged" value="${showLatest}">
         </form>
         
-        <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution: ${showLatest}</pt:autoCheckBox>
+        <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox>
         
         <script language="JavaScript" type="text/javascript">
          function ShowAll(set) {
@@ -242,7 +240,8 @@
              }
            }
          }
-        </script>          
+        </script>   
+        
         <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
         <c:choose>
             <c:when test="${param.format=='stream'}">
@@ -258,16 +257,7 @@
                         <c:if test="${empty process && !empty task}">
                             <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable"/>
                         </c:if>
-                        <c:if test="${Row.Status =='Failed'}">
-                            <display:column title="Status" sortable="true" headerClass="sortable">
-                                <font color="#FF0000"> ${Row.Status} </font>
-                            </display:column>
-                        </c:if>
-                        <c:if test="${Row.Status !='Failed'}">
-                           <display:column title="Status" sortable="true" headerClass="sortable">
-                                 ${Row.Status}  
-                            </display:column>
-                        </c:if>                           
+                        <display:column property="Status" sortable="true" headerClass="sortable"/>             
                         <c:if test="${!showLatest}">
                             <display:column property="ProcessExecutionNumber" title="Process #"/>
                             <display:column property="StreamExecutionNumber" title="Stream #"/>

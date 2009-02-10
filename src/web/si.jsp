@@ -240,19 +240,31 @@ Show all substreams summaries for the task in table form
     <sql:param value="${param.stream}"/>    
 </sql:query>    
 
-<!-- count 'em up.  This handles any number of statuses gracefully -->
-<jsp:useBean id="totals" class="java.util.HashMap"/>
-<c:forEach var="row" items="${proc_stats.rows}">
-   <c:set target="${totals}" property="${row.PROCESSINGSTATUS}" value="0"/>
-</c:forEach>
-<c:forEach var="row" items="${streamset.rows}">
-   <c:forEach var="stat" items="${proc_stats.rows}">
-      <c:set target="${totals}" property="${stat.PROCESSINGSTATUS}" value="${totals[stat.PROCESSINGSTATUS]+row[stat.PROCESSINGSTATUS]}"/>
-   </c:forEach>
-</c:forEach>  
+<c:set var="waitingSum" value = "0"/>
+<c:set var="readySum" value = "0"/>
+<c:set var="queuedSum" value = "0"/>
+<c:set var="submittedSum" value = "0"/>
+<c:set var="runningSum" value = "0"/>
+<c:set var="successSum" value = "0"/>
+<c:set var="failedSum" value = "0"/>
+<c:set var="cancelledSum" value = "0"/>
+<c:set var="terminatedSum" value = "0"/>
+<c:set var="skippedSum" value = "0"/>
 
+<c:forEach var="row" items="${streamset.rows}">
+    <c:set var="waitingSum" value = "${row.waiting + waitingSum}"/>
+    <c:set var="readySum" value = "${row.ready + readySum}"/>
+    <c:set var="queuedSum" value = "${row.queued + queuedSum}"/>
+    <c:set var="submittedSum" value = "${row.submitted + submittedSum}"/>
+    <c:set var="runningSum" value ="${row.running + runningSum}"/>
+    <c:set var="successSum" value ="${row.success + successSum}"/>
+    <c:set var="failedSum" value ="${row.failed + failedSum}"/>
+    <c:set var="cancelledSum" value = "${row.cancelled + cancelledSum}"/>
+    <c:set var="terminatedSum" value = "${row.terminated + terminatedSum}"/>
+    <c:set var="skippedSum" value = "${row.skipped + skippedSum}"/> 
+</c:forEach>  
 <form name="selectForm" action="confirm.jsp" method="post">
-<display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
+<display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1"  defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
 <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
 <display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0&pstream=${param.stream}" paramId="process" paramProperty="Process" />              	    
 <c:forEach var="row" items="${proc_stats.rows}">
@@ -262,21 +274,12 @@ Show all substreams summaries for the task in table form
 </c:forEach>   
 <display:column property="all" title="Total" />
 
+
 <display:footer>
-   <tr /> <!-- a little vertical padding -->
-   <tr>
-      <td></td> <!-- task name column -->
-      <td><strong>Totals</strong></td>
-      
-      <c:set var="grandTotal" value="0" />
-      <c:forEach var="stat" items="${proc_stats.rows}">
-         <td>${totals[stat.PROCESSINGSTATUS]}</td>
-         <c:set var="grandTotal" value="${grandTotal + totals[stat.PROCESSINGSTATUS]}" />
-      </c:forEach>
-      
-      <td><strong>${grandTotal}</strong></td>
-    </tr>  
-     
+    </td><td></td><td><strong>Totals</strong></td>   
+    <td>${waitingSum} </td><td>${readySum}</td> <td>${queuedSum}</td><td> ${submittedSum}</td>
+    <td> ${runningSum}</td><td>${successSum}</td><td>${failedSum}</td><td>${terminatedSum}</td>
+    <td>${cancelledSum}</td>  <td>${skippedSum}</td> <tr>       
 </display:footer>
 </display:table>
 </form>

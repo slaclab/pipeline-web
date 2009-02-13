@@ -6,4 +6,10 @@
   <ResourceLink name="jdbc/glastgen" type="javax.sql.DataSource" global="jdbc/glastgen" /> 
   <ResourceLink name="jdbc/glastgenDev" type="javax.sql.DataSource" global="jdbc/glastgenDev" /> 
   <Logger className="org.apache.catalina.logger.FileLogger" prefix="Pipeline." suffix=".log" timestamp="true" />
+  <Resource
+             name="jdbc/pipeline-ii-exo-dev"
+             type="javax.sql.DataSource"
+             driverClassName="oracle.jdbc.driver.OracleDriver"
+             url="jdbc:oracle:oci:@pipeline-ii-exo-dev"
+             maxActive="20"/>
 </Context>

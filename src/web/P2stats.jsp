@@ -17,16 +17,18 @@
         <c:set var="debug" value="0"/> 
         <c:set var="startTime" value="${param.startTime}" />
         <c:set var="endTime"   value="${param.endTime}" /> 
-        <c:set var="userSelectedStartTime" value="${! empty startTime && startTime != '-1' && startTime != sessionStartTime}" /> 
-        <c:set var="userSelectedEndTime" value="${! empty endTime && endTime != '-1' && endTime != sessionEndTime }" /> 
-        <c:set var="userSelectedNdays" value="${! empty ndays && !userSelectedStartTime && !userSelectedEndTime && !sessionStartTime && !sessionEndTime}"/> 
+        <c:set var="ndays" value="${param.ndays}"/> 
+        <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime && !empty param.filter}" /> 
+        <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime && !empty param.filter}" /> 
+        <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedStartTime && !userSelectedEndTime && !empty param.filter}"/> 
         <c:set var="pref_ndays" value="${preferences.defaultPerfPlotDays}"/> 
         <c:set var="userSelectedTask" value="${param.task}" scope="session" />  
+        <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedStartTime && !userSelectedEndTime && !empty param.filter}"/>
+        <%--
         <c:catch>
             <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>
-        </c:catch> 
-        <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedStartTime && !userSelectedEndTime }"/> 
-        
+        </c:catch>  --%>
+       
         <c:choose>
             <c:when test="${userSelectedStartTime || userSelectedEndTime}">
                 <c:set var="sessionUseNdays" value="false" scope="session"/> 
@@ -37,8 +39,8 @@
             <c:when test="${userSelectedNdays}">
                 <c:set var="sessionUseNdays" value="true" scope="session"/> 
                 <c:set var="sessionNdays" value="${!empty ndays ? ndays : pref_ndays}" scope="session"/> 
-                <c:set var="sessionStartTime" value="-1" scope="session"/> 
-                <c:set var="sessionEndTime" value="-1" scope="session"/> 
+                <c:set var="sessionStartTime" value="None" scope="session"/> 
+                <c:set var="sessionEndTime" value="None" scope="session"/> 
             </c:when>
             
             <c:when test="${empty sessionUseNdays}">
@@ -63,7 +65,6 @@
         
         <c:if test="${debug == 1}"> 
             <h3>
-                userselectedTask: ${userSelectedTask}<br>
                 userselectedNdays: ${userSelectedNdays}<br>
                 userselectedStartTime: ${userSelectedStartTime}<br>
                 userselectedEndTime: ${userSelectedEndTime}<p>
@@ -79,6 +80,7 @@
                 param.endTime=${param.endTime}<br>
                 param.filter=${param.filter}<br>
                 param.reset="${param.reset}"<br>
+                userselectedTask: ${userSelectedTask}<br>
             </h3>
         </c:if>
         
@@ -146,7 +148,12 @@
                 <sql:dateParam value="${endRange}"/>
             </c:if>
             <c:if test="${userSelectedNdays && (!userSelectedStartTime || !userSelectedEndTime)}"> 
-                and startdate > current_date - interval '${sessionUseNdays ? sessionNdays : pref_ndays}' day
+                and STARTDATE >= ? and ENDDATE <= ?
+                <jsp:useBean id="maxUsedDays" class="java.util.Date" />
+                <jsp:useBean id="minUsedDays" class="java.util.Date" />
+                <jsp:setProperty name="minUsedDays" property="time" value="${maxUsedDays.time - ndays*24*60*60*1000}" />       
+                <sql:dateParam value="${minUsedDays}" type="timestamp"/> 
+                <sql:dateParam value="${maxUsedDays}" type="timestamp"/> 
             </c:if>  
         </sql:query>
         
@@ -180,7 +187,12 @@
                             <sql:dateParam value="${endRange}"/>
                         </c:if>
                         <c:if test="${userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}">
-                            and startdate > current_date - interval '${sessionUseNdays ? sessionNdays : 7}' day
+                            and STARTDATE >= ? and ENDDATE <= ?
+                            <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
+                            <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
+                            <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - ndays*24*60*60*1000}" />       
+                            <sql:dateParam value="${minDateUsedDays}" type="timestamp"/> 
+                            <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/> 
                         </c:if>
                         and  PII.GetStreamIsLatestPath(Stream)=1                                
                     </sql:query>                                         

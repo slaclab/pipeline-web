@@ -44,9 +44,9 @@
 </c:if> 
  
 <c:choose>
-    <c:when test="${(userSelectedMinimumDate || userSelectedMaximumDate) && !userSelectedNdays}">
-        <c:set var="sessionNdays" value="" scope="session"/> 
+    <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
         <c:set var ="sessionUseNdays" value="false" scope="session"/> 
+        <c:set var ="sessionNdays" value="" scope="session"/> 
         <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
         <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/> 
     </c:when>
@@ -59,8 +59,8 @@
     <c:when test="${empty sessionUseNdays}">
         <c:set var ="sessionUseNdays" value="true" scope="session"/>
         <c:set var ="sessionNdays" value="${pref_ndays}" scope="session"/>
-        <c:set var ="sessionMinimumDate" value="None" scope="session"/>
-        <c:set var ="sessionMaximumDate" value="None" scope="session"/>
+        <c:set var ="sessionMinimumDate" value="-1" scope="session"/>
+        <c:set var ="sessionMaximumDate" value="-1" scope="session"/>
     </c:when>
 </c:choose>
 

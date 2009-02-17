@@ -30,37 +30,33 @@
 <c:set var="max" value="${param.max}"/>
 <c:set var="minimumDate" value="${param.minDate}"/>
 <c:set var="maximumDate" value="${param.maxDate}"/>
-<c:set var="ndays" value="${param.ndays}" /> 
 <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
 <c:set var="pref_ndays" value="${preferences.defaultStreamPeriodDays}"/> 
-<c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate && ! empty param.submit}" /> 
-<c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate && ! empty param.submit}" />
+<c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate && !empty param.submit}" /> 
+<c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate && !empty param.submit}" />
 <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
-<c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedMinimumDate && !userSelectedMaximumDate && ! empty param.submit}" />
+<c:catch>
+    <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>
+</c:catch> 
+<c:set var="userSelectedNdays" value="${!empty ndays && (!userSelectedMinimumDate || !userSelectedMaximumDate) && !empty param.submit}" />
 
- 
 <c:if test="${userSelectedTaskName}">
     <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
 </c:if> 
  
 <c:choose>
     <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
-        <c:set var ="sessionUseNdays" value="false" scope="session"/> 
-        <c:set var ="sessionNdays" value="" scope="session"/> 
         <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
         <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/> 
     </c:when>
     <c:when test="${userSelectedNdays}">
-        <c:set var="sessionUseNdays" value="true" scope="session"/> 
-        <c:set var="sessionNdays" value="${!empty ndays ? ndays : pref_ndays}" scope="session"/> 
-        <c:set var="sessionMinimumDate" value="-1" scope="session"/> 
-        <c:set var="sessionMaximumDate" value="-1" scope="session"/> 
+        <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
     </c:when>
-    <c:when test="${empty sessionUseNdays}">
-        <c:set var ="sessionUseNdays" value="true" scope="session"/>
-        <c:set var ="sessionNdays" value="${pref_ndays}" scope="session"/>
-        <c:set var ="sessionMinimumDate" value="-1" scope="session"/>
-        <c:set var ="sessionMaximumDate" value="-1" scope="session"/>
+    <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate}">
+        <c:set var ="userSelectedNdays" value="false"/> 
+        <c:set var ="sessionNdays" value="${ndays}" scope="session"/>
+        <c:set var ="sessionMinimumDate" value="${!empty minimumDate ? minimumDate : sessionMinimumDate}" scope="session"/>
+        <c:set var ="sessionMaximumDate" value="${!empty maximumDate ? maximumDate : sessionMaximumDate}" scope="session"/> 
     </c:when>
 </c:choose>
 
@@ -69,29 +65,28 @@
         userselectedNdays: ${userSelectedNdays}<br>
         userselectedminimumdate: ${userSelectedMinimumDate}<br> 
         userselectedmaximumdate: ${userSelectedMaximumDate}<p>
+        sessionNdays: ${sessionNdays}<br>
         sessionMinimumDate: ${sessionMinimumDate}<br>
         sessionMaximumDate: ${sessionMaximumDate}<p>
-        sessionNdays: ${sessionNdays}<br>
-        sessionUseNdays: ${sessionUseNdays}<p> 
         minimumdate: ${minimumDate}<br>
         maximumdate: ${maximumDate}<p>
         ndays: ${ndays}<br>
         pref_ndays: ${pref_ndays}<br>
-        param.minDate=${param.minDate}<br>
-        param.maxDate=${param.maxDate}<br>
-        param.submit:${param.submit}<br>
+        param.minDate: ${param.minDate}<br>
+        param.maxDate: ${param.maxDate}<br>
+        param.submit: ${param.submit}<br>
     </h3>
 </c:if>
 
 <c:if test="${!empty param.reset}">
     <c:set var="min" value=""/>
     <c:set var="max" value=""/>
+    <c:set var="ndays" value="${!empty pref_ndays ? pref_ndays : '' }"/> 
     <c:set var="minimumDate" value="-1"/>
     <c:set var="maximumDate" value="-1"/> 
     <c:set var="status" value=""/>
-    <c:set var ="sessionMinimumDate" value="None"/>
-    <c:set var ="sessionMaximumDate" value="None"/> 
-    <c:set var="sessionUseNdays" value="true"/> 
+    <c:set var ="sessionMinimumDate" value="-1"/>
+    <c:set var ="sessionMaximumDate" value="-1"/> 
     <c:set var="sessionNdays" value="${pref_ndays}"/>
     <c:set var="userSelectedNdays" value="false"/> 
 </c:if>
@@ -182,9 +177,9 @@
                     <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
                 </c:forEach>                         
                 <tr><th>Date</th>
-                <td>Start</td><td><utils:dateTimePicker value="${userSelectedNdays ? -1 : minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-                <td>End</td><td><utils:dateTimePicker value="${userSelectedNdays ? -1 : maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-                <td>or last N days <input name="ndays" type="text" value="${sessionUseNdays ? sessionNdays : ''}" size="5"></td> 
+                <td>Start</td><td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+                <td>End</td><td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+                <td>or last N days <input name="ndays" type="text" value="${!empty ndays ? ndays : pref_ndays}" size="5"></td> 
             </td>
             <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">
         <input type="hidden" name="task" value="${task}"></td></tr>

@@ -25,7 +25,7 @@
 
 <h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
 
-<c:set var="debug" value="0"/> 
+<c:set var="debug" value="0"/>
 <c:set var="min" value="${param.min}"/>
 <c:set var="max" value="${param.max}"/>
 <c:set var="minimumDate" value="${param.minDate}"/>
@@ -38,27 +38,11 @@
 <c:catch>
     <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>
 </c:catch> 
-<c:set var="userSelectedNdays" value="${!empty ndays && (!userSelectedMinimumDate || !userSelectedMaximumDate) && !empty param.submit}" />
+<c:set var="userSelectedNdays" value="${!empty ndays && (!userSelectedMinimumDate || !userSelectedMaximumDate) && ndays != sessionNdays && !empty param.submit}" />
 
 <c:if test="${userSelectedTaskName}">
     <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
 </c:if> 
- 
-<c:choose>
-    <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
-        <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
-        <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/> 
-    </c:when>
-    <c:when test="${userSelectedNdays}">
-        <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
-    </c:when>
-    <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate}">
-        <c:set var ="userSelectedNdays" value="false"/> 
-        <c:set var ="sessionNdays" value="${ndays}" scope="session"/>
-        <c:set var ="sessionMinimumDate" value="${!empty minimumDate ? minimumDate : sessionMinimumDate}" scope="session"/>
-        <c:set var ="sessionMaximumDate" value="${!empty maximumDate ? maximumDate : sessionMaximumDate}" scope="session"/> 
-    </c:when>
-</c:choose>
 
 <c:if test="${debug == 1}"> 
     <h3>
@@ -69,14 +53,35 @@
         sessionMinimumDate: ${sessionMinimumDate}<br>
         sessionMaximumDate: ${sessionMaximumDate}<p>
         minimumdate: ${minimumDate}<br>
-        maximumdate: ${maximumDate}<p>
+        maximumdate: ${maximumDate}<br>
         ndays: ${ndays}<br>
-        pref_ndays: ${pref_ndays}<br>
+        param.status: ${param.status}<br>
         param.minDate: ${param.minDate}<br>
         param.maxDate: ${param.maxDate}<br>
         param.submit: ${param.submit}<br>
     </h3>
 </c:if>
+ 
+<c:choose>
+    <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
+        <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
+        <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/> 
+    </c:when>
+    <c:when test="${userSelectedNdays}">
+        <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
+        <c:set var="minimumDate" value="-1"/>
+        <c:set var="maximumDate" value="-1"/>
+    </c:when>
+    <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate && !empty param.submit}">
+        <c:if test="${!empty minimumDate && minimumDate != -1 && !empty maximumDate && maximumDate != -1}">
+            <c:set var="userSelectedMinimumDate" value="true"/> 
+            <c:set var="userSelectedMaximumDate" value="true"/>
+        </c:if>
+        <c:if test="${(empty minimumDate || minimumDate == -1) && (empty maximumDate || maximumDate == -1)}">
+            <c:set var ="userSelectedNdays" value="true"/> 
+        </c:if>
+    </c:when>
+</c:choose>
 
 <c:if test="${!empty param.reset}">
     <c:set var="min" value=""/>
@@ -140,7 +145,7 @@
         and STARTDATE>=?
         <jsp:useBean id="minDateUsed" class="java.util.Date" />
         <jsp:setProperty name="minDateUsed" property="time" value="${minimumDate}" />       
-        <sql:dateParam value="${minDateUsed}" type="timestamp"/> 
+        <sql:dateParam value="${minDateUsed}" type="timestamp"/>  
     </c:if>
     <c:if test="${maximumDate > 0 && !userSelectedNdays}">
         and ENDDATE<=?
@@ -157,6 +162,9 @@
         <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/> 
     </c:if>   
 </sql:query>
+
+
+ 
 
 <sql:query var="statii">
     select STREAMSTATUS from STREAMSTATUS order by displayorder

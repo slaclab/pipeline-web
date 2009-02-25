@@ -153,7 +153,7 @@
                 &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
         ${fn:length(data.rows)} records found from table ${plotby} with group by ${groupby}</span></P> 
         
-        <c:if test="${fn:length(data.rows) > 0}">
+        <c:if test="${data.rowCount > 0}">
             
             <aida:plotter height="400"> 
                 
@@ -228,7 +228,7 @@
             </aida:plotter>
             
         </c:if>
-        <c:if test="${fn:length(data.rows) == 0}">
+        <c:if test="${data.rowCount == 0}">
             
             <br> 
             <span class="emphasis"><strong>There are no records for the data requested</strong></span>.
@@ -236,7 +236,7 @@
         </c:if>
         <br> 
         
-        <c:if test="${sessionTaskName == 'ALL'}">
+        <c:if test="${sessionTaskName == 'ALL' && data.rowCount>0}">
             <sql:query var="taskdata">
                 select taskname
                 from ${datatbl}
@@ -253,10 +253,40 @@
             </c:if>   
             <br>
             <c:if test="${taskdata.rowCount<=30}">
+                
+                <sql:query var="tasks">   
+                    <c:if test="${groupby != 1}">
+                        select min(entered) entered 
+                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
+                            ,avg(N${status.count}) N${status.count}                            
+                        </c:forEach>
+                        from ( 
+                    </c:if>   
+                    select entered
+                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
+                        ,max(case when taskname='${taskrow.taskname}' then running else 0 end) N${status.count}                               
+                    </c:forEach>
+                    from ${datatbl} 
+                    where entered>=? and entered<=?
+                    <sql:dateParam value="${startRange}"/>
+                    <sql:dateParam value="${endRange}"/>
+                    and running > 0
+                    group by entered order by entered  
+                    <c:if test="${groupby != 1}">
+                        ) group by  floor(rownum/?) order by entered
+                        <sql:param value="${groupby}"/>
+                    </c:if>   		 
+                </sql:query>
+                
                 <aida:plotter height="600"> 
                     <aida:region  title="Running processes by task">
                         <aida:style>
-                            <aida:attribute name="showStatisticsBox" value="false"/>		        
+                            <aida:style type="legendBox">
+                                <aida:attribute name="isVisible" value="true"/>
+                            </aida:style>
+                            <aida:style type="statisticsBox">
+                                <aida:attribute name="isVisible" value="false"/>
+                            </aida:style>                        
                             <aida:style type="xAxis">
                                 <aida:attribute name="label" value=""/>
                                 <aida:attribute name="type" value="date"/>
@@ -266,35 +296,10 @@
                             </aida:style>
                         </aida:style>  
                         
-                        <c:forEach items="${taskdata.rows}" var="taskrow"> 
-                            <c:set var="tasklist" value="${taskrow.taskname}"/>  		 
-                            <sql:query var="taskdata">   
-                                <c:if test="${groupby != 1}">
-                                    select min(entered) entered,avg(running) running  from ( 
-                                </c:if>   
-                                select  sum(running) running, entered
-                                from ${datatbl} 
-                                where entered>=? and entered<=?
-                                <sql:dateParam value="${startRange}"/>
-                                <sql:dateParam value="${endRange}"/>
-                                and taskname = ?
-                                <sql:param value="${tasklist}"/> 
-                                and running > 0
-                                group by entered order by entered  
-                                <c:if test="${groupby != 1}">
-                                    ) group by  floor(rownum/?) order by entered
-                                    <sql:param value="${groupby}"/>
-                                </c:if>   		 
-                            </sql:query>
-                            
-                            <c:if test="${fn:length(taskdata.rows) > 0}"> 
-                                
-                                <aida:tuple var="tuple" query="${taskdata}"/>        
-                                <aida:datapointset var="running" title="${tasklist}" tuple="${tuple}" yaxisColumn="RUNNING" xaxisColumn="ENTERED" />   
-                                
-                                <aida:plot var="${running}"/>
-                                
-                            </c:if>   
+                        <aida:tuple var="tuple" query="${tasks}"/>        
+                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">                                                                              
+                            <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />                                 
+                            <aida:plot var="${running}"/>               
                         </c:forEach>   
                     </aida:region>	 
                 </aida:plotter>  

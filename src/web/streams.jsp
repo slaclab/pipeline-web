@@ -17,92 +17,35 @@
     <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
 </head>
 <body>
- 
+
 <sql:query var="taskVersion">
     select version,revision from task where task=?
     <sql:param value="${param.task}"/>
 </sql:query>
 
+
+
 <h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
 
-<c:set var="debug" value="0"/>
 <c:set var="min" value="${param.min}"/>
 <c:set var="max" value="${param.max}"/>
-<c:set var="minimumDate" value="${param.minDate}"/>
-<c:set var="maximumDate" value="${param.maxDate}"/>
+<c:set var="minimumDate" value="${!empty param.minDate ? param.minDate : -1}"/>
+<c:set var="maximumDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
 <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
-<c:set var="pref_ndays" value="${preferences.defaultStreamPeriodDays}"/> 
-<c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate && !empty param.submit}" /> 
-<c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate && !empty param.submit}" />
-<c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
-<c:catch>
-    <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>
-</c:catch> 
-<c:set var="userSelectedNdays" value="${!empty ndays && (!userSelectedMinimumDate || !userSelectedMaximumDate) && ndays != sessionNdays && !empty param.submit}" />
 
-<c:if test="${userSelectedTaskName}">
-    <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
-</c:if> 
-
-<c:if test="${debug == 1}"> 
-    <h3>
-        userselectedNdays: ${userSelectedNdays}<br>
-        userselectedminimumdate: ${userSelectedMinimumDate}<br> 
-        userselectedmaximumdate: ${userSelectedMaximumDate}<p>
-        sessionNdays: ${sessionNdays}<br>
-        sessionMinimumDate: ${sessionMinimumDate}<br>
-        sessionMaximumDate: ${sessionMaximumDate}<p>
-        minimumdate: ${minimumDate}<br>
-        maximumdate: ${maximumDate}<br>
-        ndays: ${ndays}<br>
-        param.status: ${param.status}<br>
-        param.minDate: ${param.minDate}<br>
-        param.maxDate: ${param.maxDate}<br>
-        param.submit: ${param.submit}<br>
-    </h3>
-</c:if>
- 
-<c:choose>
-    <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
-        <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
-        <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/> 
-    </c:when>
-    <c:when test="${userSelectedNdays}">
-        <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
-        <c:set var="minimumDate" value="-1"/>
-        <c:set var="maximumDate" value="-1"/>
-    </c:when>
-    <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate && !empty param.submit}">
-        <c:if test="${!empty minimumDate && minimumDate != -1 && !empty maximumDate && maximumDate != -1}">
-            <c:set var="userSelectedMinimumDate" value="true"/> 
-            <c:set var="userSelectedMaximumDate" value="true"/>
-        </c:if>
-        <c:if test="${(empty minimumDate || minimumDate == -1) && (empty maximumDate || maximumDate == -1)}">
-            <c:set var ="userSelectedNdays" value="true"/> 
-        </c:if>
-    </c:when>
-</c:choose>
-
-<c:if test="${!empty param.reset}">
+<c:if test="${!empty param.clear}">
     <c:set var="min" value=""/>
     <c:set var="max" value=""/>
-    <c:set var="ndays" value="${!empty pref_ndays ? pref_ndays : '' }"/> 
     <c:set var="minimumDate" value="-1"/>
     <c:set var="maximumDate" value="-1"/> 
     <c:set var="status" value=""/>
-    <c:set var ="sessionMinimumDate" value="-1"/>
-    <c:set var ="sessionMaximumDate" value="-1"/> 
-    <c:set var="sessionNdays" value="${pref_ndays}"/>
-    <c:set var="userSelectedNdays" value="false"/> 
 </c:if>
 
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 
 <sql:query var="test">select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
-    from stream    
-        where task=? 
-        <sql:param value="${param.task}"/>
- 
+    from stream where task=?
+    <sql:param value="${param.task}"/>
     <c:if test="${showLatest}"> and isLatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
     <c:if test="${!empty status}"> 
         <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />      
@@ -140,31 +83,19 @@
         and StreamId<=?
         <sql:param value="${max}"/>
     </c:if>
-    
-    <c:if test="${minimumDate > 0 && !userSelectedNdays}"> 
+    <c:if test="${minimumDate>0}"> 
         and STARTDATE>=?
         <jsp:useBean id="minDateUsed" class="java.util.Date" />
         <jsp:setProperty name="minDateUsed" property="time" value="${minimumDate}" />       
-        <sql:dateParam value="${minDateUsed}" type="timestamp"/>  
+        <sql:dateParam value="${minDateUsed}" type="timestamp"/> 
     </c:if>
-    <c:if test="${maximumDate > 0 && !userSelectedNdays}">
+    <c:if test="${maximumDate>0}">
         and ENDDATE<=?
         <jsp:useBean id="maxDateUsed" class="java.util.Date" />
         <jsp:setProperty name="maxDateUsed" property="time" value="${maximumDate}" />
         <sql:dateParam value="${maxDateUsed}" type="timestamp"/> 
     </c:if>
-    <c:if test="${userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate}"> 
-        and STARTDATE >= ? and ENDDATE <= ?
-        <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
-        <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
-        <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - ndays*24*60*60*1000}" />       
-        <sql:dateParam value="${minDateUsedDays}" type="timestamp"/> 
-        <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/> 
-    </c:if>   
 </sql:query>
-
-
- 
 
 <sql:query var="statii">
     select STREAMSTATUS from STREAMSTATUS order by displayorder
@@ -172,24 +103,22 @@
 
 <form name="DateForm">
     <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
-            <td>Status: <select size="3" name="status" multiple>
-                    <option value="" ${status=="" ? "selected" : ""}>All</option>
-                <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option> 
-                <c:forEach var="row" items="${statii.rows}">
-                    <c:set var= "found" value = "0" /> 
-                    <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
-                        <c:if test = "${seletedStatus ==  row.STREAMSTATUS}">
-                            <c:set var= "found" value = "1" />    
-                        </c:if>                                                    
-                    </c:forEach>   
-                    <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
-                </c:forEach>                         
-                <tr><th>Date</th>
-                <td>Start</td><td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-                <td>End</td><td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-                <td>or last N days <input name="ndays" type="text" value="${!empty ndays ? ndays : pref_ndays}" size="5"></td> 
-            </td>
-            <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">
+        <td>Status: <select size="3" name="status" multiple>
+            <option value="" ${status=="" ? "selected" : ""}>All</option>
+        <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option> 
+        <c:forEach var="row" items="${statii.rows}">
+            <c:set var= "found" value = "0" /> 
+            <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
+                <c:if test = "${seletedStatus ==  row.STREAMSTATUS}">
+                    <c:set var= "found" value = "1" />    
+                </c:if>                                                    
+            </c:forEach>   
+            <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
+        </c:forEach>                         
+        <tr><th>Date</th>
+            <td>Start</td><td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+            <td>End</td><td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+            <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
         <input type="hidden" name="task" value="${task}"></td></tr>
         <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
     </table>
@@ -220,19 +149,9 @@
 </c:when>
 <c:otherwise>
 <form name="selectForm" action="confirm.jsp" method="post">
-<display:table excludedParams="submit" class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+<display:table class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
 <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
-<c:if test="${row.StreamStatus =='FAILED'}">
-    <display:column title="Status" sortable="true" headerClass="sortable">
-        <font color="#FF0000"> ${row.StreamStatus} </font>
-    </display:column>
-</c:if>
-<c:if test="${row.StreamStatus !='FAILED'}">
-    <display:column title="Status" sortable="true" headerClass="sortable">
-        ${row.StreamStatus}  
-    </display:column>
-</c:if>  
-
+<display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
 <c:if test="${!showLatest}">
     <display:column title="#">
         ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
@@ -254,8 +173,6 @@
                 <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
                 <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
                 <input type="hidden" name="task" value="${task}">
-                <input type="hidden" name="app" value="streams">
-                <input type="hidden" name="status" value="${param.status}">
                 <input type="submit" value="Rollback Selected Streams" name="submit">
             </td>
         </tr>
@@ -263,7 +180,6 @@
     </tr>   
 </c:if>
 </display:table>
-
 </form>
 <c:if test="${test.rowCount>0}">
     <ul>

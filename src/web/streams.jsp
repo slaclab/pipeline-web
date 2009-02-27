@@ -17,32 +17,66 @@
     <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
 </head>
 <body>
- 
-<sql:query var="taskVersion">
-    select version,revision from task where task=?
-    <sql:param value="${param.task}"/>
-</sql:query>
 
-<h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
+<%-- must check if this is the first time user comes to this page --%>
+<c:if test="${ empty firstTimeInPage}">
+    <c:set var="sessionNdays" value="${preferences.defaultStreamPeriodDays > 0 ? preferences.defaultStreamPeriodDays : '7'}" scope="session"/>
+    <c:set var="firstTimeInPage" value="beenHereDoneThat" scope="session"/>
+    <c:set var="userSelectedNdays" value="true"/>
+</c:if>
 
-<c:set var="debug" value="0"/>
+<%-- if you add &debug=1 to url then debugging is on. this doesn't always work  --%>
+<c:if test="${!empty param.debug}">
+    <c:set var="debug" value="${param.debug}" scope="session"/>     
+</c:if>
+
+<c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
 <c:set var="min" value="${param.min}"/>
 <c:set var="max" value="${param.max}"/>
-<c:set var="minimumDate" value="${param.minDate}"/>
-<c:set var="maximumDate" value="${param.maxDate}"/>
-<c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
-<c:set var="pref_ndays" value="${preferences.defaultStreamPeriodDays}"/> 
-<c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate && !empty param.submit}" /> 
-<c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate && !empty param.submit}" />
-<c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
-<c:catch>
-    <fmt:parseNumber var="ndays" value="${param.ndays}" type="number" integerOnly="true"/>
-</c:catch> 
-<c:set var="userSelectedNdays" value="${!empty ndays && (!userSelectedMinimumDate || !userSelectedMaximumDate) && ndays != sessionNdays && !empty param.submit}" />
 
-<c:if test="${userSelectedTaskName}">
-    <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
-</c:if> 
+<c:set var="debug" value="0"/> 
+
+<%-- only if calendar or ndays changed by user via submits, otherwise don't execute this part of the code --%>
+<c:if test="${!empty param.submit}"> 
+   
+    <%-- Variables passed in the form --%>
+    
+    <c:set var="minimumDate" value="${param.minDate}"/>
+    <c:set var="maximumDate" value="${param.maxDate}"/>
+    <c:set var="ndays" value="${param.ndays}" />
+    <c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate }" /> 
+    <c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate }" />
+    <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
+    <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedMinimumDate && !userSelectedMaximumDate }"/>
+    
+    <c:choose>
+        <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
+            <c:set var="sessionNdays" value="" scope="session"/> 
+            <c:if test="${userSelectedMinimumDate}"> 
+                <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
+            </c:if>
+            <c:if test="${userSelectedMaximumDate}">
+                <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/>
+            </c:if>
+        </c:when>
+        <c:when test="${userSelectedNdays}">
+            <c:set var="minimumDate" value=""/> 
+            <c:set var="maximumDate" value=""/> 
+            <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
+            <c:set var ="sessionMinimumDate" value="" scope="session"/>
+            <c:set var ="sessionMaximumDate" value="" scope="session"/>
+        </c:when>
+        <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate}">
+            <%-- if nothing set use old session vars, check if user reset date to None --%>
+            <c:if test="${minimumDate < 0 && minimumDate != sessionMinimumDate}">
+                <c:set var="sessionMinimumDate" value="${minimumDate}"/> 
+            </c:if>
+             <c:if test="${maximumDate < 0 && maximumDate != sessionMaximumDate}">
+                <c:set var="sessionMaximumDate" value="${maximumDate}"/> 
+            </c:if>
+        </c:when>
+    </c:choose>
+</c:if>
 
 <c:if test="${debug == 1}"> 
     <h3>
@@ -53,37 +87,16 @@
         sessionMinimumDate: ${sessionMinimumDate}<br>
         sessionMaximumDate: ${sessionMaximumDate}<p>
         minimumdate: ${minimumDate}<br>
-        maximumdate: ${maximumDate}<br>
+        maximumdate: ${maximumDate}<p>
         ndays: ${ndays}<br>
-        param.status: ${param.status}<br>
-        param.minDate: ${param.minDate}<br>
-        param.maxDate: ${param.maxDate}<br>
+        min: ${min}<br>
+        max: ${max}<br>
         param.submit: ${param.submit}<br>
     </h3>
 </c:if>
- 
-<c:choose>
-    <c:when test="${userSelectedMinimumDate || userSelectedMaximumDate}">
-        <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
-        <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/> 
-    </c:when>
-    <c:when test="${userSelectedNdays}">
-        <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
-        <c:set var="minimumDate" value="-1"/>
-        <c:set var="maximumDate" value="-1"/>
-    </c:when>
-    <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate && !empty param.submit}">
-        <c:if test="${!empty minimumDate && minimumDate != -1 && !empty maximumDate && maximumDate != -1}">
-            <c:set var="userSelectedMinimumDate" value="true"/> 
-            <c:set var="userSelectedMaximumDate" value="true"/>
-        </c:if>
-        <c:if test="${(empty minimumDate || minimumDate == -1) && (empty maximumDate || maximumDate == -1)}">
-            <c:set var ="userSelectedNdays" value="true"/> 
-        </c:if>
-    </c:when>
-</c:choose>
 
 <c:if test="${!empty param.reset}">
+    <c:set var="pref_ndays" value="${preferences.defaultStreamPeriodDays}"/> 
     <c:set var="min" value=""/>
     <c:set var="max" value=""/>
     <c:set var="ndays" value="${!empty pref_ndays ? pref_ndays : '' }"/> 
@@ -93,16 +106,27 @@
     <c:set var ="sessionMinimumDate" value="-1"/>
     <c:set var ="sessionMaximumDate" value="-1"/> 
     <c:set var="sessionNdays" value="${pref_ndays}"/>
-    <c:set var="userSelectedNdays" value="false"/> 
+    <c:set var="userSelectedNdays" value="true"/> 
 </c:if>
 
+
+<sql:query var="taskVersion">
+    select version,revision from task where task=?
+    <sql:param value="${param.task}"/>
+</sql:query>
+
+
+<h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
+
+<c:if test="${!empty param.submit || ! empty param.reset || empty test}">
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
 
-<sql:query var="test">select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
+<sql:query var="test" scope="session"> 
+    select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
     from stream    
-        where task=? 
-        <sql:param value="${param.task}"/>
- 
+    where task=? 
+    <sql:param value="${param.task}" />
+    
     <c:if test="${showLatest}"> and isLatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
     <c:if test="${!empty status}"> 
         <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />      
@@ -145,7 +169,7 @@
         and STARTDATE>=?
         <jsp:useBean id="minDateUsed" class="java.util.Date" />
         <jsp:setProperty name="minDateUsed" property="time" value="${minimumDate}" />       
-        <sql:dateParam value="${minDateUsed}" type="timestamp"/>  
+        <sql:dateParam value="${minDateUsed}" type="timestamp"/> 
     </c:if>
     <c:if test="${maximumDate > 0 && !userSelectedNdays}">
         and ENDDATE<=?
@@ -157,19 +181,19 @@
         and STARTDATE >= ? and ENDDATE <= ?
         <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
         <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
-        <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - ndays*24*60*60*1000}" />       
+        <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - sessionNdays*24*60*60*1000}" />       
         <sql:dateParam value="${minDateUsedDays}" type="timestamp"/> 
         <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/> 
     </c:if>   
-</sql:query>
+</sql:query>    
+</c:if>
 
-
- 
 
 <sql:query var="statii">
     select STREAMSTATUS from STREAMSTATUS order by displayorder
 </sql:query>
 
+<%-- uses session variables for date or days, they will be reset to the latest value whenever the user actually changes either the calendar or Ndays --%>
 <form name="DateForm">
     <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
             <td>Status: <select size="3" name="status" multiple>
@@ -185,9 +209,9 @@
                     <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
                 </c:forEach>                         
                 <tr><th>Date</th>
-                <td>Start</td><td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-                <td>End</td><td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-                <td>or last N days <input name="ndays" type="text" value="${!empty ndays ? ndays : pref_ndays}" size="5"></td> 
+                <td>Start</td><td><utils:dateTimePicker value="${sessionMinimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+                <td>End</td><td><utils:dateTimePicker value="${sessionMaximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+                <td>or last N days <input name="ndays" type="text" value="${sessionNdays}" size="5"></td> 
             </td>
             <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">
         <input type="hidden" name="task" value="${task}"></td></tr>

@@ -13,7 +13,9 @@ public class MyPreferences {
     private String defaultOrder = "descending";
     private String defaultSort = "1";
     private int defaultMessagePeriodMinutes = 10;
-    private int defaultStreamPeriodDays = 7;
+    private int defaultMessagePeriodDays = 7;
+    private int defaultStreamPeriodDays = -1;
+    private int defaultProcessPeriodDays = -1;
     private int defaultPerfPlotDays = 30;
     private int showStreams = 20;
      
@@ -43,13 +45,20 @@ public class MyPreferences {
         showStreams = c;
     }
     
-    public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes)
-   {
-      this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
-   }
+    public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes) {
+        this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
+    }
+    
+    public void setDefaultMessagePeriodDays(int defaultMessagePeriodDays) {
+        this.defaultMessagePeriodDays = defaultMessagePeriodDays;
+    }
     
    public void setDefaultStreamPeriodDays (int defaultStreamPeriodDays){
       this.defaultStreamPeriodDays = defaultStreamPeriodDays;
+   }
+   
+    public void setDefaultProcessPeriodDays (int defaultProcessPeriodDays){
+      this.defaultProcessPeriodDays = defaultProcessPeriodDays;
    }
    
     public void setDefaultPerfPlotDays (int defaultPerfPlotDays){
@@ -82,10 +91,20 @@ public class MyPreferences {
    {
       return defaultMessagePeriodMinutes;
    }
+   
+    public int getDefaultMessagePeriodDays()
+   {
+      return defaultMessagePeriodDays;
+   }
 
    public int getDefaultStreamPeriodDays()
    {
       return defaultStreamPeriodDays;
+   } 
+   
+   public int getDefaultProcessPeriodDays()
+   {
+      return defaultProcessPeriodDays;
    } 
    
    public int getDefaultPerfPlotDays()

@@ -66,17 +66,28 @@
             <c:set var ="sessionMinimumDate" value="" scope="session"/>
             <c:set var ="sessionMaximumDate" value="" scope="session"/>
         </c:when>
-        <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate}">
-            <%-- if nothing set use old session vars, check if user reset date to None --%>
+        <c:when test="${!userSelectedMinimumDate && !userSelectedMaximumDate && !userSelectedNdays}">
+            <c:set var ="sessionMinimumDate" value="${minimumDate}" scope="session"/>
+            <c:set var ="sessionMaximumDate" value="${maximumDate}" scope="session"/>
+            <c:set var="sessionNdays" value="${ndays}" scope="session"/> 
+        </c:when>
+    </c:choose>
+    
+</c:if>
+
+<%--
+
+ <c:when test="${!userSelectedNdays && !userSelectedMinimumDate && !userSelectedMaximumDate}">
             <c:if test="${minimumDate < 0 && minimumDate != sessionMinimumDate}">
                 <c:set var="sessionMinimumDate" value="${minimumDate}"/> 
             </c:if>
-             <c:if test="${maximumDate < 0 && maximumDate != sessionMaximumDate}">
+            <c:if test="${maximumDate < 0 && maximumDate != sessionMaximumDate}">
                 <c:set var="sessionMaximumDate" value="${maximumDate}"/> 
             </c:if>
         </c:when>
-    </c:choose>
-</c:if>
+ 
+--%>
+
 
 <c:if test="${debug == 1}"> 
     <h3>
@@ -96,7 +107,7 @@
 </c:if>
 
 <c:if test="${!empty param.reset}">
-    <c:set var="pref_ndays" value="${preferences.defaultStreamPeriodDays}"/> 
+    <c:set var="pref_ndays" value="${!empty preferences.defaultStreamPeriodDays ? preferences.defaultStreamPeriodDays : ''}"/> 
     <c:set var="min" value=""/>
     <c:set var="max" value=""/>
     <c:set var="ndays" value="${!empty pref_ndays ? pref_ndays : '' }"/> 
@@ -105,7 +116,7 @@
     <c:set var="status" value=""/>
     <c:set var ="sessionMinimumDate" value="-1"/>
     <c:set var ="sessionMaximumDate" value="-1"/> 
-    <c:set var="sessionNdays" value="${pref_ndays}"/>
+    <c:set var="sessionNdays" value="${ndays}"/>
     <c:set var="userSelectedNdays" value="true"/> 
 </c:if>
 

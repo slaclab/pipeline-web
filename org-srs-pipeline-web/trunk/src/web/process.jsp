@@ -30,7 +30,7 @@
         
         <%-- must check if this is the first time user comes to this page --%>
         <c:if test="${ empty firstTimeHere}">
-            <c:set var="sessionNdays" value="${preferences.defaultProcessPeriodDays > 0 ? defaultProcessPeriodDays : '7'}" scope="session"/>
+            <c:set var="sessionNdays" value="${preferences.defaultProcessPeriodDays > 0 ? preferences.defaultProcessPeriodDays : ''}" scope="session"/>
             <c:set var="firstTimeHere" value="beenHereDoneThat2" scope="session"/>
             <c:set var="userSelectedNdays" value="true"/>
         </c:if>

@@ -16,7 +16,7 @@ public class MyPreferences {
     private int defaultMessagePeriodDays = 7;
     private int defaultStreamPeriodDays = -1;
     private int defaultProcessPeriodDays = -1;
-    private int defaultPerfPlotDays = 30;
+    private int defaultPerfPlotDays = -1;
     private int showStreams = 20;
      
     

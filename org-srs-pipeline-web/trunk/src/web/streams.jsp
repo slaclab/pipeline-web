@@ -43,7 +43,7 @@
     
     <c:set var="minimumDate" value="${param.minDate}"/>
     <c:set var="maximumDate" value="${param.maxDate}"/>
-    <c:set var="ndays" value="${param.ndays}" />
+    <c:set var="ndays" value="${param.ndays}"/>
     <c:set var="userSelectedMinimumDate" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionMinimumDate }" /> 
     <c:set var="userSelectedMaximumDate" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionMaximumDate }" />
     <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 

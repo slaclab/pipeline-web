@@ -21,7 +21,7 @@
             <c:set var="sessionP2StartTime" value="" scope="session"/>
             <c:set var ="sessionP2StartTime" value="" scope="session"/>
             <c:set var="ndays" value="${empty ndays ? sessionP2days : ndays}"/> 
-            <c:set var="firstTimeP2stats" value="beenHereDoneThat3" scope="session"/>
+            <c:set var="firstTimeP2stats" value="beenHereDoneThat2" scope="session"/>
             <c:set var="userSelectedNdays" value="true"/>
             <c:set var="userSelectedStartTime" value="false"/>
             <c:set var="userSelectedEndTime" value="false"/>

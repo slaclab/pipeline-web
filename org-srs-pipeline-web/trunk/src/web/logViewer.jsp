@@ -23,40 +23,117 @@
 <jsp:useBean id="logStartDate" class="java.util.Date" />
 <jsp:useBean id="logEndDate" class="java.util.Date" />
 
-<c:if test="${!empty param.minDate}">
-    <c:set var="minimumDate" value="${param.minDate=='None' ? -1 : param.minDate}"/>
-</c:if>
-<c:if test="${!empty param.maxDate}">
-    <c:set var="maximumDate" value="${param.maxDate=='None' ? -1 : param.maxDate}"/>
-</c:if>
-<%-- If clear button selected set start and end dates to default values --%>
-<c:set var="clear"   value="${param.clear}" /> 
-<c:if test= "${clear =='Default'}"> 
-    <c:set var="minimumDate" value=""/>
-    <c:set var="maximumDate" value=""/>
-</c:if> 
-<%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = None --%>
-<c:if test="${empty minimumDate}">
-    <c:set var="minimumDate" value="${logStartDate.time-preferences.defaultMessagePeriodMinutes*60*1000}"/>
-</c:if>
-<c:if test="${empty maximumDate}">
-    <c:set var="maximumDate" value="-1"/>
-</c:if>
-
+<c:set var="clear"   value="${param.clear}" />
 <c:set var="severity" value="${param.severity}"/> 
-<c:set var="logTask" value="${task}"/>
-<c:set var="logProcess" value="${process}" />
-<c:set var="logProcessInstance" value="${processInstance}"/>
+<c:set var="logTask" value="${param.task}"/>
+<c:set var="logProcess" value="${param.process}" />
+<c:set var="logProcessInstance" value="${param.processInstance}"/>
+<c:set var="minimumDate" value="${param.minDate}"/> 
+<c:set var="maximumDate" value="${param.maxDate}"/>
 
-<c:if test="${!empty clear || empty severity}">
+<c:if test="${!empty param.debug}">
+    <h3>DEBUG=${param.debug}</h3>
+    <c:set var="debug" value="${param.debug}" scope="session"/>     
+</c:if>
+
+<%-- check if this is first time visiting this page. Since log is huge set default if user does not have one --%>
+<c:if test="${empty firstLogViewVisit}">
+    <c:set var="firstLogViewVisit" value="beenHereDoneThat4" scope="session"/>
+    <c:set var="ndays" value="${preferences.defaultMessagePeriodDays > 0 ? preferences.defaultMessagePeriodDays : '7'}"/>
+    <c:set var="sessionLogDays" value="${ndays}" scope="session"/> 
+    
+    <c:choose> 
+        <c:when test="${sessionLogDays > 0}"> 
+            <c:set var="userSelectedNdays" value="true"/>
+            <c:set var="userSelectedMinDate" value="false"/> 
+            <c:set var="userSelectedMaxDate" value="false"/> 
+            <c:set var="minimumDate" value='-1' /> 
+            <c:set var="maximumDate" value='-1' />
+        </c:when>
+        <c:when test="${empty sessionLogDays || sessionLogDays < 1}">
+            <c:set var="minimumDate" value="${logStartDate.time-preferences.defaultMessagePeriodMinutes*60*1000}"/>
+            <c:set var="maximumDate" value='-1' />
+            <c:set var="sessionLogDays" value="" scope="session"/> 
+            <c:set var="userSelectedMinDate" value="true"/> 
+            <c:set var="userSelectedMaxDate" value="false"/> 
+        </c:when>
+    </c:choose>
+</c:if>
+
+<c:if test="${debug == 1}"> 
+    <h3>First Time Here. ndays=${ndays} sessionLogDays=${sessionLogDays} userSelectedNdays=${userSelectedNdays}<br>
+        userSelectedMinDate=${userSelectedMinDate} userSelectedMaxDate=${userSelectedMaxDate}
+    </h3>
+</c:if>
+
+<c:if test="${!empty param.submit}"> 
+    <c:set var="minimumDate" value="${param.minDate}"/> 
+    <c:set var="maximumDate" value="${param.maxDate}"/>
+    <c:set var="ndays" value="${param.ndays}"/> 
+    <c:set var="userSelectedMinDate" value="${!empty minDate && minDate != '-1' && mindate != sessionLogVMinDate && !empty param.Filter}"/> 
+    <c:set var="userSelectedMaxDate" value="${!empty maxDate && maxDate != '-1' && maxDate != sessionLogVMaxDate && !empty param.Filter}"/>
+    <c:set var="userSelectedNdays" value="${! empty ndays && !userSelectedMinDate && !userSelectedMaxDate && !empty param.Filter}" />
+    
+    <c:choose>
+        <c:when test="${userSelectedMinDate || userSelectedMaxDate}">
+            <c:set var="sessionLogDays" value="" scope="session"/>
+            <c:set var="ndays" value=""/>
+            <c:if test="${userSelectedMinDate}"> 
+                <c:set var ="sessionLogMinDate" value="${minimumDate}" scope="session"/>
+            </c:if>
+            <c:if test="${userSelectedMaxDate}"> 
+                <c:set var ="sessionLogMaxDate" value="${maximumDate}" scope="session"/>
+            </c:if>
+        </c:when>
+        <c:when test="${userSelectedNdays && !userSelectedMinDate && !userSelectedMaxDate}">
+            <c:set var="minimumDate" value='-1'/> 
+            <c:set var="maximumDate" value='-1'/> 
+            <c:set var="sessionLogDays" value="${ndays}" scope="session"/> 
+            <c:set var ="sessionLogMinDate" value='-1' scope="session"/>
+            <c:set var ="sessionLogMaxDate" value='-1' scope="session"/>
+        </c:when>
+    </c:choose> 
+</c:if>
+
+<c:if test= "${!empty clear || empty severity}">
     <c:set var="severity" value="800" /> 
     <c:set var="logTask" value=""/>
     <c:set var="logProcess" value=""/>
     <c:set var="logProcessInstance" value=""/>
+    <c:set var="ndays" value="${preferences.defaultMessagePeriodDays}"/>
+    <c:set var="sessionLogDays" value="${!empty ndays ? ndays : '7'}" scope="session"/> 
+    <c:choose> 
+        <c:when test="${sessionLogDays > 0}">
+            <c:set var="userSelectedNdays" value="true"/> 
+            <c:set var="minimumDate" value='-1'/>
+            <c:set var="maximumDate" value='-1'/>
+        </c:when>
+        <c:when test="${sessionLogDays < 1 || empty sessionLogDays}">
+            <c:set var="userSelectedMinDate" value="true"/> 
+            <c:set var="minimumDate" value="${logStartDate.time-preferences.defaultMessagePeriodMinutes*60*1000}"/>
+            <c:set var="maximumDate" value='-1'/>
+            <c:set var="ndays" value=""/> 
+        </c:when>
+    </c:choose>
+</c:if> 
+
+<c:if test="${param.debug == 1}">
+    <h3>
+        userSelectedNdays: ${userSelectedNdays}<br>
+        userSelectedMinDate: ${userSelectedMinDate}<br>
+        userSelectedMaxDate: ${userSelectedMaxDate}<p>
+        minimumDate: ${minimumDate}<br>
+        maximumDate: ${maximumDate}<p>
+        sessionLogMinDate: ${sessionLogMinDate}<br>
+        sessionLogMaxDate: ${sessionLogMaxDate}<br>
+        sessionLogDays: ${sessionLogDays}<p>
+        ndays: ${ndays}<br>
+    </h3>
 </c:if>
 
+
 <form name="DateForm">
-<table class="filtertable">
+<table class="filtertable"> 
 <tr>
     <td colspan="20">
         Task: <pt:taskChooser name="task" selected="${logTask}" allowNone="true" useKey="true"/>
@@ -80,50 +157,61 @@
 <tr>
     <td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
     <td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-    
+    <td>or last N days <input name="ndays" type="text" value="${sessionLogDays}" size="5"></td>
     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
     </td>
 </tr>
 </table>
 </form>
-<gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
-    select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
-    case when exception is null then 0 else 1 end hasException,
-    PII.GetStreamIdPath(stream) streamIdPath
-    from log l
-    left outer join processinstance i using (processinstance)
-    left outer join process p using (process)
-    left outer join taskpath t using (task)
-    where log_level > 0 
-    <c:if test="${!empty severity}"> 
-       and log_level>=? 
-       <gsql:param value="${severity}"/>
-    </c:if> 
-    <c:if test="${minimumDate !='-1'}">
-       and timeentered>=?       
-       <jsp:setProperty name="logStartDate" property="time" value="${minimumDate}"/>   
-       <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
-    </c:if>
-    <c:if test="${maximumDate!='-1'}"> 
-       and timeentered<=?      
-       <jsp:setProperty name="logEndDate" property="time" value="${maximumDate}" /> 	
-       <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
-    </c:if>   
-    <c:if test="${!empty logTask}">
-       and task=?
-       <gsql:param value="${logTask}"/>
-    </c:if>
-    <c:if test="${!empty logProcess}">
-       and process=?
-       <gsql:param value="${logProcess}"/>
-    </c:if>
-    <c:if test="${!empty logProcessInstance}">
-       and processinstance=?
-       <gsql:param value="${logProcessInstance}"/>
-    </c:if>
-</gsql:query>
 
-<display:table class="datatable" name="${log}" sort="external" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
+<c:if test="${!empty param.submit || !empty clear || empty LVlog}"> 
+    <gsql:query  var="LVlog" defaultSortColumn="timeentered" pageSize="500">
+        select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
+        case when exception is null then 0 else 1 end hasException,
+        PII.GetStreamIdPath(stream) streamIdPath
+        from log l
+        left outer join processinstance i using (processinstance)
+        left outer join process p using (process)
+        left outer join taskpath t using (task)
+        where log_level > 0 
+        <c:if test="${!empty severity}"> 
+            and log_level>=? 
+            <gsql:param value="${severity}"/>
+        </c:if> 
+        <c:if test="${minimumDate > 0 && !userSelectedNdays}">
+            and timeentered>=?       
+            <jsp:setProperty name="logStartDate" property="time" value="${minimumDate}"/>   
+            <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
+        </c:if>
+        <c:if test="${maximumDate > 0 && !userSelectedNdays}"> 
+            and timeentered<=?      
+            <jsp:setProperty name="logEndDate" property="time" value="${maximumDate}" /> 	
+            <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
+        </c:if>  
+        <c:if test="${userSelectedNdays && !userSelectedMinDate && !userSelectedMaxDate}">
+            and timeentered >= ? and timeentered <= ? 
+            <jsp:useBean id="maxLogDateDays" class="java.util.Date" />
+            <jsp:useBean id="minLogDateDays" class="java.util.Date" />
+            <jsp:setProperty name="minLogDateDays" property="time" value="${maxLogDateDays.time - sessionLogDays*24*60*60*1000}" />       
+            <gsql:dateParam value="${minLogDateDays}" type="timestamp"/> 
+            <gsql:dateParam value="${maxLogDateDays}" type="timestamp"/> 
+        </c:if>
+        <c:if test="${!empty logTask}">
+            and task=?
+            <gsql:param value="${logTask}"/>
+        </c:if>
+        <c:if test="${!empty logProcess}">
+            and process=?
+            <gsql:param value="${logProcess}"/>
+        </c:if>
+        <c:if test="${!empty logProcessInstance}">
+            and processinstance=?
+            <gsql:param value="${logProcessInstance}"/>
+        </c:if>
+    </gsql:query>
+</c:if>
+
+<display:table class="datatable" name="${LVlog}" sort="external" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
     <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />
     <display:column property="log_level" decorator="org.glast.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" sortable="true" headerClass="sortable" />
     <display:column property="taskLinkPath" title="Task" />
@@ -132,5 +220,6 @@
     <display:column property="message" title="Message" class="leftAligned" />
     <display:column property="exception" title="Detail" class="leftAligned" />
 </display:table>
+
 </body>
 </html>

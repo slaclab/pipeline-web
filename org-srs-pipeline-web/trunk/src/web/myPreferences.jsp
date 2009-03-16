@@ -27,7 +27,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             
             <tr>
                 <th colspan="3">
-                   Preferences For Pipeline II Main Page
+                    Preferences For Pipeline II Main Page
                 </th>
             </tr>
             <utils:preference name="task"  size="50" title="Default Task">
@@ -37,7 +37,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <utils:value value="active" text="Tasks with Active Runs"/>
                 <utils:value value="last30" text="Active in Last 30 days"/>
             </utils:preference>
-           
+            
             <utils:preference name="taskVersion" size="50" title="Default Version ">
                 <utils:value value="latestVersions" text="Latest Task Versions"/>
                 <utils:value value="allVersions" text="All Task Versions"/>
@@ -63,7 +63,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <utils:value value="ascending"/>
                 <utils:value value="descending"/>
             </utils:preference> 
-             <tr>
+            <tr>
                 <th colspan="3">
                     Preferences For Streams Processing<br>
                 </th>
@@ -74,16 +74,15 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             <utils:preference name="defaultStreamPeriodDays" size="5" title="Default Stream period (last N days) ">
             </utils:preference>
             
-            
-             <tr>
+            <tr>
                 <th colspan="3">
                     Preferences For Job Processing Period<br>
                 </th>
             </tr> 
-            <utils:preference name="defaultProcessPeriodDays" size="5" title="Default Number of Job Processes">
+            <utils:preference name="defaultProcessPeriodDays" size="5" title="Default processes in the last N days">
             </utils:preference>  
             
-             <tr>
+            <tr>
                 <th colspan="3">
                     Preferences For Summary Plots Period<br>
                 </th>
@@ -95,8 +94,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     Preferences For Message Viewer
                 </th>
             </tr>            
-            <utils:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"/> 
-           </utils:preferences>
-    
+            <utils:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"> 
+            </utils:preference>
+            <utils:preference name="defaultMessagePeriodDays" size="5" title="Default time period (days)"> 
+            </utils:preference>
+        </utils:preferences>
     </body>
 </html>

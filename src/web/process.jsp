@@ -309,7 +309,7 @@
                 <pre><c:forEach var="row" items="${pqTest.rows}">${row.streamid}<br></c:forEach></pre>
             </c:when>
             <c:when test="${param.format=='id'}">
-                <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
+                <pre><c:forEach var="row" items="${pqTest.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
             </c:when>
             <c:otherwise>
                 <form name="selectForm" action="confirm.jsp" method="post">

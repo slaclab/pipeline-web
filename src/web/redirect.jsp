@@ -9,7 +9,7 @@
       <title>Redirect to processing data</title>
    </head>
    <body> 
-      
+     
       <c:choose>
          <c:when test = "${param.show == 'stream'}">   
             <sql:query var="data">       
@@ -24,6 +24,16 @@
             </sql:query>
             <c:redirect url="si.jsp?&stream=${data.rows[0].stream}"/>
          </c:when>         
+           <c:when test = "${param.show =='streams'}">
+             <sql:query var="data">
+                  select task
+                  from task 
+                  where taskName=? 
+                  order by version, revision                 
+                 <sql:param value="${param.taskname}%"/>
+             </sql:query>
+           <c:redirect url="streams.jsp?task=${data.rows[0].task}&taskname=${param.taskname}"/>
+         </c:when>
          <c:otherwise>
             Unrecognized request type show=${param.show}
          </c:otherwise> 

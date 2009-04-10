@@ -53,9 +53,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.gnu</groupId>
+            <artifactId>jel</artifactId>
+            <version>0.9.10</version>
+        </dependency>
+        <dependency>
             <groupId>glast</groupId>
             <artifactId>org-glast-maven-aida-project</artifactId>
-            <version>2.0</version>
+            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>glast</groupId>
@@ -71,6 +76,12 @@
             <groupId>glast</groupId>
             <artifactId>org-glast-base-web</artifactId>
             <version>1.0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jel</artifactId>
+                    <groupId>org.gnu</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>glast</groupId>
@@ -81,6 +92,12 @@
             <groupId>glast</groupId>
             <artifactId>org-glast-datahandling-common</artifactId>
             <version>1.5.3-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jel</artifactId>
+                    <groupId>org.gnu</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>coldtags</groupId>

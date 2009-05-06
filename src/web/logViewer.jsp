@@ -27,14 +27,12 @@
 <c:set var="logProcess" value="${process}" />
 <c:set var="logProcessInstance" value="${processInstance}"/>
 <c:set var="userFirstVisit" value="${empty nminutes && empty minimumLong && empty maximumLong}"/>
-
 <c:set var="userSelectedLogMin" value="${!empty minimumLong && minimumLong != '-1' && minimumLong != sessionLogMinimum }" />
 <c:set var="userSelectedLogMax" value="${!empty maximumLong && maximumLong != '-1' && maximumLong != sessionLogMaximum }" />
 <c:set var="userSelectedLogMinutes" value="${!empty nminutes && !userSelectedLogMin && !userSelectedLogMax }" /> 
 
 <jsp:useBean id="logStartDate" class="java.util.Date" scope = "session"/>
 <jsp:useBean id="logEndDate" class="java.util.Date" scope="session" />
-
 
 <c:choose> 
     <c:when test="${userFirstVisit}">
@@ -83,7 +81,6 @@
 
 <c:if test= "${clear =='Default'}"> 
     <c:set var="nminutes" value="${preferences.defaultMessagePeriodMinutes > 0 ? preferences.defaultMessagePeriodMinutes : '10'}"/>
-    <h3>CLEAR DEFAULTS nminutes=${nminutes}</h3>
     <c:set var="userSelectedLogMinutes" value="true" scope="session" /> 
     <c:set var="minimumLong" value='-1'/>
     <c:set var="maximumLong" value='-1'/>

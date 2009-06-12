@@ -17,6 +17,7 @@ public class MyPreferences {
     private int defaultProcessPeriodDays = -1;
     private int defaultPerfPlotDays = -1;
     private int defaultP2statDays = -1;
+    private int defaultDPhours = 10;
     private int showStreams = 20;
      
     
@@ -64,6 +65,10 @@ public class MyPreferences {
     public void setDefaultP2statDays (int defaultP2statDays){
       this.defaultP2statDays = defaultP2statDays;
    }
+
+   public void setDefaultDPhours (int defaultDPhours){
+      this.defaultDPhours = defaultDPhours;
+   }
    
     // Getters
     
@@ -110,6 +115,11 @@ public class MyPreferences {
    public int getDefaultP2statDays()
    {
       return defaultP2statDays;
+   }
+
+   public int getDefaultDPhours()
+   {
+      return defaultDPhours;
    }
 
 }

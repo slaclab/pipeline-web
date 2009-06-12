@@ -17,9 +17,9 @@
         <c:set var="debug" value="0"/> 
         
         <c:if test="${empty firstTimeP2stats}">
-            <c:set var="sessionP2days" value="${preferences.defaultPerfPlotDays > 0 ? preferences.defaultPerfPlotDays : '7'}" scope="session"/> 
+            <c:set var="sessionP2days" value="${preferences.defaultP2statDays > 0 ? preferences.defaultP2statDays : '7'}" scope="session"/>
             <c:set var="sessionP2StartTime" value="" scope="session"/>
-            <c:set var ="sessionP2StartTime" value="" scope="session"/>
+            <c:set var="sessionP2EndTime" value="" scope="session"/>
             <c:set var="ndays" value="${empty ndays ? sessionP2days : ndays}"/> 
             <c:set var="firstTimeP2stats" value="beenHereDoneThat2" scope="session"/>
             <c:set var="userSelectedNdays" value="true"/>
@@ -35,7 +35,7 @@
             <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionP2StartTime}" /> 
             <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionP2EndTime}" /> 
             <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedStartTime && !userSelectedEndTime}"/> 
-            <c:set var="pref_ndays" value="${preferences.defaultPerfPlotDays}"/> 
+            <c:set var="pref_ndays" value="${preferences.defaultP2statDays}"/>
             <c:set var="userSelectedTask" value="${param.task}" scope="session" /> 
             
             <c:choose>
@@ -61,6 +61,14 @@
             </c:choose>
        </c:if>
        
+       <c:if test="${debug == 1}">
+           <h3> 
+           userSelectedStartTime=${userSelectedStartTime} startTime=${startTime} sessionP2StartTime=${sessionP2StartTime}<br>
+           userSelectedEndTime=${userSelectedEndTime} endTime=${endTime} sessionP2EndTime=${sessionP2EndTime}<br>
+           userSelectedNdays=${userSelectedNdays} sessionP2days=${sessionP2days}<br>
+           </h3>
+       </c:if>
+
         <c:if test="${empty param.filter && !userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}">
             <c:choose>
                 <c:when test="${!empty sessionP2StartTime || !empty sessionP2EndTime}">
@@ -80,17 +88,19 @@
         </c:if>
         
         <c:if test="${!empty param.reset}">
-            <c:set var="pref_ndays" value="${preferences.defaultPerfPlotDays > 0 ? preferences.defaultPerfPlotDays : '7'}"/> 
+            <c:set var="pref_ndays" value="${preferences.defaultP2statDays > 0 ? preferences.defaultP2statDays : '7'}"/>
             <c:set var="ndays" value="${pref_ndays}"/> 
             <c:set var="startTime" value="-1"/>
             <c:set var="endTime" value="-1"/> 
             <c:set var ="sessionP2StartTime" value="-1"/>
             <c:set var ="sessionP2EndTime" value="-1"/> 
             <c:set var="sessionP2days" value="${pref_ndays}"/>
-            <c:set var="userSelectedNdays" value="true"/> 
+            <c:set var="userSelectedNdays" value="true"/>
+            <c:set var="userSelectedStartTime" value="false"/>
+            <c:set var="userSelectedEndTime" value="false"/>
         </c:if>
         
-        <c:if test="${debug == 1}"> 
+        <c:if test="${debug == 0}">
             <h3>
                 userselectedNdays: ${userSelectedNdays}<br>
                 userselectedStartTime: ${userSelectedStartTime}<br>

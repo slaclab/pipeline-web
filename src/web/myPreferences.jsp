@@ -105,7 +105,15 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </tr>            
             <utils:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"> 
             </utils:preference>
-        
+
+            <tr>
+                <th colspan="3">
+                    Preferences For DataProcessingStats
+                </th>
+            </tr>
+            <utils:preference name="defaultDPhours" size="5" title="Default time period (hours)">
+            </utils:preference>
+
         </utils:preferences>
     </body>
 </html>

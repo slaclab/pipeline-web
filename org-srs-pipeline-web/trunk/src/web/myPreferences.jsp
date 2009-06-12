@@ -86,9 +86,18 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <th colspan="3">
                     Preferences For Summary Plots Period<br>
                 </th>
-            </tr> 
+            </tr>
             <utils:preference name="defaultPerfPlotDays" size="5" title="Default Performance Period (last N days) ">
             </utils:preference>
+
+            <tr>
+                <th colspan="3">
+                    Preferences For P2stat Plots <br>
+                </th>
+            </tr>
+            <utils:preference name="defaultP2statDays" size="5" title="Default Performance Period (last N days) ">
+            </utils:preference>
+
             <tr>
                 <th colspan="3">
                     Preferences For Message Viewer
@@ -96,8 +105,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </tr>            
             <utils:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"> 
             </utils:preference>
-            <utils:preference name="defaultMessagePeriodDays" size="5" title="Default time period (days)"> 
-            </utils:preference>
+        
         </utils:preferences>
     </body>
 </html>

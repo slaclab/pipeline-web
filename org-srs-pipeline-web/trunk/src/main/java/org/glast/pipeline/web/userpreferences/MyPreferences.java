@@ -13,10 +13,10 @@ public class MyPreferences {
     private String defaultOrder = "descending";
     private String defaultSort = "1";
     private int defaultMessagePeriodMinutes = 10;
-    private int defaultMessagePeriodDays = 7;
     private int defaultStreamPeriodDays = -1;
     private int defaultProcessPeriodDays = -1;
     private int defaultPerfPlotDays = -1;
+    private int defaultP2statDays = -1;
     private int showStreams = 20;
      
     
@@ -49,10 +49,6 @@ public class MyPreferences {
         this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
     }
     
-    public void setDefaultMessagePeriodDays(int defaultMessagePeriodDays) {
-        this.defaultMessagePeriodDays = defaultMessagePeriodDays;
-    }
-    
    public void setDefaultStreamPeriodDays (int defaultStreamPeriodDays){
       this.defaultStreamPeriodDays = defaultStreamPeriodDays;
    }
@@ -63,6 +59,10 @@ public class MyPreferences {
    
     public void setDefaultPerfPlotDays (int defaultPerfPlotDays){
       this.defaultPerfPlotDays = defaultPerfPlotDays;
+   }
+
+    public void setDefaultP2statDays (int defaultP2statDays){
+      this.defaultP2statDays = defaultP2statDays;
    }
    
     // Getters
@@ -92,11 +92,6 @@ public class MyPreferences {
       return defaultMessagePeriodMinutes;
    }
    
-    public int getDefaultMessagePeriodDays()
-   {
-      return defaultMessagePeriodDays;
-   }
-
    public int getDefaultStreamPeriodDays()
    {
       return defaultStreamPeriodDays;
@@ -110,5 +105,11 @@ public class MyPreferences {
    public int getDefaultPerfPlotDays()
    {
       return defaultPerfPlotDays;
-   }   
+   }
+
+   public int getDefaultP2statDays()
+   {
+      return defaultP2statDays;
+   }
+
 }

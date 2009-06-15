@@ -17,7 +17,7 @@ public class MyPreferences {
     private int defaultProcessPeriodDays = -1;
     private int defaultPerfPlotDays = -1;
     private int defaultP2statDays = -1;
-    private int defaultDPhours = 10;
+    private int defaultDPhours = -1;
     private int showStreams = 20;
      
     

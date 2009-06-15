@@ -70,13 +70,13 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             </tr> 
             <utils:preference name="showStreams" size="5" title="Default Number of Streams">
             </utils:preference>  
-            
+       
             <utils:preference name="defaultStreamPeriodDays" size="5" title="Default Stream period (last N days) ">
             </utils:preference>
             
             <tr>
                 <th colspan="3">
-                    Preferences For Job Processing Period<br>
+                    Preferences For Process Period<br>
                 </th>
             </tr> 
             <utils:preference name="defaultProcessPeriodDays" size="5" title="Default processes in the last N days">
@@ -84,7 +84,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             
             <tr>
                 <th colspan="3">
-                    Preferences For Summary Plots Period<br>
+                    Preferences For JobProcessingStats Plots Period<br>
                 </th>
             </tr>
             <utils:preference name="defaultPerfPlotDays" size="5" title="Default Performance Period (last N days) ">
@@ -100,7 +100,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 
             <tr>
                 <th colspan="3">
-                    Preferences For Message Viewer
+                    Preferences For LogViewer Period
                 </th>
             </tr>            
             <utils:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"> 

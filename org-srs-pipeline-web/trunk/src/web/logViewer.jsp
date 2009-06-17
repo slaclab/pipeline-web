@@ -40,7 +40,6 @@
     <c:set var="userSelectLogMaximum" value="false" scope="session"/>
     <c:set var="userSelectLogSame" value="false" scope="session"/>
     <c:set var="firstLogVisit" value="beenVisited" scope="session"/>
-    <h3>first visit nminutes=${nminutes} sessionLogMinutes=${sessionLogMinutes} </h3>
 </c:if>
 
 <c:if test="${! empty param.submit}">

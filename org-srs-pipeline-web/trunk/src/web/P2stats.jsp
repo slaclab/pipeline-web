@@ -87,7 +87,7 @@
             
         </c:if>
         
-        <c:if test="${!empty param.reset}">
+        <c:if test="${!empty param.default}">
             <c:set var="pref_ndays" value="${preferences.defaultP2statDays > 0 ? preferences.defaultP2statDays : '7'}"/>
             <c:set var="ndays" value="${pref_ndays}"/> 
             <c:set var="startTime" value="-1"/>
@@ -100,7 +100,7 @@
             <c:set var="userSelectedEndTime" value="false"/>
         </c:if>
         
-        <c:if test="${debug == 0}">
+        <c:if test="${debug == 1}">
             <h3>
                 userselectedNdays: ${userSelectedNdays}<br>
                 userselectedStartTime: ${userSelectedStartTime}<br>
@@ -114,7 +114,7 @@
                 param.startTime: ${param.startTime}<br>
                 param.endTime: ${param.endTime}<br>
                 param.filter: ${param.filter}<br>
-                param.reset: ${param.reset}<br>
+                param.default: ${param.default}<br>
                 param.task: ${param.task}<br>
             </h3>
         </c:if>
@@ -125,13 +125,13 @@
                     <td colspan="5"><strong>Select Timespan</strong>:                 
                 </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2StartTime}"  timezone="PST8PDT"/></td> 
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime"   showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2EndTime}" timezone="PST8PDT"/></td>
+                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2StartTime}"  timezone="PST8PDT"/></td>
+                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2EndTime}" timezone="PST8PDT"/></td>
                     <td>or last N days <input name="ndays" type="text" value="${sessionP2days}" size="5"></td>
                 </tr> 
                 <input type="hidden" name="task" value="${task}"/>
                 <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter">
-                <input type="submit" value="Reset" name="reset"></td>
+                <input type="submit" value="Default" name="default"></td>
                 </tr> 
         </table></form>   
         

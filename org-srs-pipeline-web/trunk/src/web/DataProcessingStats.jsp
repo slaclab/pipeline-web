@@ -81,8 +81,8 @@
 <form name="DateForm">        
     <table class="filtertable">
         <tr>
-            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="false" format="%b/%e/%y" value="${startTime}"  timezone="PST8PDT"/></td>
-            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" showtime="false" format="%b/%e/%y" value="${endTime}" timezone="PST8PDT"/> </td>
+            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="false" showtime="false" format="%b/%e/%y" value="${startTime}"  timezone="PST8PDT"/></td>
+            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="false" showtime="false" format="%b/%e/%y" value="${endTime}" timezone="PST8PDT"/> </td>
             <td><strong>Hours</strong><br>
                 <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
             </td>

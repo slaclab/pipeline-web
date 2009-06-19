@@ -3,10 +3,10 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
+<%@ taglib uri="http://aida.freehep.org/jsp20" prefix="aida" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
@@ -15,10 +15,10 @@
         <title>Pipeline Jobs VS Time Plots</title>    
     </head>
     <body>
-        
+
         ${aida:clearPlotRegistry(pageContext.session)}       
         <c:set var="datatbl" value="processingstatisticshour" scope="session"/>
-        
+      
         <c:set var="startTime" value="${param.startTime}" />
         <c:set var="endTime"   value="${param.endTime}"   />
         <c:set var="taskName" value="${param.taskName}" /> 
@@ -28,9 +28,9 @@
         
         <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" /> 
         <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" /> 
-        <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" /> 
-        <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
-        
+        <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
+        <c:set var="userSelectedTaskName" value="${!empty taskName}" />
+
         <c:choose>
             <c:when test="${userSelectedTaskName}">
                 <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
@@ -45,12 +45,12 @@
                 <c:set var ="sessionUseHours" value="false" scope="session"/>
                 <c:set var ="sessionStartTime" value="${startTime}" scope="session"/>
                 <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
-                <c:redirect url="JobProcessingStats.jsp"/>
+    <%--          <c:redirect url="JobProcessingStats.jsp"/> --%>
             </c:when>
             <c:when test="${userSelectedHours}">
                 <c:set var ="sessionUseHours" value="true" scope="session"/>
                 <c:set var ="sessionHours" value="${hours}" scope="session"/>
-                <c:redirect url="JobProcessingStats.jsp"/>
+             <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
             </c:when>
             <c:when test="${empty sessionUseHours}">
                 <c:set var ="sessionUseHours" value="true" scope="session"/>
@@ -60,7 +60,24 @@
             </c:when>
         </c:choose>
         <br>	
-        
+        <c:if test="${!empty param.default}">
+            <c:set var ="sessionUseHours" value="true" scope="session"/>
+            <c:set var="preferenceHours" value="${preferences.defaultPerfPlotDays}"/>
+            <c:choose>
+                <c:when test="${preferenceHours > '0'}">
+                    <c:set var ="hours" value="${preferenceHours}"/>
+                    <c:set var="sessionHours" value="${hours}" scope="session"/>
+                </c:when>
+                <c:when test="${preferenceHours < '0'}">
+                    <c:set var ="hours" value='8'/>
+                    <c:set var="sessionHours" value="${hours}" scope="session"/>
+                </c:when>
+            </c:choose>
+            <c:set var ="sessionStartTime" value="None" scope="session"/>
+            <c:set var ="sessionEndTime" value="None" scope="session"/>
+            <h3>Entered DEFAULT: hours=${hours} preferences=${preferenceHours}</h3>
+        </c:if>
+         
         <form name="DateForm">        
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
                 <tr bordercolor="#000000" bgcolor="#FFCC66">               
@@ -78,12 +95,12 @@
                 </select>		  </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
                     
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td> 
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime"   showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>     
+                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td>
+                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>
                     <td>or last <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="5"> hours</td>
                 </tr> 
                 
-                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"></td>
+                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"><input type="submit" value="Default" name="default"></td>
                 </tr> 
         </table></form>   
         

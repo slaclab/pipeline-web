@@ -137,8 +137,8 @@
     </td>
 </tr>
 <tr>
-    <td><utils:dateTimePicker value="${minimumLong}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
-    <td><utils:dateTimePicker value="${maximumLong}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${sessionLogMinimum}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${sessionLogMaximum}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
     <td>last <input type="text" value="${sessionLogMinutes}" size="4" name="nminutes"/> minutes</td>
     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
     </td>

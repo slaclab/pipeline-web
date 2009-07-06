@@ -95,8 +95,8 @@
                 </select>		  </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
                     
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td>
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>
+                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td>
+                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>
                     <td>or last <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="5"> hours</td>
                 </tr> 
                 

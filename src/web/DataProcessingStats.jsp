@@ -95,7 +95,7 @@
 
 <c:if test="${debug == 0}">
     <sql:query var="data">
-        select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+7 as SLAC,
+        select (TIME_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+7 as SLAC,
         (f.treceive-978307200-n.metavalue)/3600 as NASA,
         n.metavalue as runStart
         from verdataset d

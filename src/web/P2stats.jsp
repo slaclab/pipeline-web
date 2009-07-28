@@ -209,8 +209,8 @@
                 <tab:tab name="Summary" href="P2stats.jsp?task=${task}&startTime=${startTime}&endTime=${endTime}" value="0">                    
                     <sql:query var="data">
                         select createdate,startdate,enddate, 
-                        (GLAST_UTIL.GetTimeFromEpochMS(enddate)-GLAST_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as elapsedTime
-                        , (GLAST_UTIL.GetTimeFromEpochMS(startdate)-GLAST_UTIL.GetTimeFromEpochMS(createdate))/(1000*60) as waitTime
+                        (TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as elapsedTime
+                        , (TIME_UTIL.GetTimeFromEpochMS(startdate)-TIME_UTIL.GetTimeFromEpochMS(createdate))/(1000*60) as waitTime
                         from stream where task=? 
                         <sql:param value="${task}"/>
                         and streamstatus='SUCCESS' 
@@ -367,9 +367,9 @@
                         <sql:query var="data">
                             select enddate,startdate,submitdate,cpusecondsused,
                             cpusecondsused/60 as cpuUsedTime ,
-                            (GLAST_UTIL.GetTimeFromEpochMS(enddate)-GLAST_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as wallPlotTime,
-                            cpusecondsused/(GLAST_UTIL.GetTimeFromEpochMS(enddate)-GLAST_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as WallCpuTime,                      
-                            (GLAST_UTIL.GetTimeFromEpochMS(startdate)-GLAST_UTIL.GetTimeFromEpochMS(submitdate))/(1000*60) as waitPlotTime,
+                            (TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as wallPlotTime,
+                            cpusecondsused/(TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as WallCpuTime,
+                            (TIME_UTIL.GetTimeFromEpochMS(startdate)-TIME_UTIL.GetTimeFromEpochMS(submitdate))/(1000*60) as waitPlotTime,
                             regexp_substr(lower(PI.executionhost), '^[a-z]+')executionhost
                             from processinstance PI
                             where PI.process = ?

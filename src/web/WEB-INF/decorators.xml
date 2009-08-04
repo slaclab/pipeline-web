@@ -5,6 +5,5 @@
     </decorator>
     <excludes>
        <pattern>/taskout.jsp*</pattern>
-       <pattern>/PipelineLogFiles/*</pattern>
     </excludes>
 </decorators>

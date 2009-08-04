@@ -66,7 +66,7 @@
          <param-name>Test</param-name>
          <param-value>jdbc/pipeline-ii-test</param-value>
       </init-param>    
-  </filter>
+   </filter>
    
    <filter-mapping>
       <filter-name>datasource</filter-name>
@@ -213,18 +213,4 @@
          index.html
       </welcome-file>
    </welcome-file-list>
-   
-    <servlet>
-        <servlet-name>PipelineLogFileServlet</servlet-name>
-        <servlet-class>org.glast.pipeline.web.servlet.PlainFileServerServlet</servlet-class>
-        <init-param>
-            <param-name>urlBase</param-name>
-            <param-value>file:/nfs/farm/g/glast</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>PipelineLogFileServlet</servlet-name>
-        <url-pattern>/PipelineLogFiles/*</url-pattern>
-    </servlet-mapping>
-   
 </web-app>

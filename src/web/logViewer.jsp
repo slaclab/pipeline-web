@@ -11,7 +11,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Message Viewer</title>
+    <title>Message Viewer</title> 
+    <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
+    <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css"> 
 </head>
 <body>
 
@@ -21,94 +23,33 @@
 <jsp:useBean id="logStartDate" class="java.util.Date" />
 <jsp:useBean id="logEndDate" class="java.util.Date" />
 
-<c:set var="debug" value="0"/>
+<c:if test="${!empty param.minDate}">
+    <c:set var="minimumDate" value="${param.minDate=='None' ? -1 : param.minDate}"/>
+</c:if>
+<c:if test="${!empty param.maxDate}">
+    <c:set var="maximumDate" value="${param.maxDate=='None' ? -1 : param.maxDate}"/>
+</c:if>
+<%-- If clear button selected set start and end dates to default values --%>
+<c:set var="clear"   value="${param.clear}" /> 
+<c:if test= "${clear =='Default'}"> 
+    <c:set var="minimumDate" value=""/>
+    <c:set var="maximumDate" value=""/>
+</c:if> 
+<%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = None --%>
+<c:if test="${empty minimumDate}">
+    <c:set var="minimumDate" value="${logStartDate.time-preferences.defaultMessagePeriodMinutes*60*1000}"/>
+</c:if>
+<c:if test="${empty maximumDate}">
+    <c:set var="maximumDate" value="-1"/>
+</c:if>
 
-<c:set var="minimumLong" value="${param.minDate}"/>
-<c:set var="maximumLong" value="${param.maxDate}"/>
-<c:set var="nminutes" value="${param.nminutes}"/>
-<c:set var="severity" value="${param.severity}"/>
+<c:set var="severity" value="${param.severity}"/> 
 <c:set var="logTask" value="${task}"/>
 <c:set var="logProcess" value="${process}" />
 <c:set var="logProcessInstance" value="${processInstance}"/>
-<c:set var="clear" value="${param.clear}" />
 
-<c:if test="${empty firstLogVisit}">
-    <c:set var="nminutes" value="${preferences.defaultMessagePeriodMinutes > 0 ? preferences.defaultMessagePeriodMinutes : '10'}"/>
-    <c:set var="sessionLogMinutes" value="${nminutes}" scope="session"/>
-    <c:set var="userSelectLogMinutes" value="true" scope="session"/> 
-    <c:set var="userSelectLogMinimum" value="false" scope="session"/>
-    <c:set var="userSelectLogMaximum" value="false" scope="session"/>
-    <c:set var="userSelectLogSame" value="false" scope="session"/>
-    <c:set var="firstLogVisit" value="beenVisited" scope="session"/>
-</c:if>
-
-<c:if test="${! empty param.submit}">
-    <c:set var="minimumLong" value="${param.minDate}"/>
-    <c:set var="maximumLong" value="${param.maxDate}"/>
-    <c:set var="nminutes" value="${param.nminutes}"/>
-    <c:set var="userSelectLogMinimum" value="${!empty minimumLong && minimumLong != '-1' && minimumLong != sessionLogMinimum}" scope="session"/>
-    <c:set var="userSelectLogMaximum" value="${!empty maximumLong && maximumLong != '-1' && maximumLong != sessionLogMaximum}" scope="session"/>
-    <c:set var="userSelectLogMinutes" value="${!empty nminutes && !userSelectLogMinimum && !userSelectLogMaximum }" scope="session"/>
-    <c:set var="userSelectLogSame" value="${!userSelectLogMinutes && !userSelectLogMinimum || !userSelectLogMaximum}" scope="session"/>
-
-    <c:if test="${debug == 1}">
-        <h3> BEFORE Choose<br>
-            userSelectLogMinimum=${userSelectLogMinimum} minDate=${param.minDate} minimumLong=${minimumLong}<br>
-            userSelectLogMaximum=${userSelectLogMaximum} maxDate=${param.maxDate} maximumLong=${maximumLong}<br>
-            userSelectLogMinutes=${userSelectLogMinutes} minutes="${nminutes} <br>
-            userSelectLogSame=${userSelectLogSame}<br>
-        </h3>
-    </c:if>
-
-    <c:choose>
-        <c:when test="${userSelectLogMinimum || userSelectLogMaximum}">
-            <c:set var="sessionLogMinutes" value="" scope="session"/>
-            <c:set var="nminutes" value="" />
-            <c:set var="userSelectLogMinutes" value="false" />
-            <c:if test="${userSelectLogMinimum}">
-                <c:set var="sessionLogMinimum" value="${minimumLong}" scope="session"/>
-            </c:if>
-            <c:if test="${userSelectLogMaximum}">
-                <c:set var="sessionLogMaximum" value="${maximumLong}" scope="session"/>
-            </c:if>
-        </c:when>
-        <c:when test="${userSelectLogMinutes}">
-            <c:set var="minimumLong" value="" />
-            <c:set var="maximumLong" value="" />
-            <c:set var="sessionLogMinimum" value="" scope="session" />
-            <c:set var="sessionLogMaximum" value="" scope="session" />
-            <c:set var="sessionLogMinutes" value="${nminutes}" scope="session"/>
-            <c:set var="userSelectLogSame" value="false" scope="session"/> 
-        </c:when>
-    </c:choose>
-
-    <c:if test="${debug == 1}">
-        <h3> AFTER Choose<br>
-            userSelectLogMinimum=${userSelectLogMinimum} minDate=${param.minDate} minimumLong=${minimumLong}<br>
-            userSelectLogMaximum=${userSelectLogMaximum} maxDate=${param.maxDate} maximumLong=${maximumLong}<br>
-            userSelectLogMinutes=${userSelectLogMinutes}<br>
-            userSelectLogSame=${userSelectLogSame}<br>
-        </h3>
-    </c:if>
-
-</c:if>
-
-<c:if test="${empty severity}">
-    <c:set var="severity" value="800" />
-    <c:set var="logTask" value=""/>
-    <c:set var="logProcess" value=""/>
-    <c:set var="logProcessInstance" value=""/>
-</c:if>
-
-<c:if test= "${clear =='Default'}">
-    <c:set var="nminutes" value="${preferences.defaultMessagePeriodMinutes > 0 ? preferences.defaultMessagePeriodMinutes : '10'}"/>
-    <c:set var="userSelectLogMinutes" value="true" scope="session" />
-    <c:set var="minimumLong" value='-1'/>
-    <c:set var="maximumLong" value='-1'/>
-    <c:set var="sessionLogMinutes" value="${nminutes}" scope="session"/>
-    <c:set var="sessionLogMinimum" value=""/>
-    <c:set var="sessionLogMaximum" value=""/>
-    <c:set var="severity" value="800" />
+<c:if test="${!empty clear || empty severity}">
+    <c:set var="severity" value="800" /> 
     <c:set var="logTask" value=""/>
     <c:set var="logProcess" value=""/>
     <c:set var="logProcessInstance" value=""/>
@@ -120,9 +61,9 @@
     <td colspan="20">
         Task: <pt:taskChooser name="task" selected="${logTask}" allowNone="true" useKey="true"/>
         <c:if test="${!empty logTask}">
-            Process: <pt:processChooser name="process" selected="${logProcess}" allowNone="true" task="${logTask}"/>
+            Process: <pt:processChooser name="process" selected="${logProcess}" allowNone="true" task="${logTask}"/> 
             <c:if test="${!empty logProcess}">
-                Stream <pt:processInstanceChooser name="pi" selected="${logProcessInstance}" allowNone="true" process="${logProcess}"/>
+                Stream <pt:processInstanceChooser name="pi" selected="${logProcessInstance}" allowNone="true" process="${logProcess}"/> 
             </c:if>
         </c:if>
         Severity: <select name="severity">
@@ -137,97 +78,59 @@
     </td>
 </tr>
 <tr>
-    <td><utils:dateTimePicker value="${sessionLogMinimum}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
-    <td><utils:dateTimePicker value="${sessionLogMaximum}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
-    <td>last <input type="text" value="${sessionLogMinutes}" size="4" name="nminutes"/> minutes</td>
+    <td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+    
     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
     </td>
 </tr>
 </table>
 </form>
-
-<c:if test="${debug == 1}">
-    <h3>
-        userSelectLogMinimum = ${userSelectLogMinimum} minimumLong=${minimumLong} sessionLogMinimum=${sessionLogMinimum}<br>
-        userSelectLogMaximum = ${userSelectLogMaximum} maximumLong=${maximumLong} sessionLogMaximum=${sessionLogMaximum}<br>
-        userSelectLogMinutes = ${userSelectLogMinutes} nminutes=${nminutes} sessionLogMinutes=${sessionLogMinutes}<br>
-        userSelectLogSame = ${userSelectLogSame}<br>
-    </h3>
-
-    <c:if test="${userSelectLogMinimum || (userSelectLogSame && minimumLong != -1) }">
-        and timeentered>=?
-        <h3>*1* and timeentered >= ${minimumLong}</h3>
+<gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
+    select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
+    case when exception is null then 0 else 1 end hasException,
+    PII.GetStreamIdPath(stream) streamIdPath
+    from log l
+    left outer join processinstance i using (processinstance)
+    left outer join process p using (process)
+    left outer join taskpath t using (task)
+    where log_level > 0 
+    <c:if test="${!empty severity}"> 
+       and log_level>=? 
+       <gsql:param value="${severity}"/>
+    </c:if> 
+    <c:if test="${minimumDate !='-1'}">
+       and timeentered>=?       
+       <jsp:setProperty name="logStartDate" property="time" value="${minimumDate}"/>   
+       <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
     </c:if>
-    <c:if test="${userSelectLogMaximum || (userSelectLogSame && maximumLong != -1)}">
-        and timeentered<=?
-        <h3>*2* and timeentered <= ${maximumLong}</h3>
+    <c:if test="${maximumDate!='-1'}"> 
+       and timeentered<=?      
+       <jsp:setProperty name="logEndDate" property="time" value="${maximumDate}" /> 	
+       <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
+    </c:if>   
+    <c:if test="${!empty logTask}">
+       and task=?
+       <gsql:param value="${logTask}"/>
     </c:if>
-    <c:if test="${userSelectLogMinutes}">
-        <h3>*3* and timeentered >= ${logStartDate} - ${nminutes} minutes and timeentered <= ${logEndDate} </h3>
+    <c:if test="${!empty logProcess}">
+       and process=?
+       <gsql:param value="${logProcess}"/>
     </c:if>
-</c:if>
-
-<%--
-<c:if test="${userSelectLogMinutes || (!userSelectLogSame && minimumLong == -1 && maximumLong == -1)}">
-        <h3>*3* and timeentered >= ${logStartDate} - ${nminutes} minutes and timeentered <= ${logEndDate} </h3>
+    <c:if test="${!empty logProcessInstance}">
+       and processinstance=?
+       <gsql:param value="${logProcessInstance}"/>
     </c:if>
---%>
+</gsql:query>
 
-    <c:if test="${debug == 0}">
-
-    <gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
-        select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
-        case when exception is null then 0 else 1 end hasException,
-        PII.GetStreamIdPath(stream) streamIdPath
-        from log l
-        left outer join processinstance i using (processinstance)
-        left outer join process p using (process)
-        left outer join taskpath t using (task)
-        where log_level > 0
-        <c:if test="${!empty severity}">
-            and log_level>=?
-            <gsql:param value="${severity}"/>
-        </c:if>
-        <c:if test="${userSelectLogMinimum || (userSelectLogSame && minimumLong != -1) }">
-            and timeentered>=?
-            <jsp:setProperty name="logStartDate" property="time" value="${minimumLong}"/>
-            <gsql:dateParam value="${logStartDate}" type="timestamp"/>
-        </c:if>
-        <c:if test="${userSelectLogMaximum || (userSelectLogSame && maximumLong != -1)}">
-            and timeentered<=?
-            <jsp:setProperty name="logEndDate" property="time" value="${maximumLong}" />
-            <gsql:dateParam value="${logEndDate}" type="timestamp"/>
-        </c:if>
-        <c:if test="${userSelectLogMinutes || (userSelectLogSame && minimumLong == -1 && maximumLong == -1)}">
-            and timeentered >= ? and timeentered <= ?
-            <jsp:setProperty name="logStartDate" property="time" value="${logEndDate.time-sessionLogMinutes*60*1000}" />
-            <gsql:dateParam value="${logStartDate}" type="timestamp"/>
-            <gsql:dateParam value="${logEndDate}" type="timestamp"/>
-        </c:if>
-        <c:if test="${!empty logTask}">
-            and task=?
-            <gsql:param value="${logTask}"/>
-        </c:if>
-        <c:if test="${!empty logProcess}">
-            and process=?
-            <gsql:param value="${logProcess}"/>
-        </c:if>
-        <c:if test="${!empty logProcessInstance}">
-            and processinstance=?
-            <gsql:param value="${logProcessInstance}"/>
-        </c:if>
-    </gsql:query>
-
-    <display:table excludedParams="submit" class="datatable" name="${log}" sort="external" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
-        <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />
-        <display:column property="log_level" decorator="org.glast.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" sortable="true" headerClass="sortable" />
-        <display:column property="taskLinkPath" title="Task" />
-        <display:column property="processname" title="Process" sortable="true" headerClass="sortable" href="process.jsp" paramId="process" paramProperty="process"/>
-        <display:column property="streamIdPath" title="Stream" href="pi.jsp" paramId="pi" paramProperty="processinstance" />
-        <display:column property="message" title="Message" class="leftAligned" />
-        <display:column property="exception" title="Detail" class="leftAligned" />
-    </display:table>
-</c:if>
-
+<display:table class="datatable" name="${log}" sort="external" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
+    <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />
+    <display:column property="log_level" decorator="org.glast.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" sortable="true" headerClass="sortable" />
+    <display:column property="taskLinkPath" title="Task" />
+    <display:column property="processname" title="Process" sortable="true" headerClass="sortable" href="process.jsp" paramId="process" paramProperty="process"/>
+    <display:column property="streamIdPath" title="Stream" href="pi.jsp" paramId="pi" paramProperty="processinstance" />
+    <display:column property="message" title="Message" class="leftAligned" />
+    <display:column property="exception" title="Detail" class="leftAligned" />
+</display:table>
 </body>
 </html>

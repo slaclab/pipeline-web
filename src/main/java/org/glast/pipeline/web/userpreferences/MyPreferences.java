@@ -12,14 +12,8 @@ public class MyPreferences {
     private String taskVersion = "latestVersions";
     private String defaultOrder = "descending";
     private String defaultSort = "1";
-    private int defaultMessagePeriodMinutes = 10;
-    private int defaultStreamPeriodDays = -1;
-    private int defaultProcessPeriodDays = -1;
-    private int defaultPerfPlotDays = -1;
-    private int defaultP2statDays = -1;
-    private int defaultDPhours = -1;
     private int showStreams = 20;
-     
+    private int defaultMessagePeriodMinutes = 10;
     
     /** Creates a new instance of MyPreferences */
     public MyPreferences() {
@@ -46,30 +40,6 @@ public class MyPreferences {
         showStreams = c;
     }
     
-    public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes) {
-        this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
-    }
-    
-   public void setDefaultStreamPeriodDays (int defaultStreamPeriodDays){
-      this.defaultStreamPeriodDays = defaultStreamPeriodDays;
-   }
-   
-    public void setDefaultProcessPeriodDays (int defaultProcessPeriodDays){
-      this.defaultProcessPeriodDays = defaultProcessPeriodDays;
-   }
-   
-    public void setDefaultPerfPlotDays (int defaultPerfPlotDays){
-      this.defaultPerfPlotDays = defaultPerfPlotDays;
-   }
-
-    public void setDefaultP2statDays (int defaultP2statDays){
-      this.defaultP2statDays = defaultP2statDays;
-   }
-
-   public void setDefaultDPhours (int defaultDPhours){
-      this.defaultDPhours = defaultDPhours;
-   }
-   
     // Getters
     
     public String getTask(){
@@ -96,30 +66,10 @@ public class MyPreferences {
    {
       return defaultMessagePeriodMinutes;
    }
-   
-   public int getDefaultStreamPeriodDays()
-   {
-      return defaultStreamPeriodDays;
-   } 
-   
-   public int getDefaultProcessPeriodDays()
-   {
-      return defaultProcessPeriodDays;
-   } 
-   
-   public int getDefaultPerfPlotDays()
-   {
-      return defaultPerfPlotDays;
-   }
 
-   public int getDefaultP2statDays()
+   public void setDefaultMessagePeriodMinutes(int defaultMessagePeriodMinutes)
    {
-      return defaultP2statDays;
+      this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
    }
-
-   public int getDefaultDPhours()
-   {
-      return defaultDPhours;
-   }
-
+    
 }

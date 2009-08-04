@@ -3,10 +3,10 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://aida.freehep.org/jsp20" prefix="aida" %>
+<%@taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils" %>
+<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
@@ -15,10 +15,10 @@
         <title>Pipeline Jobs VS Time Plots</title>    
     </head>
     <body>
-
+        
         ${aida:clearPlotRegistry(pageContext.session)}       
         <c:set var="datatbl" value="processingstatisticshour" scope="session"/>
-      
+        
         <c:set var="startTime" value="${param.startTime}" />
         <c:set var="endTime"   value="${param.endTime}"   />
         <c:set var="taskName" value="${param.taskName}" /> 
@@ -28,9 +28,9 @@
         
         <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" /> 
         <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" /> 
-        <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
-        <c:set var="userSelectedTaskName" value="${!empty taskName}" />
-
+        <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" /> 
+        <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
+        
         <c:choose>
             <c:when test="${userSelectedTaskName}">
                 <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
@@ -45,12 +45,12 @@
                 <c:set var ="sessionUseHours" value="false" scope="session"/>
                 <c:set var ="sessionStartTime" value="${startTime}" scope="session"/>
                 <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
-    <%--          <c:redirect url="JobProcessingStats.jsp"/> --%>
+                <c:redirect url="JobProcessingStats.jsp"/>
             </c:when>
             <c:when test="${userSelectedHours}">
                 <c:set var ="sessionUseHours" value="true" scope="session"/>
                 <c:set var ="sessionHours" value="${hours}" scope="session"/>
-             <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
+                <c:redirect url="JobProcessingStats.jsp"/>
             </c:when>
             <c:when test="${empty sessionUseHours}">
                 <c:set var ="sessionUseHours" value="true" scope="session"/>
@@ -60,24 +60,7 @@
             </c:when>
         </c:choose>
         <br>	
-        <c:if test="${!empty param.default}">
-            <c:set var ="sessionUseHours" value="true" scope="session"/>
-            <c:set var="preferenceHours" value="${preferences.defaultPerfPlotDays}"/>
-            <c:choose>
-                <c:when test="${preferenceHours > '0'}">
-                    <c:set var ="hours" value="${preferenceHours}"/>
-                    <c:set var="sessionHours" value="${hours}" scope="session"/>
-                </c:when>
-                <c:when test="${preferenceHours < '0'}">
-                    <c:set var ="hours" value='8'/>
-                    <c:set var="sessionHours" value="${hours}" scope="session"/>
-                </c:when>
-            </c:choose>
-            <c:set var ="sessionStartTime" value="None" scope="session"/>
-            <c:set var ="sessionEndTime" value="None" scope="session"/>
-            <h3>Entered DEFAULT: hours=${hours} preferences=${preferenceHours}</h3>
-        </c:if>
-         
+        
         <form name="DateForm">        
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
                 <tr bordercolor="#000000" bgcolor="#FFCC66">               
@@ -95,12 +78,12 @@
                 </select>		  </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
                     
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td>
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>
+                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td> 
+                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime"   showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>     
                     <td>or last <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="5"> hours</td>
                 </tr> 
                 
-                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"><input type="submit" value="Default" name="default"></td>
+                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"></td>
                 </tr> 
         </table></form>   
         
@@ -255,72 +238,81 @@
         
         <c:if test="${sessionTaskName == 'ALL' && data.rowCount>0}">
             <sql:query var="taskdata">
-                select taskname
-                from ${datatbl}
+                with tasks as (
+                 select taskname, sum(running) running
+                 from processingstatisticshour
+                 where entered>=? and entered<=? and running>0
+                 <sql:dateParam value="${startRange}"/>
+                 <sql:dateParam value="${endRange}"/>
+                 group by taskname 
+                 order by running desc
+                )  
+               select 'TOTAL' taskname, count(*) running from tasks
+               union all
+               select taskname,running from tasks where rownum<=25 
+            </sql:query>
+            
+            Showing 
+            <c:if test="${taskdata.rows[0].running>taskdata.rowCount-1}">
+                top ${taskdata.rowCount-1} of 
+            </c:if>${taskdata.rows[0].running} tasks active in time period.
+            <br>
+                
+            <sql:query var="tasks">   
+                <c:if test="${groupby != 1}">
+                    select min(entered) entered 
+                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
+                        <c:if test="${taskrow.taskname != 'TOTAL'}">
+                            ,avg(N${status.count}) N${status.count}    
+                        </c:if>
+                    </c:forEach>
+                    from ( 
+                </c:if>   
+                select entered
+                <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
+                    <c:if test="${taskrow.taskname != 'TOTAL'}">
+                        ,max(case when taskname='${taskrow.taskname}' then running else 0 end) N${status.count}   
+                    </c:if>
+                </c:forEach>
+                from ${datatbl} 
                 where entered>=? and entered<=?
                 <sql:dateParam value="${startRange}"/>
                 <sql:dateParam value="${endRange}"/>
-                group by taskname 
-                order by taskname  
+                and running > 0
+                group by entered order by entered  
+                <c:if test="${groupby != 1}">
+                    ) group by  floor(rownum/?) order by entered
+                    <sql:param value="${groupby}"/>
+                </c:if>   		 
             </sql:query>
-            
-            Number of tasks active in time period ${taskdata.rowCount}.
-            <c:if test="${taskdata.rowCount>30}">
-                Per task plot suppressed due to excessive task count.
-            </c:if>   
-            <br>
-            <c:if test="${taskdata.rowCount<=30}">
                 
-                <sql:query var="tasks">   
-                    <c:if test="${groupby != 1}">
-                        select min(entered) entered 
-                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
-                            ,avg(N${status.count}) N${status.count}                            
-                        </c:forEach>
-                        from ( 
-                    </c:if>   
-                    select entered
-                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
-                        ,max(case when taskname='${taskrow.taskname}' then running else 0 end) N${status.count}                               
-                    </c:forEach>
-                    from ${datatbl} 
-                    where entered>=? and entered<=?
-                    <sql:dateParam value="${startRange}"/>
-                    <sql:dateParam value="${endRange}"/>
-                    and running > 0
-                    group by entered order by entered  
-                    <c:if test="${groupby != 1}">
-                        ) group by  floor(rownum/?) order by entered
-                        <sql:param value="${groupby}"/>
-                    </c:if>   		 
-                </sql:query>
-                
-                <aida:plotter height="600"> 
-                    <aida:region  title="Running processes by task">
-                        <aida:style>
-                            <aida:style type="legendBox">
-                                <aida:attribute name="isVisible" value="true"/>
-                            </aida:style>
-                            <aida:style type="statisticsBox">
-                                <aida:attribute name="isVisible" value="false"/>
-                            </aida:style>                        
-                            <aida:style type="xAxis">
-                                <aida:attribute name="label" value=""/>
-                                <aida:attribute name="type" value="date"/>
-                            </aida:style>
-                            <aida:style type="data">
-                                <aida:attribute name="connectDataPoints" value="true"/>
-                            </aida:style>
-                        </aida:style>  
+            <aida:plotter height="600"> 
+                <aida:region  title="Running processes by task">
+                    <aida:style>
+                        <aida:style type="legendBox">
+                            <aida:attribute name="isVisible" value="true"/>
+                        </aida:style>
+                        <aida:style type="statisticsBox">
+                            <aida:attribute name="isVisible" value="false"/>
+                        </aida:style>                        
+                        <aida:style type="xAxis">
+                            <aida:attribute name="label" value=""/>
+                            <aida:attribute name="type" value="date"/>
+                        </aida:style>
+                        <aida:style type="data">
+                            <aida:attribute name="connectDataPoints" value="true"/>
+                        </aida:style>
+                    </aida:style>  
                         
-                        <aida:tuple var="tuple" query="${tasks}"/>        
-                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">                                                                              
+                    <aida:tuple var="tuple" query="${tasks}"/>        
+                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">                                                                              
+                        <c:if test="${taskrow.taskname != 'TOTAL'}">
                             <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />                                 
-                            <aida:plot var="${running}"/>               
-                        </c:forEach>   
-                    </aida:region>	 
-                </aida:plotter>  
-            </c:if>
+                            <aida:plot var="${running}"/>      
+                        </c:if>
+                    </c:forEach>   
+                </aida:region>	 
+            </aida:plotter>  
         </c:if> 
     </body>
 </html>

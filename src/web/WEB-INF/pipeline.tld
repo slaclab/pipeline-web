@@ -176,9 +176,4 @@
     <function-class>org.glast.pipeline.web.util.Util</function-class>
     <function-signature>java.lang.String getPackageVersion(java.lang.String)</function-signature>
   </function>
-  <function>
-    <name>isFile</name>
-    <function-class>org.glast.pipeline.web.servlet.PlainFileServerServlet</function-class>
-    <function-signature>boolean isFile(java.lang.Object)</function-signature>
-  </function>
 </taglib>

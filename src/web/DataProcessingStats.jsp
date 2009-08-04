@@ -17,28 +17,15 @@
 
 <c:set var="debug" value="0"/>
 
+<jsp:useBean id="startTimeBean" class="java.util.Date" />
+<jsp:useBean id="endTimeBean" class="java.util.Date" />
+
 <c:set var="startTime" value="${param.startTime}"/>
 <c:set var="endTime" value="${param.endTime}"/>
 <c:set var="dphours" value="${param.dphours}"/>
 <c:set var="selectDPstartTime" value="${!empty startTime && startTime != -1 && startTime != sessionDPstartTime}" scope="session"/>
 <c:set var="selectDPendTime" value="${!empty endTime && endTime != -1 && endTime != sessionDPendTime}" scope="session"/>
 <c:set var="selectDPhours" value="${!empty dphours && dphours != -1 && !selectDPstartTime && !selectDPendTime}"/>
-
-<c:if test="${debug == 1}">
-<c:if test="${empty firstDPvisit}">
-    <c:set var="preferenceHrs" value="${preferences.defaultDPhours > 0 ? preferences.defaultDPhours : ''}" scope="session"/>
-    <c:set var="dphours" value="${preferenceHrs}"/>
-    <c:set var="sessionDPhours" value="${dphours}"/>
-    <c:set var="sessionDPstartTime" value="-1" scope="session"/>
-    <c:set var="sessionDPendTime" value="-1" scope="session"/>
-    <c:set var="selectDPhours" value="true" scope="session"/> 
-    <c:set var="selectDPstartTime" value="false" scope="session"/>
-    <c:set var="selectDPendTime" value="false" scope="session"/>
-    <c:set var="selectDPSame" value="false" scope="session"/>
-    <c:set var="firstDPvisit" value="beenDpVisited" scope="session"/>
-    <h3>first visit hours=${dphours} sessionDPhours=${sessionDPhours} </h3>
-</c:if>
-</c:if>
 
 <c:if test="${param.filter=='Default'}">
     <c:set var="startTime" value="-1"/>
@@ -50,8 +37,8 @@
             <c:set var="selectDPhours" value="true"/>
         </c:when>
         <c:when test="${preferences.defaultDPhours < 1 || empty preferences.defaultDPhours}">
-            <c:set var="dphours" value=""/>
-            <c:set var="sessionDPhours" value=""/>
+            <c:set var="dphours" value="24"/>
+            <c:set var="sessionDPhours" value="${dphours}" scope="session"/>
             <c:set var="selectDPhours" value="false"/>
         </c:when>
     </c:choose>
@@ -81,8 +68,8 @@
 <form name="DateForm">        
     <table class="filtertable">
         <tr>
-            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="false" showtime="false" format="%b/%e/%y" value="${startTime}"  timezone="PST8PDT"/></td>
-            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="false" showtime="false" format="%b/%e/%y" value="${endTime}" timezone="PST8PDT"/> </td>
+            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${startTime}"  timezone="PST8PDT"/></td>
+            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${endTime}" timezone="PST8PDT"/> </td>
             <td><strong>Hours</strong><br>
                 <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
             </td>
@@ -92,6 +79,12 @@
         </tr>
     </table>
 </form>
+
+<%--
+<jsp:useBean id="dpStartBean" class="java.util.Date" />
+            <jsp:useBean id="dpEndBean" class="java.util.Date" />
+            --%>
+            
 
 <c:if test="${debug == 0}">
     <sql:query var="data">
@@ -111,26 +104,22 @@
         )
         where datasetgroup=39684247 and n.metaValue>239907864.08432
         <c:if test="${startTime>0 && !selectDPhours}">
-            <jsp:useBean id="startTimeBean" class="java.util.Date" />
-            <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" />
             and dv.registered>?
+            <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" />
             <sql:dateParam value="${startTimeBean}"/>
         </c:if>
         <c:if test="${endTime>0 && !selectDPhours}">
-            <jsp:useBean id="endTimeBean" class="java.util.Date" />
-            <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" />
             and dv.registered<?
+            <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" />
             <sql:dateParam value="${endTimeBean}"/>
         </c:if>
         <c:if test="${selectDPhours}">
-            <jsp:useBean id="dpStartBean" class="java.util.Date" />
-            <jsp:useBean id="dpEndBean" class="java.util.Date" />
-            <jsp:setProperty name="dpStartBean" property="time" value="${dpEndBean.time-sessionDPhours*60*60*1000}"/>
-            <jsp:setProperty name="dpEndBean" property="time" value="${dpEndBean.time}"/>
             and dv.registered > ? and dv.registered < ?
-            <sql:dateParam value="${dpStartBean}" type="timestamp"/>
-            <sql:dateParam value="${dpEndBean}" type="timestamp"/>
-            <c:set var="foo" value="and dv.registered = ${dpStartBean} ${startTime} and dv.registered < ${dpEndBean} ${endTime}"/>
+            <jsp:setProperty name="startTimeBean" property="time" value="${endTimeBean.time-sessionDPhours*60*60*1000}"/>
+            <sql:dateParam value="${startTimeBean}" type="timestamp"/>
+            <jsp:setProperty name="endTimeBean" property="time" value="${endTimeBean.time}"/>
+            <sql:dateParam value="${endTimeBean}" type="timestamp"/>
+            <c:set var="foo3" value="and dv.registered = ${startTimeBean} ${startTime} and dv.registered < ${endTimeBean} ${endTime}"/>
         </c:if>
     </sql:query>
 

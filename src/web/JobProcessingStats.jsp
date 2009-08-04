@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
+<%@taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
@@ -238,72 +238,81 @@
         
         <c:if test="${sessionTaskName == 'ALL' && data.rowCount>0}">
             <sql:query var="taskdata">
-                select taskname
-                from ${datatbl}
+                with tasks as (
+                 select taskname, sum(running) running
+                 from processingstatisticshour
+                 where entered>=? and entered<=? and running>0
+                 <sql:dateParam value="${startRange}"/>
+                 <sql:dateParam value="${endRange}"/>
+                 group by taskname 
+                 order by running desc
+                )  
+               select 'TOTAL' taskname, count(*) running from tasks
+               union all
+               select taskname,running from tasks where rownum<=25 
+            </sql:query>
+            
+            Showing 
+            <c:if test="${taskdata.rows[0].running>taskdata.rowCount-1}">
+                top ${taskdata.rowCount-1} of 
+            </c:if>${taskdata.rows[0].running} tasks active in time period.
+            <br>
+                
+            <sql:query var="tasks">   
+                <c:if test="${groupby != 1}">
+                    select min(entered) entered 
+                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
+                        <c:if test="${taskrow.taskname != 'TOTAL'}">
+                            ,avg(N${status.count}) N${status.count}    
+                        </c:if>
+                    </c:forEach>
+                    from ( 
+                </c:if>   
+                select entered
+                <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
+                    <c:if test="${taskrow.taskname != 'TOTAL'}">
+                        ,max(case when taskname='${taskrow.taskname}' then running else 0 end) N${status.count}   
+                    </c:if>
+                </c:forEach>
+                from ${datatbl} 
                 where entered>=? and entered<=?
                 <sql:dateParam value="${startRange}"/>
                 <sql:dateParam value="${endRange}"/>
-                group by taskname 
-                order by taskname  
+                and running > 0
+                group by entered order by entered  
+                <c:if test="${groupby != 1}">
+                    ) group by  floor(rownum/?) order by entered
+                    <sql:param value="${groupby}"/>
+                </c:if>   		 
             </sql:query>
-            
-            Number of tasks active in time period ${taskdata.rowCount}.
-            <c:if test="${taskdata.rowCount>30}">
-                Per task plot suppressed due to excessive task count.
-            </c:if>   
-            <br>
-            <c:if test="${taskdata.rowCount<=30}">
                 
-                <sql:query var="tasks">   
-                    <c:if test="${groupby != 1}">
-                        select min(entered) entered 
-                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
-                            ,avg(N${status.count}) N${status.count}                            
-                        </c:forEach>
-                        from ( 
-                    </c:if>   
-                    select entered
-                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status"> 
-                        ,max(case when taskname='${taskrow.taskname}' then running else 0 end) N${status.count}                               
-                    </c:forEach>
-                    from ${datatbl} 
-                    where entered>=? and entered<=?
-                    <sql:dateParam value="${startRange}"/>
-                    <sql:dateParam value="${endRange}"/>
-                    and running > 0
-                    group by entered order by entered  
-                    <c:if test="${groupby != 1}">
-                        ) group by  floor(rownum/?) order by entered
-                        <sql:param value="${groupby}"/>
-                    </c:if>   		 
-                </sql:query>
-                
-                <aida:plotter height="600"> 
-                    <aida:region  title="Running processes by task">
-                        <aida:style>
-                            <aida:style type="legendBox">
-                                <aida:attribute name="isVisible" value="true"/>
-                            </aida:style>
-                            <aida:style type="statisticsBox">
-                                <aida:attribute name="isVisible" value="false"/>
-                            </aida:style>                        
-                            <aida:style type="xAxis">
-                                <aida:attribute name="label" value=""/>
-                                <aida:attribute name="type" value="date"/>
-                            </aida:style>
-                            <aida:style type="data">
-                                <aida:attribute name="connectDataPoints" value="true"/>
-                            </aida:style>
-                        </aida:style>  
+            <aida:plotter height="600"> 
+                <aida:region  title="Running processes by task">
+                    <aida:style>
+                        <aida:style type="legendBox">
+                            <aida:attribute name="isVisible" value="true"/>
+                        </aida:style>
+                        <aida:style type="statisticsBox">
+                            <aida:attribute name="isVisible" value="false"/>
+                        </aida:style>                        
+                        <aida:style type="xAxis">
+                            <aida:attribute name="label" value=""/>
+                            <aida:attribute name="type" value="date"/>
+                        </aida:style>
+                        <aida:style type="data">
+                            <aida:attribute name="connectDataPoints" value="true"/>
+                        </aida:style>
+                    </aida:style>  
                         
-                        <aida:tuple var="tuple" query="${tasks}"/>        
-                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">                                                                              
+                    <aida:tuple var="tuple" query="${tasks}"/>        
+                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">                                                                              
+                        <c:if test="${taskrow.taskname != 'TOTAL'}">
                             <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />                                 
-                            <aida:plot var="${running}"/>               
-                        </c:forEach>   
-                    </aida:region>	 
-                </aida:plotter>  
-            </c:if>
+                            <aida:plot var="${running}"/>      
+                        </c:if>
+                    </c:forEach>   
+                </aida:region>	 
+            </aida:plotter>  
         </c:if> 
     </body>
 </html>

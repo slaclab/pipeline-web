@@ -332,6 +332,3 @@
         </c:if> 
     </body>
 </html>
-
-</body>
-</html>

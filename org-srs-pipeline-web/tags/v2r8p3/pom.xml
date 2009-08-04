@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
+    <parent>
+        <groupId>glast</groupId>
+        <artifactId>org-glast-maven-war-project</artifactId>
+        <version>2.0</version>
+    </parent>
+  
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>glast</groupId>
+    <artifactId>org-glast-pipeline-web</artifactId>
+    <name>Pipeline Web Front End</name>
+    <version>2.9-SNAPSHOT</version>
+    <description>Pipeline Web Front End</description>
+    <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
+    <packaging>war</packaging>
+
+    <build>
+        <finalName>Pipeline-II</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceDirectory>${basedir}/src/web</warSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+  
+
+    <scm>
+        <connection>scm:cvs:pserver:anoncvs@glast-java.slac.stanford.edu:/cvs/java:org-glast-pipeline-web</connection>
+        <developerConnection>scm:cvs:ext:@glast-java.slac.stanford.edu:/cvs/java:org-glast-pipeline-web</developerConnection>
+        <url>http://www-glast.stanford.edu/cgi-bin/viewcvs/org-glast-pipeline-web/?root=java</url>
+  </scm>
+
+
+
+    <repositories>
+        <repository>
+            <id>glast-maven2</id>
+            <name>GLAST Maven 2 central repository</name>
+            <url>http://glast-ground.slac.stanford.edu/maven2</url>
+        </repository>
+        <repository>
+            <id>glast-maven2-snapshots</id>
+            <name>GLAST Maven2 central SNAPSHOTS repository</name>
+            <url>http://glast-ground.slac.stanford.edu/maven2/SNAPSHOTS</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>glast</groupId>
+            <artifactId>org-glast-maven-aida-project</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>glast</groupId>
+            <artifactId>org-glast-groupmanager-jar</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>glast</groupId>
+            <artifactId>org-glast-jobcontrol</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>glast</groupId>
+            <artifactId>org-glast-base-web</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>glast</groupId>
+            <artifactId>org-glast-pipeline-client</artifactId>
+            <version>0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>glast</groupId>
+            <artifactId>org-glast-datahandling-common</artifactId>
+            <version>1.5.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>coldtags</groupId>
+            <artifactId>jmxtag</artifactId>
+            <version>2.8</version>
+        </dependency>
+    </dependencies>
+  
+
+</project>

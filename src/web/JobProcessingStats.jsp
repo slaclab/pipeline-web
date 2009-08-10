@@ -30,51 +30,67 @@
         <c:catch>
             <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
         </c:catch>
-        
-        <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" /> 
-        <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" /> 
-        <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
-        <c:set var="userSelectedNone" value="${startTime == '-1' && endTime == '-1' && empty hours}" />
-        <c:set var="userSelectedTaskName" value="${!empty taskName}" />
 
-        <c:choose>
-            <c:when test="${userSelectedTaskName}">
-                <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
-            </c:when>
-            <c:when test="${!userSelectedTaskName && empty sessionTaskName}"> 
-                <c:set var ="sessionTaskName" value="ALL" scope="session"/>
-            </c:when>
-        </c:choose> 
-        
-        <c:choose>
-            <c:when test="${userSelectedStartTime || userSelectedEndTime}">
-                <c:set var ="sessionUseHours" value="false" scope="session"/>
-                <c:set var="sessionHours" value="" scope="session"/>
-                <c:if test="${userSelectedStartTime}" >
-                   <c:set var ="sessionStartTime" value="${startTime}" scope="session"/>
-                </c:if>
-                <c:if test="${userSelectedEndTime}">
-                    <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
-                </c:if>
-             <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
-            </c:when>
-            <c:when test="${userSelectedHours}">
-                <c:set var ="sessionUseHours" value="true" scope="session"/>
-                <c:set var ="sessionHours" value="${hours}" scope="session"/>
-                <c:set var="sessionStartTime" value="" scope="session"/>
-                <c:set var="sessionEndTime" value="" scope="session"/>
-                <%--  <c:redirect url="JobProcessingStats.jsp"/> --%>
-            </c:when>
-            <c:when test="${userSelectedNone}">
-                <c:set var ="sessionUseHours" value="true" scope="session"/>
-                <c:set var="sessionHours" value="${preference.defaultPerfPlotDays > 0 ? preference.defaultPerfPlotDays : '7'}" scope="session"/>
-            </c:when>
-        </c:choose>
+
+         <c:if test="${empty firstTimeJPStats}">
+            <c:set var="hours" value="${preferences.defaultPerfPlotHours > 0 ? preferences.defaultPerfPlotHours : '7'}"/>
+            <c:set var="sessionHours" value="${hours}" scope="session"/>
+            <c:set var="sessionUseHours" value="true" scope="session"/>
+            <c:set var="sessionStartTime" value="" scope="session"/>
+            <c:set var="sessionEndTime" value="" scope="session"/>
+            <c:set var="firstTimeJPStats" value="beenHereDoneThat2" scope="session"/>
+            <c:set var="userSelectedHours" value="true"/>
+            <c:set var="userSelectedStartTime" value="false"/>
+            <c:set var="userSelectedEndTime" value="false"/>
+            <c:set var="userSelectedNone" value="false"/>
+        </c:if>
+
+        <c:if test="${isSubmit == 'Submit'}">
+            <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" />
+            <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" />
+            <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
+            <c:set var="userSelectedNone" value="${startTime == '-1' && endTime == '-1' && empty hours}" />
+            <c:set var="userSelectedTaskName" value="${!empty taskName}" />
+
+            <c:choose>
+                <c:when test="${userSelectedTaskName}">
+                    <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
+                </c:when>
+                <c:when test="${!userSelectedTaskName && empty sessionTaskName}">
+                    <c:set var ="sessionTaskName" value="ALL" scope="session"/>
+                </c:when>
+            </c:choose>
+
+            <c:choose>
+                <c:when test="${userSelectedStartTime || userSelectedEndTime}">
+                    <c:set var ="sessionUseHours" value="false" scope="session"/>
+                    <c:set var="sessionHours" value="" scope="session"/>
+                    <c:if test="${userSelectedStartTime}" >
+                        <c:set var ="sessionStartTime" value="${startTime}" scope="session"/>
+                    </c:if>
+                    <c:if test="${userSelectedEndTime}">
+                        <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
+                    </c:if>
+                    <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
+                </c:when>
+                <c:when test="${userSelectedHours}">
+                    <c:set var ="sessionUseHours" value="true" scope="session"/>
+                    <c:set var ="sessionHours" value="${hours}" scope="session"/>
+                    <c:set var="sessionStartTime" value="" scope="session"/>
+                    <c:set var="sessionEndTime" value="" scope="session"/>
+                    <%--  <c:redirect url="JobProcessingStats.jsp"/> --%>
+                </c:when>
+                <c:when test="${userSelectedNone}">
+                    <c:set var ="sessionUseHours" value="true" scope="session"/>
+                    <c:set var="sessionHours" value="${preference.defaultPerfPlotHours > 0 ? preference.defaultPerfPlotHours : '7'}" scope="session"/>
+                </c:when>
+            </c:choose>
+        </c:if>
 
         <br>	
         <c:if test="${isDefault == 'Default'}">
             <c:set var ="sessionUseHours" value="true" scope="session"/>
-            <c:set var="preferenceHours" value="${preferences.defaultPerfPlotDays > 0 ? preferences.defaultPerfPlotDays : '7'}"/>
+            <c:set var="preferenceHours" value="${preferences.defaultPerfPlotHours > 0 ? preferences.defaultPerfPlotHours : '7'}"/>
             <c:set var ="hours" value="${preferenceHours}"/>
             <c:set var="sessionHours" value="${preferenceHours}" scope="session"/>
             <c:set var ="sessionStartTime" value="None" scope="session"/>

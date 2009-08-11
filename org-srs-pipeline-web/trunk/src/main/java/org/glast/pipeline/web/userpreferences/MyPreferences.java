@@ -15,8 +15,8 @@ public class MyPreferences {
     private int defaultMessagePeriodMinutes = 10;
     private int defaultStreamPeriodDays = -1;
     private int defaultProcessPeriodDays = -1;
-    private int defaultPerfPlotDays = -1;
-    private int defaultP2statDays = -1;
+    private int defaultPerfPlotHours = -1;
+    private int defaultP2statHours = -1;
     private int defaultDPhours = -1;
     private int showStreams = 20;
      
@@ -58,12 +58,12 @@ public class MyPreferences {
       this.defaultProcessPeriodDays = defaultProcessPeriodDays;
    }
    
-    public void setDefaultPerfPlotDays (int defaultPerfPlotDays){
-      this.defaultPerfPlotDays = defaultPerfPlotDays;
+    public void setDefaultPerfPlotHours (int defaultPerfPlotHours){
+      this.defaultPerfPlotHours = defaultPerfPlotHours;
    }
 
-    public void setDefaultP2statDays (int defaultP2statDays){
-      this.defaultP2statDays = defaultP2statDays;
+    public void setDefaultP2statHours (int defaultP2statHours){
+      this.defaultP2statHours = defaultP2statHours;
    }
 
    public void setDefaultDPhours (int defaultDPhours){
@@ -107,14 +107,14 @@ public class MyPreferences {
       return defaultProcessPeriodDays;
    } 
    
-   public int getDefaultPerfPlotDays()
+   public int getDefaultPerfPlotHours()
    {
-      return defaultPerfPlotDays;
+      return defaultPerfPlotHours;
    }
 
-   public int getDefaultP2statDays()
+   public int getDefaultP2statHours()
    {
-      return defaultP2statDays;
+      return defaultP2statHours;
    }
 
    public int getDefaultDPhours()

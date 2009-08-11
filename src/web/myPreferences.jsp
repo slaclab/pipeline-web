@@ -87,7 +87,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     Preferences For JobProcessingStats Plots Period<br>
                 </th>
             </tr>
-            <utils:preference name="defaultPerfPlotDays" size="5" title="Default Performance Period (last N days) ">
+            <utils:preference name="defaultPerfPlotHours" size="5" title="Default Performance Period (last N hours) ">
             </utils:preference>
 
             <tr>
@@ -95,7 +95,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     Preferences For P2stat Plots <br>
                 </th>
             </tr>
-            <utils:preference name="defaultP2statDays" size="5" title="Default Performance Period (last N days) ">
+            <utils:preference name="defaultP2statHours" size="5" title="Default Performance Period (last N hours) ">
             </utils:preference>
 
             <tr>

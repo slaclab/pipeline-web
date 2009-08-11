@@ -26,44 +26,64 @@
 <c:set var="selectDPstartTime" value="${!empty startTime && startTime != -1 && startTime != sessionDPstartTime}" scope="session"/>
 <c:set var="selectDPendTime" value="${!empty endTime && endTime != -1 && endTime != sessionDPendTime}" scope="session"/>
 <c:set var="selectDPhours" value="${!empty dphours && dphours != -1 && !selectDPstartTime && !selectDPendTime}"/>
+<c:set var="selectDPstartNone" value="${empty dphours && param.startTime == '-1'}"/>
+<c:set var="selectDPendNone" value="${empty dphours && param.endTime == '-1'}" />
+
+
+<c:if test="${debug == 1}">
+    <c:forEach var="p" items="${param}">
+        <h3>${p.key} = ${p.value}</h3>
+    </c:forEach>
+</c:if>
+
+<%-- if no preferences set then no time constraint should be set on the query --%>
+<c:if test="${empty firstTimeDPS}">
+    <c:set var="dphours" value="${preferences.defaultDPhours > 0 ? preferences.defaultDPhours : ''}"/>
+    <c:set var="sessionDPhours" value="${dphours}" scope="session"/>
+    <c:set var="firstTimeDPS" value="notEmpty" scope="session"/>
+    <c:set var="selectDPhours" value="${dphours > 0 ? 'true' : 'false'}"/>
+    <c:set var="sessionDPstartTime" value="-1" scope="session"/>
+    <c:set var="sessionDPendTime" value="-1" scope="session"/>
+</c:if>
 
 <c:if test="${param.filter=='Default'}">
-    <c:set var="startTime" value="-1"/>
-    <c:set var="endTime" value="-1"/>
+    <c:set var="dphours" value="${preferences.defaultDPhours > 0 ? preferences.defaultDPhours : ''}"/>
+    <c:set var="sessionDPhours" value="${dphours}" scope = "session"/>
+    <c:set var="selectDPhours" value="${dphours > 0 ? 'true' : 'false'}"/>
+    <c:set var="startTime" value='-1' />
+    <c:set var="endTime" value='-1' />
+    <c:set var="sessionDPstartTime" value="-1" scope="session" />
+    <c:set var="sessionDPendTime" value="-1" scope="session" />
+</c:if>
+
+<c:if test="${param.filter == 'Filter'}">
     <c:choose>
-        <c:when test="${preferences.defaultDPhours > 0}">
-            <c:set var="dphours" value="${preferences.defaultDPhours}"/>
-            <c:set var="sessionDPhours" value="${dphours}"/>
-            <c:set var="selectDPhours" value="true"/>
+        <c:when test="${selectDPstartTime || selectDPendTime}">
+            <c:set var="sessionDPhours" value="" scope="session"/>
+
+            <c:if test="${selectDPstartTime}">
+                <c:set var="sessionDPstartTime" value="${startTime}" scope="session"/>
+            </c:if>
+            <c:if test="${selectDPendTime}">
+                <c:set var="sessionDPendTime" value="${endTime}" scope="session"/>
+            </c:if>
         </c:when>
-        <c:when test="${preferences.defaultDPhours < 1 || empty preferences.defaultDPhours}">
-            <c:set var="dphours" value="24"/>
-            <c:set var="sessionDPhours" value="${dphours}" scope="session"/>
-            <c:set var="selectDPhours" value="false"/>
+        <c:when test="${selectDPhours}">
+            <c:set var="sessionDPstartTime" value="" scope="session" />
+            <c:set var="sessionDPendTime" value="" scope="session" />
+            <c:set var="sessionDPhours" value="${dphours}" scope="session" />
+        </c:when>
+    </c:choose>
+
+    <c:choose>
+        <c:when test="${selectDPstartNone == 'true'}">
+            <c:set var="sessionDPstartTime" value="-1" scope="session" />
+        </c:when>
+        <c:when test="${selectDPendNone == 'true'}">
+            <c:set var="sessionDPendTime" value="-1" scope="session" />
         </c:when>
     </c:choose>
 </c:if>
-
-<c:choose>
-    <c:when test="${selectDPstartTime || selectDPendTime}">
-        <c:set var="sessionDPhours" value="" scope="session"/>
-        <c:set var="dphours" value="" />
-        <c:set var="selectDPhours" value="false" scope="session" />
-        <c:if test="${selectDPstartTime}">
-            <c:set var="sessionDPstartTime" value="${startTime}" scope="session"/>
-        </c:if>
-        <c:if test="${selectDPendTime}">
-            <c:set var="sessionDPendTime" value="${endTime}" scope="session"/>
-        </c:if>
-    </c:when>
-    <c:when test="${selectDPhours}">
-        <c:set var="sessionDPstartTime" value="" scope="session" />
-        <c:set var="sessionDPendTime" value="" scope="session" />
-        <c:set var="startTime" value=""/>
-        <c:set var="endTime" value=""/>
-        <c:set var="sessionDPhours" value="${dphours}" scope="session" />
-    </c:when>
-</c:choose>
 
 <form name="DateForm">        
     <table class="filtertable">
@@ -79,12 +99,7 @@
         </tr>
     </table>
 </form>
-
-<%--
-<jsp:useBean id="dpStartBean" class="java.util.Date" />
-            <jsp:useBean id="dpEndBean" class="java.util.Date" />
-            --%>
-            
+           
 
 <c:if test="${debug == 0}">
     <sql:query var="data">
@@ -103,23 +118,22 @@
         )
         )
         where datasetgroup=39684247 and n.metaValue>239907864.08432
-        <c:if test="${startTime>0 && !selectDPhours}">
+        <c:if test="${sessionDPstartTime > 0  && empty sessionDPhours  }">
             and dv.registered>?
-            <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" />
+            <jsp:setProperty name="startTimeBean" property="time" value="${sessionDPstartTime}" />
             <sql:dateParam value="${startTimeBean}"/>
         </c:if>
-        <c:if test="${endTime>0 && !selectDPhours}">
+        <c:if test="${sessionDPendTime > 0 && empty sessionDPhours}">
             and dv.registered<?
-            <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" />
+            <jsp:setProperty name="endTimeBean" property="time" value="${sessionDPendTime}" />
             <sql:dateParam value="${endTimeBean}"/>
         </c:if>
-        <c:if test="${selectDPhours}">
+        <c:if test="${sessionDPhours > 0}">
             and dv.registered > ? and dv.registered < ?
             <jsp:setProperty name="startTimeBean" property="time" value="${endTimeBean.time-sessionDPhours*60*60*1000}"/>
             <sql:dateParam value="${startTimeBean}" type="timestamp"/>
             <jsp:setProperty name="endTimeBean" property="time" value="${endTimeBean.time}"/>
             <sql:dateParam value="${endTimeBean}" type="timestamp"/>
-            <c:set var="foo3" value="and dv.registered = ${startTimeBean} ${startTime} and dv.registered < ${endTimeBean} ${endTime}"/>
         </c:if>
     </sql:query>
 

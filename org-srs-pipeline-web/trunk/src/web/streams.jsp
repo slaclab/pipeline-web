@@ -122,11 +122,8 @@
 </sql:query>
 
 <h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
-
-<%-- execute the if block only when the user submits something, resets the form or the query hasn't been made yet --%>
-<c:if test="${!empty param.submit || !empty param.reset || empty test || ( param.showLatestChanged) }">
     
-<sql:query var="test" scope="session"> 
+<sql:query var="test"> 
     select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
     from stream    
     where task=? 
@@ -192,7 +189,6 @@
         <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/>    
     </c:if>   
 </sql:query>    
-</c:if>
 
 <sql:query var="statii">
     select STREAMSTATUS from STREAMSTATUS order by displayorder

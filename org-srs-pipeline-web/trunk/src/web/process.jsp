@@ -109,111 +109,109 @@
             </h3>
         </c:if>
                 
-        <c:if test="${!empty param.submit || !empty param.reset || empty pqTest || param.showLatestChanged}"> 
            
-            <sql:query var="pqTest" scope="session">
-                select * from 
-                ( 
-                with processinstance2 as
-                (
-                select * from processinstance
-                
+        <sql:query var="pqTest">
+            select * from
+            (
+            with processinstance2 as
+            (
+            select * from processinstance
+
+            <c:choose>
+                <c:when test="${!empty processName}">
+                    where process=?
+                    <sql:param value="${param.process}"/>
+                </c:when>
+                <c:when test="${!empty task}">
+                    where process in (
+                    select process from process where task in (select task from task start with task=? connect by parenttask = prior task)
+                    )
+                    <sql:param value="${param.task}"/>
+                </c:when>
+            </c:choose>
+
+            <c:if test="${showLatest}">and islatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
+
+            <c:if test="${!empty status}">
+                <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />
+                <c:set var ="LastReq" value = "${fn:length(paramValues.status)-1}" />
                 <c:choose>
-                    <c:when test="${!empty processName}">
-                        where process=?
-                        <sql:param value="${param.process}"/>
-                    </c:when>
-                    <c:when test="${!empty task}">
-                        where process in (
-                        select process from process where task in (select task from task start with task=? connect by parenttask = prior task)
-                        )
-                        <sql:param value="${param.task}"/>
-                    </c:when>
-                </c:choose>
-                
-                <c:if test="${showLatest}">and islatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
-                
-                <c:if test="${!empty status}"> 
-                    <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />                 
-                    <c:set var ="LastReq" value = "${fn:length(paramValues.status)-1}" />
-                    <c:choose> 
-                        <c:when  test = "${NumStatusReqs > 1}"> 
-                            and PROCESSINGSTATUS in (
-                            <c:forEach  var="i" begin= "0" end="${NumStatusReqs -'1'}" step="1" > 
-                                <c:set var ="testi" value = "${i}" />                           
-                                <c:if test = "${testi== LastReq}">           
-                                    '${paramValues.status[i]}'
-                                    
-                                </c:if>
-                                <c:if test = "${testi != LastReq}">
-                                    '${paramValues.status[i]}',
-                                </c:if>                       
-                            </c:forEach>
-                            )
-                        </c:when>   
-                        <c:otherwise>     
-                            <c:if test= "${status != 'NOTSUCCESS'}">
-                                and PROCESSINGSTATUS=?
-                                <sql:param value="${status}"/>
+                    <c:when  test = "${NumStatusReqs > 1}">
+                        and PROCESSINGSTATUS in (
+                        <c:forEach  var="i" begin= "0" end="${NumStatusReqs -'1'}" step="1" >
+                            <c:set var ="testi" value = "${i}" />
+                            <c:if test = "${testi== LastReq}">
+                                '${paramValues.status[i]}'
+
                             </c:if>
-                            <c:if test= "${status == 'NOTSUCCESS'}">
-                                and PROCESSINGSTATUS != 'SUCCESS'            
-                            </c:if>         
-                        </c:otherwise>
-                    </c:choose>
-                </c:if>               
-                )
-                select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessName, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
-                <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
-                
-                from processinstance2 p
-                join stream s using (stream)
-                join process x using (process)         
-                ) q where (null is null) 
-                
-                <c:if test="${!empty min}">
-                    and StreamId>=? 
-                    <sql:param value="${min}"/>
-                </c:if>
-                <c:if test="${!empty max}">
-                    and StreamId<=?
-                    <sql:param value="${max}"/>
-                </c:if>
-                <c:if test="${!empty taskFilter && !regExp}">
-                    and PII.GetStreamIdPath(stream) like ?
-                    <sql:param value="%${streamIdFilter}%"/>
-                </c:if>
-                
-                <c:if test="${!empty streamIdFilter }">                 
-                    and regexp_like(PII.GetStreamIdPath(stream),?)
-                    <sql:param value="${streamIdFilter}"/>
-                </c:if>
-                <c:if test="${!empty param.pstream}">
-                    and ? in (select ss.stream from stream ss start with ss.stream=q.stream connect by ss.stream = prior ss.parentstream)
-                    <sql:param value="${param.pstream}"/>
-                </c:if>        
-                <c:if test="${minDate > 0 && !userSelectedProcessNdays}"> 
-                    and ${dateCategory}  >=  ?
-                    <jsp:useBean id="startDate" class="java.util.Date" /> 
-                    <jsp:setProperty name="startDate" property="time" value="${minDate}" /> 	  
-                    <sql:dateParam value="${startDate}" type="timestamp"/> 
-                </c:if>
-                <c:if test="${maxDate > 0 && !userSelectedProcessNdays}">
-                    and ${dateCategory} <=  ?
-                    <jsp:useBean id="endDate" class="java.util.Date" />
-                    <jsp:setProperty name="endDate" property="time" value="${maxDate}" />
-                    <sql:dateParam value="${endDate}" type="timestamp"/>
-                </c:if>  
-                <c:if test="${userSelectedProcessNdays && !userSelectedProcessMinDate && !userSelectedProcessMaxDate}">
-                    and ${dateCategory} >= ? and ${dateCategory} <= ?
-                    <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
-                    <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
-                    <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - sessionProcessNdays*24*60*60*1000}" />       
-                    <sql:dateParam value="${minDateUsedDays}" type="timestamp"/> 
-                    <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/> 
-                </c:if>
-            </sql:query>
-        </c:if>
+                            <c:if test = "${testi != LastReq}">
+                                '${paramValues.status[i]}',
+                            </c:if>
+                        </c:forEach>
+                        )
+                    </c:when>
+                    <c:otherwise>
+                        <c:if test= "${status != 'NOTSUCCESS'}">
+                            and PROCESSINGSTATUS=?
+                            <sql:param value="${status}"/>
+                        </c:if>
+                        <c:if test= "${status == 'NOTSUCCESS'}">
+                            and PROCESSINGSTATUS != 'SUCCESS'
+                        </c:if>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+            )
+            select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessName, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
+            <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
+
+            from processinstance2 p
+            join stream s using (stream)
+            join process x using (process)
+            ) q where (null is null)
+
+            <c:if test="${!empty min}">
+                and StreamId>=?
+                <sql:param value="${min}"/>
+            </c:if>
+            <c:if test="${!empty max}">
+                and StreamId<=?
+                <sql:param value="${max}"/>
+            </c:if>
+            <c:if test="${!empty taskFilter && !regExp}">
+                and PII.GetStreamIdPath(stream) like ?
+                <sql:param value="%${streamIdFilter}%"/>
+            </c:if>
+
+            <c:if test="${!empty streamIdFilter }">
+                and regexp_like(PII.GetStreamIdPath(stream),?)
+                <sql:param value="${streamIdFilter}"/>
+            </c:if>
+            <c:if test="${!empty param.pstream}">
+                and ? in (select ss.stream from stream ss start with ss.stream=q.stream connect by ss.stream = prior ss.parentstream)
+                <sql:param value="${param.pstream}"/>
+            </c:if>
+            <c:if test="${minDate > 0 && !userSelectedProcessNdays}">
+                and ${dateCategory}  >=  ?
+                <jsp:useBean id="startDate" class="java.util.Date" />
+                <jsp:setProperty name="startDate" property="time" value="${minDate}" />
+                <sql:dateParam value="${startDate}" type="timestamp"/>
+            </c:if>
+            <c:if test="${maxDate > 0 && !userSelectedProcessNdays}">
+                and ${dateCategory} <=  ?
+                <jsp:useBean id="endDate" class="java.util.Date" />
+                <jsp:setProperty name="endDate" property="time" value="${maxDate}" />
+                <sql:dateParam value="${endDate}" type="timestamp"/>
+            </c:if>
+            <c:if test="${userSelectedProcessNdays && !userSelectedProcessMinDate && !userSelectedProcessMaxDate}">
+                and ${dateCategory} >= ? and ${dateCategory} <= ?
+                <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
+                <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
+                <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - sessionProcessNdays*24*60*60*1000}" />
+                <sql:dateParam value="${minDateUsedDays}" type="timestamp"/>
+                <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/>
+            </c:if>
+        </sql:query>
         
         <c:if test = "${empty NumStatusReqs}">       
             <c:set var="NumStatusReqs" value="0"/> 

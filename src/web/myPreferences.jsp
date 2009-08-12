@@ -79,7 +79,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                     Preferences For Process Period<br>
                 </th>
             </tr> 
-            <utils:preference name="defaultProcessPeriodDays" size="5" title="Default processes in the last N days">
+            <utils:preference name="defaultProcessPeriodHours" size="5" title="Default processes in the last N hours">
             </utils:preference>  
             
             <tr>

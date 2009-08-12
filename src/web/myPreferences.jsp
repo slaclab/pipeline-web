@@ -71,7 +71,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
             <utils:preference name="showStreams" size="5" title="Default Number of Streams">
             </utils:preference>  
        
-            <utils:preference name="defaultStreamPeriodDays" size="5" title="Default Stream period (last N days) ">
+            <utils:preference name="defaultStreamPeriodHours" size="5" title="Default Stream period (last N hours) ">
             </utils:preference>
             
             <tr>

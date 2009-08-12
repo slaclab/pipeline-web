@@ -13,7 +13,7 @@ public class MyPreferences {
     private String defaultOrder = "descending";
     private String defaultSort = "1";
     private int defaultMessagePeriodMinutes = 10;
-    private int defaultStreamPeriodDays = -1;
+    private int defaultStreamPeriodHours = -1;
     private int defaultProcessPeriodHours = -1;
     private int defaultPerfPlotHours = -1;
     private int defaultP2statHours = -1;
@@ -50,8 +50,8 @@ public class MyPreferences {
         this.defaultMessagePeriodMinutes = defaultMessagePeriodMinutes;
     }
     
-   public void setDefaultStreamPeriodDays (int defaultStreamPeriodDays){
-      this.defaultStreamPeriodDays = defaultStreamPeriodDays;
+   public void setDefaultStreamPeriodHours (int defaultStreamPeriodHours){
+      this.defaultStreamPeriodHours = defaultStreamPeriodHours;
    }
    
     public void setDefaultProcessPeriodHours (int defaultProcessPeriodHours){
@@ -97,9 +97,9 @@ public class MyPreferences {
       return defaultMessagePeriodMinutes;
    }
    
-   public int getDefaultStreamPeriodDays()
+   public int getDefaultStreamPeriodHours()
    {
-      return defaultStreamPeriodDays;
+      return defaultStreamPeriodHours;
    } 
    
    public int getDefaultProcessPeriodHours()

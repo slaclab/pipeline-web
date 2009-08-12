@@ -24,13 +24,13 @@
         <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
     </head>
     <body>
-        
-        <%-- must check if this is the first time user comes to this page. check if user preference exist for ndays --%>
+
+        <%-- must check if this is the first time user comes to this page. check if user preference exist for processhours --%>
         <c:if test="${ empty firstProcessVisit}">
-            <c:set var="ndays" value="${preferences.defaultProcessPeriodDays > 0 ? preferences.defaultProcessPeriodDays : ''}"/>
-            <c:if test="${ndays > 0}">
-                <c:set var="sessionProcessNdays" value="${ndays}" scope="session"/>
-                <c:set var="userSelectedProcessNdays" value="true" scope="session"/>
+            <c:set var="processhours" value="${preferences.defaultProcessPeriodHours > 0 ? preferences.defaultProcessPeriodHours : ''}"/>
+            <c:if test="${processhours > 0}">
+                <c:set var="sessionProcessHours" value="${processhours}" scope="session"/>
+                <c:set var="userSelectedProcessHours" value="true" scope="session"/>
                 <c:set var="userSelectedProcessMinDate" value="false"/> 
                 <c:set var="userSelectedProcessMaxDate" value="false"/> 
             </c:if>
@@ -65,51 +65,61 @@
         <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
         <c:set var="minDate" value="${param.minDate}"/> 
         <c:set var="maxDate" value="${param.maxDate}"/>
+        <c:set var="processhours" value="${param.processhours}"/>
         
-        <c:if test="${! empty param.submit}"> 
-            <c:set var="minDate" value="${!empty param.minDate ? param.minDate : -1}"/>
-            <c:set var="maxDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
-            <c:set var="ndays" value="${param.ndays}"/>
+        <c:if test="${! empty param.submit}">
             <c:set var="userSelectedProcessMinDate" value="${!empty minDate && minDate != sessionProcessMinDate && minDate != -1}"/> 
             <c:set var="userSelectedProcessMaxDate" value="${!empty maxDate && maxDate != sessionProcessMaxDate && maxDate != -1}"/>
-            <c:set var="userSelectedProcessNdays" value="${!empty ndays && !userSelectedProcessMinDate && !userSelectedProcessMaxDate}" scope="session"/> 
-            
+            <c:set var="userSelectedProcessHours" value="${!empty processhours && !userSelectedProcessMinDate && !userSelectedProcessMaxDate}" scope="session"/>
+            <c:set var="userSelectedStartNone" value="${empty processhours && minDate == '-1' }"/>
+            <c:set var="userSelectedEndNone" value="${empty processhours && maxDate == '-1' }"/>
+
             <c:choose>
                 <c:when test="${userSelectedProcessMinDate || userSelectedProcessMaxDate}">
-                    <c:set var="sessionProcessNdays" value="" scope="session"/> 
-                    <c:if test="${userSelectedProcessMinDate}"> 
+                    <c:set var="sessionProcessHours" value="" scope="session"/>
+                    <c:if test="${userSelectedProcessMinDate}">
                         <c:set var ="sessionProcessMinDate" value="${minDate}" scope="session"/>
                     </c:if>
-                    <c:if test="${userSelectedProcessMaxDate}"> 
+                    <c:if test="${userSelectedProcessMaxDate}">
                         <c:set var ="sessionProcessMaxDate" value="${maxDate}" scope="session"/>
                     </c:if>
                 </c:when>
-                <c:when test="${userSelectedProcessNdays}">
-                    <c:set var="minDate" value='-1'/> 
-                    <c:set var="maxDate" value='-1'/> 
-                    <c:set var="sessionProcessNdays" value="${ndays}" scope="session"/> 
+                <c:when test="${userSelectedProcessHours}">
+                    <c:set var="minDate" value='-1'/>
+                    <c:set var="maxDate" value='-1'/>
+                    <c:set var="sessionProcessHours" value="${processhours}" scope="session"/>
                     <c:set var ="sessionProcessMinDate" value='-1' scope="session"/>
                     <c:set var ="sessionProcessMaxDate" value='-1' scope="session"/>
                 </c:when>
             </c:choose>
+
+            <c:choose>
+                <c:when test="${userSelectedStartNone || userSelectedEndNone}">
+                    <c:set var="sessionProcessHours" value="" scope="session"/>
+                    <c:if test="${userSelectedStartNone}">
+                        <c:set var ="sessionProcessMinDate" value="" scope="session"/>
+                    </c:if>
+                    <c:if test="${userSelectedEndNone}">
+                        <c:set var ="sessionProcessMaxDate" value="" scope="session"/>
+                    </c:if>
+                </c:when>
+            </c:choose>
         </c:if> 
          
-        <c:if test="${!empty param.reset}">
-                <c:set var="pref_ndays" value="${preferences.defaultProcessPeriodDays > 0 ? preferences.defaultProcessPeriodDays : ''}"/> 
+        <c:if test="${! empty param.reset}">
+                <c:set var="pref_processhours" value="${preferences.defaultProcessPeriodHours > 0 ? preferences.defaultProcessPeriodHours : ''}"/>
                 <c:set var="min" value=""/>
                 <c:set var="max" value=""/>
                 <c:set var="status" value=""/>
                 <c:set var="minDate" value='-1'/>
                 <c:set var="maxDate" value='-1'/>
-                <c:set var="sessionProcessNdays" value="${pref_ndays}" scope="session"/> 
+                <c:set var="sessionProcessHours" value="${pref_processhours}" scope="session"/>
                 <c:set var="sessionProcessMinDate" value='-1' scope="session"/>
                 <c:set var="sessionProcessMaxDate" value='-1' scope="session"/>
-                <c:set var="userSelectedProcessNdays" value="true"/> 
+                <c:set var="userSelectedProcessHours" value="${pref_processhours > 0 ? 'true' : 'false'}"/>
                 <c:set var="showAll" value="checked"/> 
-            </h3>
         </c:if>
                 
-           
         <sql:query var="pqTest">
             select * from
             (
@@ -191,28 +201,30 @@
                 and ? in (select ss.stream from stream ss start with ss.stream=q.stream connect by ss.stream = prior ss.parentstream)
                 <sql:param value="${param.pstream}"/>
             </c:if>
-            <c:if test="${minDate > 0 && !userSelectedProcessNdays}">
+         
+         
+            <c:if test="${sessionProcessMinDate > 0 && !userSelectedProcessHours}">
                 and ${dateCategory}  >=  ?
                 <jsp:useBean id="startDate" class="java.util.Date" />
-                <jsp:setProperty name="startDate" property="time" value="${minDate}" />
+                <jsp:setProperty name="startDate" property="time" value="${sessionProcessMinDate}" />
                 <sql:dateParam value="${startDate}" type="timestamp"/>
             </c:if>
-            <c:if test="${maxDate > 0 && !userSelectedProcessNdays}">
+            <c:if test="${sessionProcessMaxDate > 0 && !userSelectedProcessHours}">
                 and ${dateCategory} <=  ?
                 <jsp:useBean id="endDate" class="java.util.Date" />
-                <jsp:setProperty name="endDate" property="time" value="${maxDate}" />
+                <jsp:setProperty name="endDate" property="time" value="${sessionProcessMaxDate}" />
                 <sql:dateParam value="${endDate}" type="timestamp"/>
             </c:if>
-            <c:if test="${userSelectedProcessNdays && !userSelectedProcessMinDate && !userSelectedProcessMaxDate}">
+            <c:if test="${userSelectedProcessHours}">
                 and ${dateCategory} >= ? and ${dateCategory} <= ?
-                <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
-                <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
-                <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - sessionProcessNdays*24*60*60*1000}" />
-                <sql:dateParam value="${minDateUsedDays}" type="timestamp"/>
-                <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/>
+                <jsp:useBean id="maxDateUsedHours" class="java.util.Date" />
+                <jsp:useBean id="minDateUsedHours" class="java.util.Date" />
+                <jsp:setProperty name="minDateUsedHours" property="time" value="${maxDateUsedHours.time - sessionProcessHours*60*60*1000}" />
+                <sql:dateParam value="${minDateUsedHours}" type="timestamp"/>
+                <sql:dateParam value="${maxDateUsedHours}" type="timestamp"/>
             </c:if>
         </sql:query>
-        
+ 
         <c:if test = "${empty NumStatusReqs}">       
             <c:set var="NumStatusReqs" value="0"/> 
         </c:if>
@@ -252,12 +264,12 @@
                             <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
                         </select> 
                     </td>
-                    <td><utils:dateTimePicker value="${minDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                    <td><utils:dateTimePicker value="${sessionProcessMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                     </td>
-                    <td><utils:dateTimePicker value="${maxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                    <td><utils:dateTimePicker value="${sessionProcessMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                     </td>  
                     <td>
-                        or last N days <input name="ndays" type="text" value="${sessionProcessNdays}" size="5">
+                        or last N hours <input name="processhours" type="text" value="${sessionProcessHours}" size="5">
                     </td>
                     <td>
                       <!--  <input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"> -->

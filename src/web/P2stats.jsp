@@ -14,33 +14,40 @@
         <title>Performance Plots</title>
     </head>
     <body>
-        <c:set var="debug" value="0"/> 
         
+        <jsp:useBean id="endTimeBean" class="java.util.Date" />
+        <jsp:useBean id="startTimeBean" class="java.util.Date" />
+
+        <c:set var="debug" value="0"/>
+        <c:set var="isSubmit" value="${param.filter}"/>
+        <c:set var="isDefault" value="${param.default}"/>
+
         <c:if test="${empty firstTimeP2stats}">
-            <c:set var="sessionP2days" value="${preferences.defaultP2statDays > 0 ? preferences.defaultP2statDays : '7'}" scope="session"/>
+            <c:set var="P2hours" value="${preferences.defaultP2statHours > 0 ? preferences.defaultP2statHours : ''}"/>
+            <c:set var="sessionP2Hours" value="${P2hours}" scope="session"/>
             <c:set var="sessionP2StartTime" value="" scope="session"/>
             <c:set var="sessionP2EndTime" value="" scope="session"/>
-            <c:set var="ndays" value="${empty ndays ? sessionP2days : ndays}"/> 
             <c:set var="firstTimeP2stats" value="beenHereDoneThat2" scope="session"/>
-            <c:set var="userSelectedNdays" value="true"/>
+            <c:set var="userSelectedP2hours" value="${P2hours > 0 ? 'true' : 'false'}"/>
             <c:set var="userSelectedStartTime" value="false"/>
             <c:set var="userSelectedEndTime" value="false"/>
         </c:if>
         
-        
-        <c:if test="${!empty param.filter}">  
-            <c:set var="ndays" value="${param.ndays}"/> 
+        <c:if test="${isSubmit == 'Submit'}">
+            <c:set var="P2hours" value="${param.p2hours}"/>
             <c:set var="startTime" value="${param.startTime}" />
-            <c:set var="endTime"   value="${param.endTime}" /> 
+            <c:set var="endTime"   value="${param.endTime}" />
             <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionP2StartTime}" /> 
             <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionP2EndTime}" /> 
-            <c:set var="userSelectedNdays" value="${!empty ndays && !userSelectedStartTime && !userSelectedEndTime}"/> 
-            <c:set var="pref_ndays" value="${preferences.defaultP2statDays}"/>
-            <c:set var="userSelectedTask" value="${param.task}" scope="session" /> 
-            
+            <c:set var="userSelectedP2hours" value="${!empty P2hours && !userSelectedStartTime && !userSelectedEndTime}"/>
+            <c:set var="userSelectedStartNone" value="${startTime == '-1' && empty P2hours}"/>
+            <c:set var="userSelectedEndNone" value="${endTime == '-1' && empty P2hours}"/>
+            <c:set var="pref_nhours" value="${preferences.defaultP2statHours}"/>
+      <%-- <c:set var="userSelectedTask" value="${param.task}" scope="session" /> --%>
+
             <c:choose>
                 <c:when test="${userSelectedStartTime || userSelectedEndTime}">
-                    <c:set var="sessionP2days" value="" scope="session"/> 
+                    <c:set var="sessionP2Hours" value="" scope="session"/>
                     <c:if test="${userSelectedStartTime}"> 
                         <c:set var ="sessionP2StartTime" value="${startTime}" scope="session"/>
                     </c:if>
@@ -48,15 +55,20 @@
                         <c:set var ="sessionP2EndTime" value="${endTime}" scope="session"/>
                     </c:if>
                 </c:when>
-                <c:when test="${userSelectedNdays}">
-                    <c:set var="sessionP2days" value="${ndays}" scope="session"/> 
+                <c:when test="${userSelectedP2hours}">
+                    <c:set var="sessionP2Hours" value="${P2hours}" scope="session"/>
                     <c:set var="sessionP2StartTime" value="" scope="session"/> 
                     <c:set var="sessionP2EndTime" value="" scope="session"/> 
                 </c:when>
-                <c:when test="${!userSelectedStartTime && !userSelectedEndTime && !userSelectedNdays}">
-                    <c:set var ="sessionP2StartTime" value="${startTime}" scope="session"/>
-                    <c:set var ="sessionP2EndTime" value="${endTime}" scope="session"/>
-                    <c:set var="sessionP2days" value="${ndays}" scope="session"/> 
+            </c:choose>
+            <c:choose>
+                <c:when test="${userSelectedStartNone}">
+                    <c:set var ="sessionP2StartTime" value="-1" scope="session" />
+                    <c:set var="sessionP2Hours" value="" scope="session"/>
+                </c:when>
+                <c:when test="${userSelectedEndNone}">
+                    <c:set var ="sessionP2EndTime" value="-1" scope="session"/>
+                    <c:set var="sessionP2Hours" value="" scope="session"/>
                 </c:when>
             </c:choose>
        </c:if>
@@ -65,59 +77,43 @@
            <h3> 
            userSelectedStartTime=${userSelectedStartTime} startTime=${startTime} sessionP2StartTime=${sessionP2StartTime}<br>
            userSelectedEndTime=${userSelectedEndTime} endTime=${endTime} sessionP2EndTime=${sessionP2EndTime}<br>
-           userSelectedNdays=${userSelectedNdays} sessionP2days=${sessionP2days}<br>
+           userSelectedP2hours=${userSelectedP2hours} sessionP2Hours=${sessionP2Hours} <br>
            </h3>
        </c:if>
 
-        <c:if test="${empty param.filter && !userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}">
-            <c:choose>
-                <c:when test="${!empty sessionP2StartTime || !empty sessionP2EndTime}">
-                    <c:if test="${sessionP2StartTime > 0}">
-                       <c:set var="userSelectedStartTime" value="true"/>  
-                    </c:if>
-                    <c:if test="${sessionP2EndTime > 0}">
-                       <c:set var="userSelectedEndTime" value="true"/>  
-                    </c:if>
-                </c:when>
-                <c:when test="${!empty sessionP2days && startTime < 0 && endTime < 0}">
-                    <c:set var="userSelectedNdays" value="true"/>
-                    <c:set var="ndays" value="${sessionP2days}"/> 
-                </c:when>
-            </c:choose>
-            
-        </c:if>
-        
-        <c:if test="${!empty param.default}">
-            <c:set var="pref_ndays" value="${preferences.defaultP2statDays > 0 ? preferences.defaultP2statDays : '7'}"/>
-            <c:set var="ndays" value="${pref_ndays}"/> 
-            <c:set var="startTime" value="-1"/>
-            <c:set var="endTime" value="-1"/> 
-            <c:set var ="sessionP2StartTime" value="-1"/>
-            <c:set var ="sessionP2EndTime" value="-1"/> 
-            <c:set var="sessionP2days" value="${pref_ndays}"/>
-            <c:set var="userSelectedNdays" value="true"/>
-            <c:set var="userSelectedStartTime" value="false"/>
-            <c:set var="userSelectedEndTime" value="false"/>
-        </c:if>
-        
-        <c:if test="${debug == 1}">
-            <h3>
-                userselectedNdays: ${userSelectedNdays}<br>
-                userselectedStartTime: ${userSelectedStartTime}<br>
-                userselectedEndTime: ${userSelectedEndTime}<p>
-                sessionP2StartTime: ${sessionP2StartTime}<br>
-                sessionP2EndTime: ${sessionP2EndTime}<br>
-                sessionP2days: ${sessionP2days}<br>
-                startTime: ${startTime}<br>
-                endTime: ${endTime}<br>
-                ndays: ${ndays}<p>
-                param.startTime: ${param.startTime}<br>
-                param.endTime: ${param.endTime}<br>
-                param.filter: ${param.filter}<br>
-                param.default: ${param.default}<br>
-                param.task: ${param.task}<br>
-            </h3>
-        </c:if>
+       <c:if test="${isDefault == 'Default'}">
+           <c:set var="pref_nhours" value="${preferences.defaultP2statHours > 0 ? preferences.defaultP2statHours : ''}"/>
+           <c:set var="P2hours" value="${pref_nhours}"/>
+           <c:set var="startTime" value="-1"/>
+           <c:set var="endTime" value="-1"/>
+           <c:set var ="sessionP2StartTime" value="-1" scope="session"/>
+           <c:set var ="sessionP2EndTime" value="-1" scope="session" />
+           <c:set var="sessionP2Hours" value="${pref_nhours}" scope="session" />
+           <c:set var="userSelectedP2hours" value="${P2hours > 0 ? 'true' : 'false'}"/>
+           <c:set var="userSelectedStartTime" value="false"/>
+           <c:set var="userSelectedEndTime" value="false"/>
+       </c:if>
+
+       <c:if test="${debug == 1}">
+           <h3>
+               userSelectedP2hours: ${userSelectedP2hours}<br>
+               userselectedStartTime: ${userSelectedStartTime}<br>
+               userselectedEndTime: ${userSelectedEndTime}<p>
+               sessionP2StartTime: ${sessionP2StartTime}<br>
+               sessionP2EndTime: ${sessionP2EndTime}<br>
+               sessionP2Hours: ${sessionP2Hours}<br>
+               startTime: ${startTime}<br>
+               endTime: ${endTime}<br>
+               P2hours: ${P2hours}<p>
+               param.startTime: ${param.startTime}<br>
+               param.endTime: ${param.endTime}<br>
+               param.filter: ${param.filter}<br>
+               param.default: ${param.default}<br>
+               param.task: ${param.task}<br>
+               isDefault: ${isDefault}<br>
+               isSubmit: ${isSubmit}<br>
+           </h3>
+       </c:if>
         
         <form name="DateForm">        
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
@@ -125,24 +121,31 @@
                     <td colspan="5"><strong>Select Timespan</strong>:                 
                 </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2StartTime}"  timezone="PST8PDT"/></td>
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2EndTime}" timezone="PST8PDT"/></td>
-                    <td>or last N days <input name="ndays" type="text" value="${sessionP2days}" size="5"></td>
+                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2StartTime}"  timezone="PST8PDT"/></td>
+                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2EndTime}" timezone="PST8PDT"/></td>
+                    <td>or last N hours <input name="p2hours" type="text" value="${sessionP2Hours}" size="5"></td>
                 </tr> 
                 <input type="hidden" name="task" value="${task}"/>
                 <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter">
                 <input type="submit" value="Default" name="default"></td>
                 </tr> 
-        </table></form>   
-        
-        
-        <jsp:useBean id="endTimeBean" class="java.util.Date" />
-        <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" /> 	  
+        </table></form>  
+
+        <%-- calculate start and end ranges for all following queries when hours is NOT selected --%>
+        <%-- if hours selected, startRange and endRange are calculated within the 'if' block for that query --%>
+        <c:if test="${!userSelectedP2hours}">
+            <jsp:setProperty name="endTimeBean" property="time" value="${sessionP2EndTime}" />
+            <c:set var="endRange" value="${endTimeBean}"/>
+            <jsp:setProperty name="startTimeBean" property="time" value="${sessionP2StartTime}" />
+            <c:set var="startRange" value="${startTimeBean}" />
+        </c:if>
+
+        <%--
+        <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" />
         <c:set var="endRange" value="${endTimeBean}"/>
-        <jsp:useBean id="startTimeBean" class="java.util.Date" /> 
-        <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" /> 	  
+        <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" />
         <c:set var="startRange" value="${startTimeBean}" />                
-        
+        --%>
         
         <%
         String[] plotColors = new String[] {"red","blue","green","black","orange","purple","brown","gray","pink"};
@@ -166,32 +169,34 @@
             <c:set var="plotheight" value="600"/>
             <c:set var="plotwidth" value="1000"/>
         </c:if>
-        
+
         <c:set var="lineSize" value="2"/>
         <sql:query var="datacheck">
             select createdate,startdate,enddate
-            from stream where task=? 
-            and streamstatus='SUCCESS' 
+            from stream where task=?
+            and streamstatus='SUCCESS'
             and PII.GetStreamIsLatestPath(Stream)=1
             <sql:param value="${task}"/>
-            <c:if test="${ startTime > 0 && !userSelectedNdays}">
+
+            <c:if test="${ sessionP2StartTime > 0 && !userSelectedP2hours }">
                 and startdate >= ?
                 <sql:dateParam value="${startRange}"/>
             </c:if>
-            <c:if test="${ endTime > 0 && !userSelectedNdays}">
+            <c:if test="${ sessionP2EndTime > 0 && !userSelectedP2hours}">
                 and enddate <= ?
                 <sql:dateParam value="${endRange}"/>
             </c:if>
-            <c:if test="${userSelectedNdays && (!userSelectedStartTime || !userSelectedEndTime)}"> 
+            <c:if test="${userSelectedP2hours}">
                 and STARTDATE >= ? and ENDDATE <= ?
-                <jsp:useBean id="maxUsedDays" class="java.util.Date" />
-                <jsp:useBean id="minUsedDays" class="java.util.Date" />
-                <jsp:setProperty name="minUsedDays" property="time" value="${maxUsedDays.time - ndays*24*60*60*1000}" />       
-                <sql:dateParam value="${minUsedDays}" type="timestamp"/> 
-                <sql:dateParam value="${maxUsedDays}" type="timestamp"/> 
-            </c:if>  
+                <c:set var="endRange" value="${endTimeBean}"/>
+                <jsp:setProperty name="startTimeBean" property="time" value="${endTimeBean.time - sessionP2Hours*60*60*1000}" />
+                <c:set var="startRange" value="${startTimeBean}"/> 
+                <sql:dateParam value="${startRange}" type="timestamp"/>
+                <sql:dateParam value="${endRange}" type="timestamp"/>
+                <c:set var="foo1" value="startTimeBean=${startTimeBean} and endTimeBean=${endTimeBean}" />
+            </c:if>
         </sql:query>
-        
+
         <sql:query var="processes">
             select p.PROCESS,p.PROCESSNAME,p.PROCESSTYPE 
             from PROCESS p   
@@ -214,24 +219,46 @@
                         from stream where task=? 
                         <sql:param value="${task}"/>
                         and streamstatus='SUCCESS' 
-                        <c:if test="${ startTime > 0 && !userSelectedNdays}">
+                       
+                       <c:if test="${ sessionP2StartTime > 0 && !userSelectedP2hours}">
                             and startdate >= ?
+                            <jsp:setProperty name="startTimeBean" property="time" value="${sessionP2StartTime}" />
+                            <c:set var="startRange" value="${startTimeBean}"/> 
                             <sql:dateParam value="${startRange}"/>
                         </c:if>
-                        <c:if test="${ endTime > 0 && !userSelectedNdays}">
+                        <c:if test="${ sessionP2EndTime > 0 && !userSelectedP2hours}">
                             and enddate <= ?
+                            <jsp:setProperty name="endTimeBean" property="time" value="${sessionP2EndTime}" />
+                            <c:set var="endRange" value="${endTimeBean}"/>
                             <sql:dateParam value="${endRange}"/>
                         </c:if>
-                        <c:if test="${userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}">
+                        <c:if test="${userSelectedP2hours}">
                             and STARTDATE >= ? and ENDDATE <= ?
+                            <c:set var="endRange" value="${endTimeBean}"/>
+                            <jsp:setProperty name="startTimeBean" property="time" value="${endTimeBean.time - sessionP2Hours*60*60*1000}" />
+                            <c:set var="startRange" value="${startTimeBean}"/> 
+                            <sql:dateParam value="${startRange}" type="timestamp"/>
+                            <sql:dateParam value="${endRange}" type="timestamp"/>
+
+                            <%--
+                            <c:set var="minDateUsedDays" value="${startTimeBean}"/>
+                            <c:set var="maxDateUsedDays" value="${endTimeBean}"/>
+                            <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - P2hours*24*60*60*1000}" />
+                            <sql:dateParam value="${minDateUsedDays}" type="timestamp"/>
+                            <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/>
+
+
                             <jsp:useBean id="maxDateUsedDays" class="java.util.Date" />
                             <jsp:useBean id="minDateUsedDays" class="java.util.Date" />
-                            <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - ndays*24*60*60*1000}" />       
-                            <sql:dateParam value="${minDateUsedDays}" type="timestamp"/> 
-                            <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/> 
+                            <jsp:setProperty name="minDateUsedDays" property="time" value="${maxDateUsedDays.time - nhours*24*60*60*1000}" />
+                            <sql:dateParam value="${minDateUsedDays}" type="timestamp"/>
+                            <sql:dateParam value="${maxDateUsedDays}" type="timestamp"/>
+                            --%>
                         </c:if>
+                        
                         and  PII.GetStreamIsLatestPath(Stream)=1                                
-                    </sql:query>                                         
+                    </sql:query>
+                    
                     <aida:tuple var="tuple" query="${data}" />    
                     <aida:tupleProjection var="elapsed" tuple="${tuple}" xprojection="(ENDDATE-STARTDATE)/60"/>
                     <aida:tupleProjection var="wait" tuple="${tuple}" xprojection="(STARTDATE-CREATEDATE)/60"/>
@@ -375,25 +402,26 @@
                             where PI.process = ?
                             <sql:param value="${row.PROCESS}"/>
                             and PI.processingstatus = 'SUCCESS'
-                            <c:if test="${ startTime > 0 && !userSelectedNdays}">
+                            <c:if test="${ sessionP2StartTime > 0 && !userSelectedP2hours}">
                                 and startdate >= ?
                                 <sql:dateParam value="${startRange}"/>
                             </c:if>
-                            <c:if test="${ endTime > 0 && !userSelectedNdays}">
+                            <c:if test="${ sessionP2EndTime > 0 && !userSelectedP2hours}">
                                 and enddate <= ?
                                 <sql:dateParam value="${endRange}"/>
-                            </c:if>   
-                            <c:if test="${userSelectedNdays && !userSelectedStartTime && !userSelectedEndTime}"> 
+                            </c:if>
+                            <c:if test="${userSelectedP2hours}">
                                 and STARTDATE >= ? and ENDDATE <= ?
-                                <jsp:useBean id="begDay" class="java.util.Date" />
-                                <jsp:useBean id="endDay" class="java.util.Date" />
-                                <jsp:setProperty name="begDay" property="time" value="${endDay.time - ndays*24*60*60*1000}" />       
-                                <sql:dateParam value="${begDay}" type="timestamp"/> 
-                                <sql:dateParam value="${endDay}" type="timestamp"/> 
-                            </c:if>   
+                                <c:set var="endRange" value="${endTimeBean}"/>
+                                <jsp:setProperty name="startTimeBean" property="time" value="${endTimeBean.time - sessionP2Hours*60*60*1000}" />
+                                <c:set var="startRange" value="${startTimeBean}"/>
+                                <sql:dateParam value="${startRange}" type="timestamp"/>
+                                <sql:dateParam value="${endRange}" type="timestamp"/>
+                                <c:set var="foo3" value="and startdate >= ${startRange} and enddate <= ${endRange}" />
+                            </c:if>
                             
                         </sql:query>             
-                        
+
                         <aida:tuple var="tuple" query="${data}" />    
                         
                         <%-- Don't plot this section if an single NODE plot is to be displayed
@@ -635,8 +663,6 @@
                 </c:forEach>            
             </tab:tabs> 
         </c:if>        
-        
-        
         
     </body>
 </html>

@@ -23,12 +23,6 @@
 <c:set var="startTime" value="${param.startTime}"/>
 <c:set var="endTime" value="${param.endTime}"/>
 <c:set var="dphours" value="${param.dphours}"/>
-<c:set var="selectDPstartTime" value="${!empty startTime && startTime != -1 && startTime != sessionDPstartTime}" scope="session"/>
-<c:set var="selectDPendTime" value="${!empty endTime && endTime != -1 && endTime != sessionDPendTime}" scope="session"/>
-<c:set var="selectDPhours" value="${!empty dphours && dphours != -1 && !selectDPstartTime && !selectDPendTime}"/>
-<c:set var="selectDPstartNone" value="${empty dphours && param.startTime == '-1'}"/>
-<c:set var="selectDPendNone" value="${empty dphours && param.endTime == '-1'}" />
-
 
 <c:if test="${debug == 1}">
     <c:forEach var="p" items="${param}">
@@ -38,8 +32,8 @@
 
 <%-- if no preferences set then no time constraint should be set on the query --%>
 <c:if test="${empty firstTimeDPS}">
-    <c:set var="dphours" value="${preferences.defaultDPhours > 0 ? preferences.defaultDPhours : ''}"/>
-    <c:set var="sessionDPhours" value="${dphours}" scope="session"/>
+    <c:set var="dphours" value="${preferences.defaultDPhours}"/>
+    <c:set var="sessionDPhours" value="${dphours > 0 ? dphours : ''}" scope="session"/>
     <c:set var="firstTimeDPS" value="notEmpty" scope="session"/>
     <c:set var="selectDPhours" value="${dphours > 0 ? 'true' : 'false'}"/>
     <c:set var="sessionDPstartTime" value="-1" scope="session"/>
@@ -57,6 +51,13 @@
 </c:if>
 
 <c:if test="${param.filter == 'Filter'}">
+
+    <c:set var="selectDPstartTime" value="${!empty startTime && startTime != -1 && startTime != sessionDPstartTime}" scope="session"/>
+    <c:set var="selectDPendTime" value="${!empty endTime && endTime != -1 && endTime != sessionDPendTime}" scope="session"/>
+    <c:set var="selectDPhours" value="${!empty dphours && dphours != -1 && !selectDPstartTime && !selectDPendTime}"/>
+    <c:set var="selectDPstartNone" value="${empty dphours && param.startTime == '-1'}"/>
+    <c:set var="selectDPendNone" value="${empty dphours && param.endTime == '-1'}" />
+
     <c:choose>
         <c:when test="${selectDPstartTime || selectDPendTime}">
             <c:set var="sessionDPhours" value="" scope="session"/>
@@ -88,8 +89,8 @@
 <form name="DateForm">        
     <table class="filtertable">
         <tr>
-            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${startTime}"  timezone="PST8PDT"/></td>
-            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${endTime}" timezone="PST8PDT"/> </td>
+            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPstartTime}"  timezone="PST8PDT"/></td>
+            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPendTime}" timezone="PST8PDT"/> </td>
             <td><strong>Hours</strong><br>
                 <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
             </td>

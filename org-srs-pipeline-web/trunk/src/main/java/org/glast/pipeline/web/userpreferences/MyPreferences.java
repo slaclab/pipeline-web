@@ -15,7 +15,7 @@ public class MyPreferences {
     private int defaultMessagePeriodMinutes = 10;
     private int defaultStreamPeriodHours = -1;
     private int defaultProcessPeriodHours = -1;
-    private int defaultPerfPlotHours = -1;
+    private int defaultPerfPlotHours = 7;
     private int defaultP2statHours = -1;
     private int defaultDPhours = -1;
     private int showStreams = 20;

@@ -114,6 +114,18 @@
     <c:set var="logProcessInstance" value=""/>
 </c:if>
 
+<c:if test="${param.showAllMessages}">
+    <c:set var="ignoreTime" value="true"/>
+    <c:set var="sessionLogMinutes" value="" scope="session"/>
+    <c:set var="sessionLogMinimum" value="" scope="session"/>
+    <c:set var="sessionLogMaximum" value="" scope="session"/>
+    <c:set var="userSelectLogMinutes" value="false" scope="session"/>
+    <c:set var="userSelectLogMinimum" value="false" scope="session"/>
+    <c:set var="userSelectLogMaximum" value="false" scope="session"/>
+    <c:set var="userSelectLogSame" value="false" scope="session"/>
+</c:if>
+
+
 <form name="DateForm">
 <table class="filtertable">
 <tr>
@@ -137,8 +149,8 @@
     </td>
 </tr>
 <tr>
-    <td><utils:dateTimePicker value="${sessionLogMinimum}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
-    <td><utils:dateTimePicker value="${sessionLogMaximum}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" shownone="false" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${sessionLogMinimum}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" shownone="true" showtime="true" timezone="PST"/></td>
+    <td><utils:dateTimePicker value="${sessionLogMaximum}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" shownone="true" showtime="true" timezone="PST"/></td>
     <td>last <input type="text" value="${sessionLogMinutes}" size="4" name="nminutes"/> minutes</td>
     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
     </td>
@@ -188,17 +200,17 @@
             and log_level>=?
             <gsql:param value="${severity}"/>
         </c:if>
-        <c:if test="${userSelectLogMinimum || (userSelectLogSame && minimumLong != -1) }">
+        <c:if test="${! ignoreTime && (userSelectLogMinimum || (userSelectLogSame && minimumLong != -1)) }">
             and timeentered>=?
             <jsp:setProperty name="logStartDate" property="time" value="${minimumLong}"/>
             <gsql:dateParam value="${logStartDate}" type="timestamp"/>
         </c:if>
-        <c:if test="${userSelectLogMaximum || (userSelectLogSame && maximumLong != -1)}">
+        <c:if test="${! ignoreTime && (userSelectLogMaximum || (userSelectLogSame && maximumLong != -1))}">
             and timeentered<=?
             <jsp:setProperty name="logEndDate" property="time" value="${maximumLong}" />
             <gsql:dateParam value="${logEndDate}" type="timestamp"/>
         </c:if>
-        <c:if test="${userSelectLogMinutes || (userSelectLogSame && minimumLong == -1 && maximumLong == -1)}">
+        <c:if test="${! ignoreTime && (userSelectLogMinutes || (userSelectLogSame && minimumLong == -1 && maximumLong == -1 && sessionLogMinutes > 0))}">
             and timeentered >= ? and timeentered <= ?
             <jsp:setProperty name="logStartDate" property="time" value="${logEndDate.time-sessionLogMinutes*60*1000}" />
             <gsql:dateParam value="${logStartDate}" type="timestamp"/>

@@ -237,8 +237,8 @@
                     <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
                 </c:forEach>                         
                 <tr><th>Date</th>
-                <td>Start</td><td><utils:dateTimePicker value="${sessionStreamMinimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-                <td>End</td><td><utils:dateTimePicker value="${sessionStreamMaximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                <td>Start</td><td><utils:dateTimePicker value="${sessionStreamMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                <td>End</td><td><utils:dateTimePicker value="${sessionStreamMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
                 <td>or last N hours <input name="streamHours" type="text" value="${sessionStreamHours}" size="5"></td>
             </td>
             <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">

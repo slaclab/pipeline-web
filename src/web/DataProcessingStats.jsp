@@ -92,7 +92,7 @@
             <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPstartTime}"  timezone="PST8PDT"/></td>
             <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPendTime}" timezone="PST8PDT"/> </td>
             <td><strong>Hours</strong><br>
-                <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
+            <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
             </td>
         </tr>
         <tr>

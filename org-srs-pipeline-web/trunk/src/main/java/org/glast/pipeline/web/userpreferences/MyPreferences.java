@@ -109,7 +109,7 @@ public class MyPreferences {
    
    public int getDefaultPerfPlotHours()
    {
-      if ( defaultPerfPlotHours == -1 ) { return 7; }
+      if ( defaultPerfPlotHours < 1 ) { return 7; }
       else {
            return defaultPerfPlotHours;
       }

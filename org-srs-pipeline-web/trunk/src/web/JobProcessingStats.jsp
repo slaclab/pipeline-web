@@ -31,12 +31,12 @@
             <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
         </c:catch>
 
-
          <c:if test="${empty firstTimeJPStats}">
-             <%-- if no user preference, then default hours comes from myPreferences.java  --%>
+             <%-- if no user preference then default hours comes from myPreferences.java
+              if user preference is -1 then set it to myPreferences.java default of 7 --%>
             <c:set var="hours" value="${preferences.defaultPerfPlotHours}"/>
             <c:set var="sessionHours" value="${hours}" scope="session"/>
-            <c:set var="sessionUseHours" value="true" scope="session"/>
+            <c:set var="sessionUseHours" value="true" scope="session"/> 
             <c:set var="sessionStartTime" value="" scope="session"/>
             <c:set var="sessionEndTime" value="" scope="session"/>
             <c:set var="userSelectedHours" value="true"/>
@@ -45,7 +45,7 @@
             <c:set var="firstTimeJPStats" value="beenHereDoneThat2" scope="session"/>
         </c:if>
 
-        <c:if test="${isSubmit == 'Submit'}">
+      <c:if test="${isSubmit == 'Submit'}"> 
             <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" />
             <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" />
             <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
@@ -74,7 +74,7 @@
                     <c:if test="${userSelectedEndTime}">
                         <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
                         <c:if test="${startTime == '-1'}">
-                            <c:set var ="sessionStartTime" value="${startTimeBean.time}" scope="session"/>
+                            <c:set var ="sessionStartTime" value="${endTime}" scope="session"/>
                         </c:if>
                     </c:if>
                     <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
@@ -89,13 +89,13 @@
                     <%--  <c:redirect url="JobProcessingStats.jsp"/> --%>
                 </c:when>
             </c:choose>
-        </c:if>
+        </c:if> 
 
-        <br>	
+         
         <c:if test="${isDefault == 'Default'}">
             <c:set var ="sessionUseHours" value="true" scope="session"/>
             <c:set var="preferenceHours" value="${preferences.defaultPerfPlotHours}"/>
-            <c:set var ="hours" value="${preferenceHours}"/>
+            <c:set var ="hours" value="${preferenceHours}"/> 
             <c:set var="sessionHours" value="${preferenceHours}" scope="session"/>
             <c:set var ="sessionStartTime" value="None" scope="session"/>
             <c:set var ="sessionEndTime" value="None" scope="session"/>

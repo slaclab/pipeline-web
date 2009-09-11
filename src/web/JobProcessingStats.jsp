@@ -31,6 +31,8 @@
             <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
         </c:catch>
 
+       <c:set var="sessionTaskName" value="${taskName}"/>
+ 
          <c:if test="${empty firstTimeJPStats}">
              <%-- if no user preference then default hours comes from myPreferences.java
               if user preference is -1 then set it to myPreferences.java default of 7 --%>

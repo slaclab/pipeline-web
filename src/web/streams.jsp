@@ -103,8 +103,6 @@
         streamHours: ${streamHours}<br>
         min: ${min}<br>
         max: ${max}<br>
-        showLatest: ${param.showLatest}<br>
-        showLatestChanged: ${param.showLatestChanged}<br>
         param.submit: ${param.submit}<br>
     </h3>
 </c:if>
@@ -209,7 +207,7 @@
     </c:if>   
 </sql:query>    
 
-<%-- debugging
+<%-- debugging 
 <h3>
     Foo1: ${foo1}<br>
     Foo2: ${foo2}<br>

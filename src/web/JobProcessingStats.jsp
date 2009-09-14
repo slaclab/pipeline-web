@@ -31,7 +31,7 @@
             <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
         </c:catch>
 
-       <c:set var="sessionTaskName" value="${taskName}"/>
+       <c:set var="sessionTaskName" value="${taskName}" />
  
          <c:if test="${empty firstTimeJPStats}">
              <%-- if no user preference then default hours comes from myPreferences.java
@@ -47,7 +47,7 @@
             <c:set var="firstTimeJPStats" value="beenHereDoneThat2" scope="session"/>
         </c:if>
 
-      <c:if test="${isSubmit == 'Submit'}"> 
+   <%--   <c:if test="${isSubmit == 'Submit'}"> --%>
             <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" />
             <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" />
             <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
@@ -91,7 +91,7 @@
                     <%--  <c:redirect url="JobProcessingStats.jsp"/> --%>
                 </c:when>
             </c:choose>
-        </c:if> 
+     <%--   </c:if>  --%>
 
          
         <c:if test="${isDefault == 'Default'}">

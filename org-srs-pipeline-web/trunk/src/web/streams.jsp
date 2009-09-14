@@ -228,7 +228,7 @@
                 <c:forEach var="row" items="${statii.rows}">
                     <c:set var= "found" value = "0" /> 
                     <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
-                        <c:if test = "${seletedStatus ==  row.STREAMSTATUS}">
+                        <c:if test = "${seletedStatus ==  row.STREAMSTATUS && empty param.reset}">
                             <c:set var= "found" value = "1" />    
                         </c:if>                                                    
                     </c:forEach>   

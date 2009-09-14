@@ -230,7 +230,7 @@
         </c:if>
       
         <c:set var="isBatch" value="${pqTest.rows[0].processType=='BATCH'}"/> 
-        
+
         <form name="DateForm">
             <table class="filtertable" >
                 <tr><th>Top Level Stream: </th><td>Min <input type="text" name="min" value="${min}"></td>
@@ -241,8 +241,8 @@
                             <c:forEach var="row" items="${proc_stats.rows}">
                                 <c:set var= "found" value = "0" /> 
                                 <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
-                                    <c:if test = "${seletedStatus ==  row.PROCESSINGSTATUS}">
-                                        <c:set var= "found" value = "1" />    
+                                    <c:if test = "${seletedStatus ==  row.PROCESSINGSTATUS && empty param.reset}">
+                                        <c:set var= "found" value = "1" />
                                     </c:if>                                                    
                                 </c:forEach>   
                                 <option value="${row.PROCESSINGSTATUS}" ${found == "1" ? "selected" : "" }>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>                                                                

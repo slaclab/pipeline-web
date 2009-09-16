@@ -43,7 +43,7 @@
 <c:set var="streamHours" value="${param.streamHours}"/>
 
 <%-- only execute this "if block" when user clicked submit --%>
-<c:if test="${!empty param.submit}"> 
+ <c:if test="${!empty param.submit}"> 
     <c:set var="userSelectedStreamMinimum" value="${!empty minimumDate && minimumDate != '-1' && minimumDate != sessionStreamMinDate }" scope="session" />
     <c:set var="userSelectedStreamMaximum" value="${!empty maximumDate && maximumDate != '-1' && maximumDate != sessionStreamMaxDate }" scope="session" />
     <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
@@ -86,7 +86,7 @@
             </c:if>
         </c:when>
     </c:choose>
-</c:if>
+ </c:if> 
 
 <c:if test="${debug == 1}">
     <h3>
@@ -182,14 +182,14 @@
         <sql:param value="${max}"/>
     </c:if>
     
-    <c:if test="${minimumDate > 0 && !userSelectedStreamHours}">
+    <c:if test="${sessionStreamMinDate > 0 && !userSelectedStreamHours}">
         and STARTDATE>=?
         <jsp:useBean id="minDateUsed" class="java.util.Date" />
         <jsp:setProperty name="minDateUsed" property="time" value="${sessionStreamMinDate}" />
         <sql:dateParam value="${minDateUsed}" type="timestamp"/>
         <c:set var="foo1" value="and startdate >= ${minDateUsed}"/>
     </c:if>
-    <c:if test="${maximumDate > 0 && !userSelectedStreamHours}">
+    <c:if test="${sessionStreamMaxDate > 0 && !userSelectedStreamHours}">
         and ENDDATE<=?
         <jsp:useBean id="maxDateUsed" class="java.util.Date" />
         <jsp:setProperty name="maxDateUsed" property="time" value="${sessionStreamMaxDate}" />

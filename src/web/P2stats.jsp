@@ -18,6 +18,7 @@
         <jsp:useBean id="endTimeBean" class="java.util.Date" />
         <jsp:useBean id="startTimeBean" class="java.util.Date" />
 
+
         <c:set var="debug" value="0"/>
         <c:set var="isSubmit" value="${param.filter}"/>
         <c:set var="isDefault" value="${param.default}"/>
@@ -211,7 +212,7 @@
         
         <c:if test="${fn:length(datacheck.rows) > 0}"> 
             <tab:tabs name="ProcessTabs" param="process">                
-                <tab:tab name="Summary" href="P2stats.jsp?task=${task}&startTime=${startTime}&endTime=${endTime}" value="0">                    
+                <tab:tab name="Summary" href="P2stats.jsp?task=${task}&startTime=${startTime}&endTime=${endTime}&p2hours=${P2hours}" value="0">
                     <sql:query var="data">
                         select createdate,startdate,enddate, 
                         (TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as elapsedTime
@@ -390,7 +391,7 @@
                 </tab:tab>
                 
                 <c:forEach var="row" items="${processes.rows}">
-                    <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${task}&startTime=${startTime}&endTime=${endTime}" value="${row.PROCESS}">
+                    <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${task}&startTime=${startTime}&endTime=${endTime}&p2hours=${P2hours}" value="${row.PROCESS}">
                         <sql:query var="data">
                             select enddate,startdate,submitdate,cpusecondsused,
                             cpusecondsused/60 as cpuUsedTime ,

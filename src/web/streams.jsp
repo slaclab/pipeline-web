@@ -203,17 +203,18 @@
         <jsp:setProperty name="minDateUsedHours" property="time" value="${maxDateUsedHours.time - sessionStreamHours*60*60*1000}" />
         <sql:dateParam value="${minDateUsedHours}" type="timestamp"/>
         <sql:dateParam value="${maxDateUsedHours}" type="timestamp"/>
-        <c:set var="foo3" value="and startdate >= ${minDateUsed} and startdate <= ${maxDateUsed}"/>
+        <c:set var="foo3" value="and startdate >= ${minDateUsedHours} and startdate <= ${maxDateUsedHours}"/>
     </c:if>   
 </sql:query>    
 
 <%-- debugging 
 <h3>
+    userSelectedStreamHours=${userSelectedStreamHours} maxDateUsedHours=${maxDateUsedHours} <br>
+    minDateUsedHours=${minDateUsedHours}<br>
     Foo1: ${foo1}<br>
     Foo2: ${foo2}<br>
     Foo3: ${foo3}<br>
-</h3>
---%>
+</h3> --%>
 
 <sql:query var="statii">
     select STREAMSTATUS from STREAMSTATUS order by displayorder

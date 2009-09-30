@@ -211,7 +211,7 @@
         
         <c:if test="${fn:length(datacheck.rows) > 0}"> 
             <tab:tabs name="ProcessTabs" param="process">                
-                <tab:tab name="Summary" href="P2stats.jsp?task=${task}&startTime=${sessionP2StartTime}&endTime=${sessionP2EndTime}&p2hours=${sessionP2Hours}" value="0">
+                <tab:tab name="Summary" href="P2stats.jsp?task=${task}&startTime=${sessionP2StartTime}&endTime=${sessionP2EndTime}&p2hours=${sessionP2Hours}&filter=Submit" value="0">
                     <sql:query var="data">
                         select createdate,startdate,enddate, 
                         (TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as elapsedTime
@@ -390,7 +390,7 @@
                 </tab:tab>
                 
                 <c:forEach var="row" items="${processes.rows}">
-                    <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${task}&startTime=${sessionP2StartTime}&endTime=${sessionP2EndTime}&p2hours=${sessionP2Hours}" value="${row.PROCESS}">
+                    <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${task}&startTime=${sessionP2StartTime}&endTime=${sessionP2EndTime}&p2hours=${sessionP2Hours}&filter=Submit" value="${row.PROCESS}">
                         <sql:query var="data">
                             select enddate,startdate,submitdate,cpusecondsused,
                             cpusecondsused/60 as cpuUsedTime ,

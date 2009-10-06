@@ -367,7 +367,8 @@
                             </display:footer>
                         </c:if>
                     </display:table>                 
-                </form>          
+                </form>
+                <%--
                 <c:if test="${pqTest.rowCount>0}">
                     <ul>
                         <c:choose>
@@ -382,6 +383,23 @@
                         </c:choose>
                     </ul>
                 </c:if>
+                --%>
+
+                <c:if test="${pqTest.rowCount>0}">
+                    <ul>
+                        <c:choose>
+                            <c:when test="${!empty processName}">
+                                <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=stream">Dump stream id list</a>.</li>
+                                <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=id">Dump job id list</a>.</li>
+                            </c:when>
+                            <c:when test="${!empty task}">
+                                <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=stream">Dump stream id list</a>.</li>
+                                <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=id">Dump job id list</a>.</li>
+                            </c:when>
+                        </c:choose>
+                    </ul>
+                </c:if>
+
             </c:otherwise>                                                                                                                                                                                                           
         </c:choose>
         

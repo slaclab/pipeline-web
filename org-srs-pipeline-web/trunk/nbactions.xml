@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
-            <actionName>CUSTOM-redeploy-dev</actionName>
-            <displayName>tomcat redeploy (dev)</displayName>
+            <actionName>CUSTOM-SRS-deploy-prod</actionName>
+            <displayName>SRS tomcat deploy (prod)</displayName>
             <goals>
                 <goal>package</goal>
-                <goal>tomcat:undeploy</goal>
                 <goal>tomcat:deploy</goal>
             </goals>
             <activatedProfiles>
+                <activatedProfile>SRS</activatedProfile>
+                <activatedProfile>deploy-prod</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-Fermi-deploy-dev</actionName>
+            <displayName>Fermi tomcat deploy (dev)</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>tomcat:deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>Fermi</activatedProfile>
                 <activatedProfile>deploy-dev</activatedProfile>
             </activatedProfiles>
         </action>

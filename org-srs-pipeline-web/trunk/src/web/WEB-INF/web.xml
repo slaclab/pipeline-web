@@ -6,32 +6,49 @@
          1440
       </session-timeout>
    </session-config>
-   <context-param>
-      <param-name>
-         javax.servlet.jsp.jstl.sql.dataSource
-      </param-name>
-      <param-value>
-         jdbc/pipeline-ii
-      </param-value>
-   </context-param>
-   <context-param>
-      <param-name>edu.yale.its.tp.cas.serverName</param-name>
-      <param-value>glast-ground.slac.stanford.edu:80</param-value>
-   </context-param>
+
+    <context-param>
+        <param-name>
+            version
+        </param-name>
+        <param-value>
+            ${pom.version}
+        </param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>ModeSwitcherFilter</filter-name>
+        <filter-class>org.srs.web.base.modeswitcher.filter.ModeSwitcherFilter</filter-class>
+        <init-param>
+            <param-name>experiment</param-name>
+            <param-value>${experiment.name}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>configDb</param-name>
+            <param-value>${experiment.configuration.database}</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>ModeSwitcherFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>org.srs.web.base.login.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+
+
    <filter>
       <filter-name>CheckCookiesFilter</filter-name>
       <filter-class>org.glast.base.web.checkcookies.filter.CheckCookiesFilter</filter-class>
    </filter>
    <filter-mapping>
       <filter-name>CheckCookiesFilter</filter-name>
-      <url-pattern>*.jsp</url-pattern>
-   </filter-mapping>
-   <filter>
-      <filter-name>LoginFilter</filter-name>
-      <filter-class>org.glast.base.web.login.filter.LoginFilter</filter-class>
-   </filter>
-   <filter-mapping>
-      <filter-name>LoginFilter</filter-name>
       <url-pattern>*.jsp</url-pattern>
    </filter-mapping>
    <filter>
@@ -42,37 +59,7 @@
       <filter-name>BlankLineFilter</filter-name>
       <filter-class>org.glast.pipeline.web.filters.BlankLineFilter</filter-class>
    </filter>
-   <!-- Adding Data Source Filter -->
-   <filter>
-      <filter-name>datasource</filter-name>
-      <filter-class>org.glast.base.web.datasource.DataSourceFilter</filter-class>
-      <init-param>
-         <param-name>Default</param-name>
-         <param-value>Prod</param-value>
-      </init-param>    
-      <init-param>
-         <param-name>Order</param-name>
-         <param-value>Prod,Dev,Test</param-value>
-      </init-param>    
-      <init-param>
-         <param-name>Prod</param-name>
-         <param-value>jdbc/pipeline-ii</param-value>
-      </init-param>    
-      <init-param>
-         <param-name>Dev</param-name>
-         <param-value>jdbc/pipeline-ii-dev</param-value>
-      </init-param>    
-      <init-param>
-         <param-name>Test</param-name>
-         <param-value>jdbc/pipeline-ii-test</param-value>
-      </init-param>    
-  </filter>
-   
-   <filter-mapping>
-      <filter-name>datasource</filter-name>
-      <url-pattern>/*</url-pattern>
-   </filter-mapping>
-   <!-- Done Adding the Data Source Filter -->
+
     
    <filter>
       <filter-name>PipelineFilter</filter-name>
@@ -111,28 +98,45 @@
          <param-value>100</param-value>
       </init-param> 
    </filter>
- <!-- new preferences code -->  
+
    <filter>
         <filter-name>PreferencesFilter</filter-name>
-        <filter-class>org.glast.base.web.preferences.filter.PreferencesFilter</filter-class>
+        <filter-class>org.srs.web.base.preferences.filter.PreferencesFilter</filter-class>
         <init-param>
             <param-name>preferencesDatabase</param-name>
-            <param-value>jdbc/glastgen</param-value>
-        </init-param>    
+            <param-value>${experiment.configuration.database}</param-value>
+        </init-param>
         <init-param>
             <param-name>application</param-name>
-            <param-value>Pipeline-II</param-value>
-        </init-param>    
+            <param-value>${build.finalName}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>experiment</param-name>
+            <param-value>${build.finalName}</param-value>
+        </init-param>
         <init-param>
             <param-name>preferences</param-name>
             <param-value>org.glast.pipeline.web.userpreferences.MyPreferences</param-value>
-        </init-param>    
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>PreferencesFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
-    </filter-mapping> 
-   
+    </filter-mapping>
+
+
+    <context-param>
+        <param-name>org.srs.web.base.datasource.mode</param-name>
+        <param-value>dataSource</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.srs.web.base.datasource.variable</param-name>
+        <param-value>pipelineDb</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.srs.web.base.datasource.DefaultDataSourceSwitcher</listener-class>
+    </listener>
+
    <!-- end new preferences code -->
    <filter-mapping>
       <filter-name>RefreshFilter</filter-name>
@@ -213,18 +217,35 @@
          index.html
       </welcome-file>
    </welcome-file-list>
-   
+
+
+
+    <context-param>
+        <param-name>
+            pipelineLofFileServletDb
+        </param-name>
+        <param-value>
+            ${experiment.configuration.database}
+        </param-value>
+    </context-param>
+
+
     <servlet>
         <servlet-name>PipelineLogFileServlet</servlet-name>
-        <servlet-class>org.glast.pipeline.web.servlet.PlainFileServerServlet</servlet-class>
+        <servlet-class>org.srs.decorator.servlet.DecoratorServlet</servlet-class>
         <init-param>
-            <param-name>urlBase</param-name>
-            <param-value>file:/nfs/farm/g/glast</param-value>
+            <param-name>configDb</param-name>
+            <param-value>${experiment.configuration.database}</param-value>
+        </init-param>
+        <init-param>
+            <param-name>decoratorGroup</param-name>
+            <param-value>${experiment.decorator.group}</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>PipelineLogFileServlet</servlet-name>
         <url-pattern>/PipelineLogFiles/*</url-pattern>
     </servlet-mapping>
-   
+
+
 </web-app>

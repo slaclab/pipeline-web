@@ -30,19 +30,29 @@
     </tr>
     <tr>
         <td align="right" valign="bottom">
-            <jsp:useBean id="now" class="java.util.Date" />
-                Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <utils:refresh />
-        </td>
-        <td>
-                <srs_utils:login useQueryString="true"/> Mode: [ <srs_utils:modeChooser mode="dataSource" href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><srs_utils:conditonalLink url="myPreferences.jsp" name="Preferences" /></c:if>
-        </td>
-        <td>
-                <srs_utils:conditonalLink url="index.jsp" name="Task List" iswelcome="true"/>&nbsp;.
-                <srs_utils:conditonalLink url="logViewer.jsp" name="Message Viewer" />&nbsp;.
-                <srs_utils:conditonalLink url="JobProcessingStats.jsp" name="Usage Plots" />&nbsp;.
-                <srs_utils:conditonalLink url="batchShares.jsp" name="Fair Share Plots" />&nbsp;.
-                <srs_utils:conditonalLink url="admin.jsp" name="Admin" />&nbsp;.
-                <srs_utils:conditonalLink url="admin_jmx.jsp" name="JMX" />
+            <table>
+                <tr>
+                    <td align="right">
+                        <jsp:useBean id="now" class="java.util.Date" />
+                        Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <utils:refresh />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <srs_utils:login useQueryString="true"/> Mode: [ <srs_utils:modeChooser mode="dataSource" href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><srs_utils:conditonalLink url="myPreferences.jsp" name="Preferences" /></c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <srs_utils:conditonalLink url="index.jsp" name="Task List" iswelcome="true"/>&nbsp;.
+                        <srs_utils:conditonalLink url="logViewer.jsp" name="Message Viewer" />&nbsp;.
+                        <srs_utils:conditonalLink url="JobProcessingStats.jsp" name="Usage Plots" />&nbsp;.
+                        <srs_utils:conditonalLink url="batchShares.jsp" name="Fair Share Plots" />&nbsp;.
+                        <srs_utils:conditonalLink url="admin.jsp" name="Admin" />&nbsp;.
+                        <srs_utils:conditonalLink url="admin_jmx.jsp" name="JMX" />
+                    </td>
+                </tr>
+            </table>
         </td>  
     </tr>
 </table>

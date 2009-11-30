@@ -4,7 +4,8 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="pipeline" uri="http://glast-ground.slac.stanford.edu/pipeline" %>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib prefix="srs_utils" uri="http://srs.slac.stanford.edu/utils" %>
+<%@taglib prefix="logFilesUtils" uri="http://srs.slac.stanford.edu/fileUtils" %>
 
 <html>
     <head>
@@ -12,7 +13,6 @@
     </head>
     <body>
 
-        <utils:requireLogin/>
 
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 
@@ -31,22 +31,29 @@
         </c:if>
         <c:set var="workingDir" value="${workingDir}${param.path}"/>
 
-        <c:set var="logURL" value="${fn:replace(workingDir,'/nfs/farm/g/glast/', pageContext.request.requestURL)}"/>
-        <c:set var="logURL" value="${fn:replace(logURL,'run.jsp', 'PipelineLogFiles/')}"/>
+
+        <c:set var="decorator" value="${appVariables.experiment}LogFiles"/>
+        <c:set var="mountPoint" value="${ logFilesUtils:getDecoratorMountPoint(initParam.pipelineLofFileServletDb, decorator, appVariables.experiment) }"/>
+
+
+        <c:set var="logURL" value="${fn:replace(workingDir,mountPoint, pageContext.request.requestURL)}"/>
+        <c:set var="logFilesServlet" value="PipelineLogFiles/${decorator}/" />
+        <c:set var="logURL" value="${fn:replace(logURL,'run.jsp', logFilesServlet)}"/>
+
 
         <c:set var="queryString" value="${pageContext.request.queryString}"/>
         <c:if test="${fn:startsWith(queryString,'&')}" >
             <c:set var="queryString" value="${fn:substringAfter(queryString,'&')}"/>
         </c:if>
 
-        <c:set var="logURL" value="${logURL}?href=run.jsp&queryString=${queryString}"/>
+        <c:set var="logURL" value="${logURL}?skipHtml=true&href=run.jsp&queryString=${queryString}"/>
 
 
         <c:catch var="error">
             <c:import url="${logURL}" var="logFile"/>
             <c:choose>
                 <c:when test="${pipeline:isFile(workingDir)}">
-                    <b>File:</b> <font class="logFile">${workingDir}</font> (<a href="${logURL}?download=true">download</a>)
+                    <b>File:</b> <font class="logFile">${workingDir}</font> (<a href="${logURL}&download=true">download</a>)
                     <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
                 </c:when>
                 <c:otherwise>

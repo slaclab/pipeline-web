@@ -13,10 +13,6 @@
         <title>Task Summary: ${taskName} </title>
     </head>
     <body>
-        <!--
-         <c:set var="title" value="Task Summary" />                         
-        <img src="http://glast-ground.slac.stanford.edu/Commons/logoServlet.jsp?title=${title}"/>
-        --> 
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by DISPLAYORDER
         </sql:query>
@@ -89,16 +85,9 @@
                 <a href="task.jsp?task=${row['task']}">${row["taskname"]}</a>
             </c:forEach>
         </c:if>        
-        <c:if test="${results.rowCount>0}">
-            <c:set var="gvOrientation" value="LR" scope="session"/> 
-        </c:if> 
-        <c:if test="${ ! empty param.gvOrientation }" >
-            <c:set var="gvOrientation" value="${param.gvOrientation}" scope="session"/> 
-        </c:if>
-        <p><iframe width="100%"  frameborder="0"  height="200"   
-                       src= "taskout.jsp?task=${task}&gvOrientation=${gvOrientation}  ">
-        </iframe> </p>
-        <p>
+        <c:set var="gvOrientation" value="${!empty param.gvOrientation ? param.gvOrientation : !empty gvOrientation ? gvOrientation : 'LR'}" scope="session"/>
+        <iframe width="100%" frameborder="0" height="200" src="taskout.jsp?task=${task}&gvOrientation=${gvOrientation}">
+        </iframe>
         <script type="text/javascript" language="JavaScript">function DoOrientationSubmission() { document.OrientationForm.submit(); }</script>
         
         <form name="OrientationForm"> 

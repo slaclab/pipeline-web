@@ -5,7 +5,7 @@
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
 <%@taglib prefix="p" uri="http://glast-ground.slac.stanford.edu/pipeline"%>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <html>
@@ -13,7 +13,7 @@
         <title>Pipeline: Confirm</title>
     </head>
     <body>
-        <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
+        <c:if test="${!gm:isUserInGroup(pageContext,'PipelineAdmin')}">
             <c:redirect url="noPermission.jsp"/>
         </c:if>
         

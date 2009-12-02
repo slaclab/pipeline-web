@@ -5,7 +5,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -313,7 +313,7 @@
          }
         </script>   
         
-        <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
+        <c:set var="adminMode" value="${gm:isUserInGroup(pageContext,'PipelineAdmin')}"/>
         <c:choose>
             <c:when test="${param.format=='stream'}">
                 <pre><c:forEach var="row" items="${pqTest.rows}">${row.streamid}<br></c:forEach></pre>

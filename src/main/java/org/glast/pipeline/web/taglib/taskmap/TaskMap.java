@@ -43,7 +43,7 @@ public class TaskMap extends SimpleTagSupport
                 writer.println("<map name=\"taskMap"+task+"\">");
                 writer.println(bytes.toString());
                 writer.println("</map>");
-                writer.println("<img src=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"\" usemap=\"#taskMap"+task+"\"/>");
+                writer.println("<img src=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"\" usemap=\"#taskMap"+task+"\" border=\"0\"/>");
             }
             catch (IOException x)
             {

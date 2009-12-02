@@ -43,31 +43,19 @@
             <c:if test="${notation.rowCount>0}">
                 <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
             </c:if>           
-            <c:if test="${versions.rowCount>0}">
-                <!-- Determing how many versions to display (last 5 or all) -->
-                <c:choose>
-                    <c:when test="${empty param.showAllVersions}">
-                        <c:set var ="StartRowSpan" value="${versions.rowCount - 5}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var ="StartRowSpan" value="1"/>
-                    </c:otherwise>
-                </c:choose>                   
-                <c:set var ="EndRowSpan" value="${versions.rowCount}"/>  
-                <c:set var ="rowCounter" value="0"/>            
+            <c:if test="${versions.rowCount>1}">
+                <!-- Determine how many versions to display (last 5 or all) -->
+                <c:set var ="StartRowSpan" value="${empty param.showAllVersions &&  versions.rowCount > 5 ? versions.rowCount - 5 : 0}"/>
                 Versions:  
-                <c:forEach var="row" items="${versions.rows}">
-                    <c:set var ="rowCounter" value="${rowCounter+1}"/>                
-                    <c:if test="${rowCounter >= StartRowSpan and rowCounter <= EndRowSpan}">
-                        <c:choose>
-                            <c:when test="${row.task != task}">
-                                <a href="task.jsp?task=${row.task}">(${row.version}.${row.revision})</a>
-                            </c:when>
-                            <c:otherwise>
-                                <b>(${row.version}.${row.revision})</b> 
-                            </c:otherwise>
-                        </c:choose>
-                    </c:if>
+                <c:forEach var="row" items="${versions.rows}" begin="${StartRowSpan}" >
+                    <c:choose>
+                        <c:when test="${row.task != task}">
+                            <a href="task.jsp?task=${row.task}">(${row.version}.${row.revision})</a>
+                        </c:when>
+                        <c:otherwise>
+                            <b>(${row.version}.${row.revision})</b>
+                        </c:otherwise>
+                    </c:choose>
                 </c:forEach>
                 <c:if test="${empty param.showAllVersions && versions.rowCount>5}">
                     <a href="task.jsp?task=${task}&showAllVersions=Y">....more versions </a>

@@ -5,7 +5,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <html>

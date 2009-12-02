@@ -5,7 +5,7 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 
@@ -46,7 +46,7 @@
         </script>   
 
 <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
-<c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
+<c:set var="adminMode" value="${gm:isUserInGroup(pageContext,'PipelineAdmin')}"/>
     <h2>Task ${taskName} Stream ${streamIdPath}</h2>
     <c:if test="${adminMode}">        
         <form name="RollBackStreamForm" action="confirm.jsp" method="post">

@@ -3,7 +3,7 @@
 <%@taglib uri="http://www.servletsuite.com/servlets/jmxtag" prefix="jmx"%> 
 <%@taglib uri="http://glast-ground.slac.stanford.edu/jmx" prefix="bean"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
 <%@taglib prefix="p" uri="http://glast-ground.slac.stanford.edu/pipeline"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -16,7 +16,7 @@
    <body>
       
       <h1>Pipeline JMX Admin</h1>
-      <c:set var="admin" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
+      <c:set var="admin" value="${gm:isUserInGroup(pageContext,'PipelineAdmin')}"/>
       <sql:query var="result">
          select HOST,PORT from ServerStatus
       </sql:query>

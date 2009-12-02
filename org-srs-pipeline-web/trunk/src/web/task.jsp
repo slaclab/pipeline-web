@@ -63,13 +63,13 @@
             </c:if>
         </c:if>                
         <sql:query var="subtasks"> 
-            select task, taskname,parenttask, version,revision from task 
-            start with task = ?  connect by  parenttask = prior task
+            select task, taskname from task 
+            start with parenttask = ?  connect by  parenttask = prior task
             <sql:param value="${task}"/>
         </sql:query>        
         <c:if test="${subtasks.rowCount>0}">
+            Subtasks:
             <c:forEach var="row" items="${subtasks.rows}">
-                <!-- <br>  subtask ${row['task']}:  -->
                 <a href="task.jsp?task=${row['task']}">${row["taskname"]}</a>
             </c:forEach>
         </c:if>        

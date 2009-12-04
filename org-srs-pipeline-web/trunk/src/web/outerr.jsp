@@ -21,7 +21,7 @@
 
         <b>Log file:</b> <font class="logFile">${logName}</font> (<a href="${logURL}">download</a>)
         <pre class="log">
-            <c:import url="${logURL}" var="logFile"/>
+            <c:import url="${logURL}?experiment=${appVariables.experiment}" var="logFile"/>
             <c:out value="${logFile}" escapeXml="true"/>
         </pre>
 

@@ -25,7 +25,6 @@
             <c:set var="workingDir" value="${fn:replace(workingDir,'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
 
-
         <c:if test="${pipeline:isFile(workingDir)}">
             <c:set var="workingDir" value="${workingDir}/"/>
         </c:if>
@@ -50,7 +49,7 @@
 
 
         <c:catch var="error">
-            <c:import url="${logURL}" var="logFile"/>
+            <c:import url="${logURL}&experiment=${appVariables.experiment}" var="logFile"/>
             <c:choose>
                 <c:when test="${pipeline:isFile(workingDir)}">
                     <b>File:</b> <font class="logFile">${workingDir}</font> (<a href="${logURL}&download=true">download</a>)

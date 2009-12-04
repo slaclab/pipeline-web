@@ -36,7 +36,7 @@
         <c:set var="logURL" value="${fn:replace(logURL,'log.jsp', logFilesServlet)}"/>
 
         <c:catch var="error">
-            <c:import url="${logURL}?skipHtml=true" var="logFile" />
+            <c:import url="${logURL}?skipHtml=true&experiment=${appVariables.experiment}" var="logFile" />
             <b>Log file:</b> <font class="logFile">${logName}</font> (<a href="${logURL}?download=true">download</a>)
             <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
         </c:catch>

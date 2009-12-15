@@ -70,7 +70,7 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-web-base</artifactId>
-            <version>1.2</version>
+            <version>1.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>

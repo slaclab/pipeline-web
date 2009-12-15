@@ -7,6 +7,7 @@
 <%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="srs_utils" uri="http://srs.slac.stanford.edu/utils" %>
+<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <table width="100%">
     <tr>
@@ -39,7 +40,7 @@
                 </tr>
                 <tr>
                     <td align="right">
-                        <srs_utils:login useQueryString="true"/> Mode: [ <srs_utils:modeChooser mode="dataSource" href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><srs_utils:conditonalLink url="myPreferences.jsp" name="Preferences" /></c:if>
+                        <login:login useQueryString="true"/> Mode: [ <srs_utils:modeChooser mode="dataSource" href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><srs_utils:conditonalLink url="myPreferences.jsp" name="Preferences" /></c:if>
                     </td>
                 </tr>
                 <tr>

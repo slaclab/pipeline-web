@@ -7,7 +7,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.glast.datahandling.common.util.exception.BriefWriter;
 /**
- * A tag for uploading xml files to the pipeline database
+ * A tag for creating printable error
  * @author tonyj
  */
 public class ReportError extends SimpleTagSupport

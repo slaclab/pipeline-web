@@ -35,7 +35,7 @@
                 <tr>
                     <td align="right">
                         <jsp:useBean id="now" class="java.util.Date" />
-                        Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <utils:refresh />
+                        Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <c:if test="${empty skipRefresh || ! skipRefresh}"><utils:refresh /></c:if>
                     </td>
                 </tr>
                 <tr>
@@ -67,3 +67,5 @@
         <c:if test="${!empty processName}">/ <a href="process.jsp?process=${process}">${processName}</a> </c:if>
     </div>
 </c:if>
+
+

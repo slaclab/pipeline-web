@@ -10,6 +10,7 @@
 <html>
     <head>
         <title>Pipeline: Admin</title>
+        <meta name="skipRefresh" content="true" />
     </head>
     <body>
 

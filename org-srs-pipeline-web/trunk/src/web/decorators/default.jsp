@@ -28,6 +28,8 @@
       <decorator:head />
    </head>
    <body>
+
+       <c:set var="skipRefresh" scope="request"><decorator:getProperty property='meta.skipRefresh'/></c:set>
       <c:import url="header.jsp"/>
       <div class="pageBody">
          <decorator:body />

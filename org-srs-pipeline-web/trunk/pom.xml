@@ -74,7 +74,7 @@
         </dependency>
         <dependency>
             <groupId>srs</groupId>
-            <artifactId>org-srs-groupmanager-jar</artifactId>
+            <artifactId>org-srs-groupmanager-web</artifactId>
             <version>1.13-SNAPSHOT</version>
         </dependency>
         <dependency>

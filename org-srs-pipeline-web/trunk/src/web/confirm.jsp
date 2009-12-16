@@ -16,20 +16,20 @@
         <c:if test="${!gm:isUserInGroup(pageContext,'PipelineAdmin')}">
             <c:redirect url="noPermission.jsp"/>
         </c:if>
-        
+
         <c:choose>
             <c:when test="${param.submit == 'CANCEL'}">
                 <c:redirect url="${param.origin}">
                     <c:param name="processingMessage" value="Rollback has been cancelled"/>
                 </c:redirect>
             </c:when>
-            
+
             <c:when test="${param.submit == 'Rollback Selected'}">
                 <p class="warning">
                     You have requested to rollback ${fn:length(paramValues["select"])} processes 
                     from task <i>${taskName}</i> process <i>${processName}</i>. 
-                This operation cannot be undone!</p>
-                
+                    This operation cannot be undone!</p>
+
                 <form method="post">
                     <input type="hidden" name="process" value="${process}">
                     <c:forEach var="item" items="${paramValues['select']}">
@@ -53,26 +53,12 @@
                     <input type="submit" value="CANCEL" name="submit">
                 </form>
             </c:when>
-            <c:when test="${param.submit == 'Rollback Selected Streams'}">            
+            <c:when test="${param.submit == 'Rollback Selected Streams' || param.submit == 'Rollback Selected SubStreams'}">
                 <p class="warning">
-                    You have requested to rollback stream <i>${streamIdPath}</i>
+                    You have requested to rollback ${fn:length(paramValues["select"])} streams
                     from task <i>${taskName}</i>. 
                     This operation cannot be undone!
                 </p>
-                <form method="post">
-                    <input type="hidden" name="origin" value="${header.referer}">
-                    Arguments to add or override:&nbsp;<input type="text" name="args" value="" size="50" />
-                    <input type="submit" value="Confirm Stream Rollback!" name="submit">
-                    <input type="submit" value="CANCEL" name="submit">
-                </form>
-            </c:when>
-            
-            <c:when test="${param.submit == 'Rollback Selected SubStreams'}">
-                <p class="warning">
-                    You have requested to rollback ${fn:length(paramValues["select"])} streams 
-                    from task <i>${taskName}</i>. 
-                This operation cannot be undone!</p>
-                
                 <form method="post">
                     <input type="hidden" name="task" value="${task}">
                     <c:forEach var="item" items="${paramValues['select']}">
@@ -97,8 +83,8 @@
                     <sql:param value="${task}"/>
                 </sql:query> 
                 <p class="warning">
-                You have requested to delete task <i>${taskVersion}</i>.</p> 
-                <c:if test="${notation.rowCount>0}">
+                    You have requested to delete task <i>${taskVersion}</i>.</p>
+                    <c:if test="${notation.rowCount>0}">
                     <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
                 </c:if>
                 <pt:taskSummary streamCount="count"/>
@@ -115,19 +101,19 @@
             </c:when>
             <c:when test="${param.submit == 'Confirm Rollback!'}">
                 <p:rollback processes="${paramValues['select']}"/>   
-                 <c:redirect url="${param.origin}">
+                <c:redirect url="${param.origin}">
                     <c:param name="processingMessage" value="Rollback completed successfully"/>
                 </c:redirect>         
             </c:when>
             <c:when test="${param.submit == 'Confirm Stream Rollback!'}">
                 <p:rollback streams="${paramValues['select']}" args="${param.args}"/> 
-               <c:redirect url="${param.origin}">
+                <c:redirect url="${param.origin}">
                     <c:param name="processingMessage" value="Rollback completed successfully"/>
                 </c:redirect>                  
             </c:when>
             <c:when test="${param.submit=='Confirm Delete!'}">
                 <p:deleteTask task="${param.deleteTask}"/>
-               <c:redirect url="${param.origin}">
+                <c:redirect url="${param.origin}">
                     <c:param name="processingMessage" value="Delete completed successfully"/>
                 </c:redirect>  
             </c:when>

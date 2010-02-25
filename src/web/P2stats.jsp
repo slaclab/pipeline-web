@@ -8,7 +8,7 @@
 <%@taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.*,javax.servlet.jsp.jstl.sql.*,hep.aida.*"%>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
 <html>
     <head>
         <title>Performance Plots</title>
@@ -121,8 +121,8 @@
                     <td colspan="5"><strong>Select Timespan</strong>:                 
                 </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
-                    <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2StartTime}"  timezone="PST8PDT"/></td>
-                    <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2EndTime}" timezone="PST8PDT"/></td>
+                    <td><strong>Start</strong> <time:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2StartTime}"  timezone="PST8PDT"/></td>
+                    <td><strong>End</strong> <time:dateTimePicker size="20" name="endTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionP2EndTime}" timezone="PST8PDT"/></td>
                     <td>or last N hours <input name="p2hours" type="text" value="${sessionP2Hours}" size="5"></td>
                 </tr> 
                 <input type="hidden" name="task" value="${task}"/>

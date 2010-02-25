@@ -31,12 +31,11 @@
         <c:set var="workingDir" value="${workingDir}${param.path}"/>
 
 
-        <c:set var="decorator" value="${appVariables.experiment}LogFiles"/>
-        <c:set var="mountPoint" value="${ logFilesUtils:getDecoratorMountPoint(initParam.pipelineLofFileServletDb, decorator, appVariables.experiment) }"/>
+        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLofFileServletDb, workingDir, appVariables.experiment) }"/>
 
 
-        <c:set var="logURL" value="${fn:replace(workingDir,mountPoint, pageContext.request.requestURL)}"/>
-        <c:set var="logFilesServlet" value="PipelineLogFiles/${decorator}/" />
+        <c:set var="logURL" value="${fn:replace(workingDir,mountPoint.mountPoint, pageContext.request.requestURL)}"/>
+        <c:set var="logFilesServlet" value="PipelineLogFiles/${mountPoint.decorator}/" />
         <c:set var="logURL" value="${fn:replace(logURL,'run.jsp', logFilesServlet)}"/>
 
 

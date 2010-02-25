@@ -1,10 +1,8 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="srs_utils" uri="http://srs.slac.stanford.edu/utils" %>
 <%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
@@ -35,7 +33,7 @@
                 <tr>
                     <td align="right">
                         <jsp:useBean id="now" class="java.util.Date" />
-                        Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <c:if test="${empty skipRefresh || ! skipRefresh}"><utils:refresh /></c:if>
+                        Page updated: <fmt:formatDate value="${now}" pattern="MM/dd/yyyy HH:mm:ss"/> <c:if test="${empty skipRefresh || ! skipRefresh}"><srs_utils:refresh /></c:if>
                     </td>
                 </tr>
                 <tr>

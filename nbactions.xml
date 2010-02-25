@@ -13,6 +13,18 @@
             </activatedProfiles>
         </action>
         <action>
+            <actionName>CUSTOM-SRS-deploy-local</actionName>
+            <displayName>SRS tomcat deploy (local)</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>tomcat:deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>SRS</activatedProfile>
+                <activatedProfile>deploy-local</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
             <actionName>CUSTOM-Fermi-deploy-dev</actionName>
             <displayName>Fermi tomcat deploy (dev)</displayName>
             <goals>

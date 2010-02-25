@@ -26,13 +26,12 @@
             <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
 
-        <c:set var="decorator" value="${appVariables.experiment}LogFiles"/>
-        <c:set var="mountPoint" value="${ logFilesUtils:getDecoratorMountPoint(initParam.pipelineLofFileServletDb, decorator, appVariables.experiment) }"/>
+        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLofFileServletDb, logName, appVariables.experiment) }"/>
 
 
-        <c:set var="logURL" value="${fn:replace(logName,mountPoint, pageContext.request.requestURL)}"/>
+        <c:set var="logURL" value="${fn:replace(logName,mountPoint.mountPoint, pageContext.request.requestURL)}"/>
 
-        <c:set var="logFilesServlet" value="PipelineLogFiles/${decorator}/" />
+        <c:set var="logFilesServlet" value="PipelineLogFiles/${mountPoint.decorator}/" />
         <c:set var="logURL" value="${fn:replace(logURL,'log.jsp', logFilesServlet)}"/>
 
         <c:catch var="error">

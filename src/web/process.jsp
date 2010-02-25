@@ -7,7 +7,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
@@ -264,9 +264,9 @@
                             <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
                         </select> 
                     </td>
-                    <td><utils:dateTimePicker value="${sessionProcessMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                    <td><time:dateTimePicker value="${sessionProcessMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                     </td>
-                    <td><utils:dateTimePicker value="${sessionProcessMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                    <td><time:dateTimePicker value="${sessionProcessMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                     </td>  
                     <td>
                         or last N hours <input name="processhours" type="text" value="${sessionProcessHours}" size="5">

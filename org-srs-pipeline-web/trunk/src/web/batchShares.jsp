@@ -9,7 +9,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <%-- tag libraries --%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
 <%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 
@@ -83,10 +83,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         </c:if> 
         
         <c:if test="${empty fairShareBeginTime}">
-            <c:set var="fairShareBeginTime" value="${utils:now('PST')-7*24*60*60*1000}" scope="session"/>                
+            <c:set var="fairShareBeginTime" value="${time:now('PST')-7*24*60*60*1000}" scope="session"/>
         </c:if>
         <c:if test="${empty fairShareEndTime}">
-            <c:set var="fairShareEndTime" value="${utils:now('PST')}" scope="session"/>            
+            <c:set var="fairShareEndTime" value="${time:now('PST')}" scope="session"/>
         </c:if>
         <c:set var="fairShareBeginTime" value="${ empty param.fairShareBeginTime ? fairShareBeginTime : param.fairShareBeginTime}" scope="session"/>
         <c:set var="fairShareEndTime" value="${ empty param.fairShareEndTime ? fairShareEndTime : param.fairShareEndTime}" scope="session"/>
@@ -105,11 +105,11 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                             <tr>
                                 <th>Begin Time</th>
                                 <td> 
-                                    <utils:dateTimePicker value="${fairShareBeginTime}" size="18" name="fairShareBeginTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                                    <time:dateTimePicker value="${fairShareBeginTime}" size="18" name="fairShareBeginTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                                 </td>
                                 <th>End Time</th>
                                 <td> 
-                                    <utils:dateTimePicker value="${fairShareEndTime}" size="18" name="fairShareEndTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/> 
+                                    <time:dateTimePicker value="${fairShareEndTime}" size="18" name="fairShareEndTime" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                                 </td>
                             </tr>
                             <p></p>

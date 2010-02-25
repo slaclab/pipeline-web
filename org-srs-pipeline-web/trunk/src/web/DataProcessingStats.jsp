@@ -6,7 +6,7 @@
 <%@ taglib uri="http://aida.freehep.org/jsp20" prefix="aida"%>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils"%>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
 <%@ page import="hep.aida.*" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -89,8 +89,8 @@
 <form name="DateForm">        
     <table class="filtertable">
         <tr>
-            <td><strong>Start</strong> <utils:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPstartTime}"  timezone="PST8PDT"/></td>
-            <td><strong>End</strong> <utils:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPendTime}" timezone="PST8PDT"/> </td>
+            <td><strong>Start</strong> <time:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPstartTime}"  timezone="PST8PDT"/></td>
+            <td><strong>End</strong> <time:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPendTime}" timezone="PST8PDT"/> </td>
             <td><strong>Hours</strong><br>
             <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
             </td>

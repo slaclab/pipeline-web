@@ -4,7 +4,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils" %>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
+<%@taglib uri="http://srs.slac.stanford.edu/utils" prefix="utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
@@ -236,8 +237,8 @@
                     <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
                 </c:forEach>                         
                 <tr><th>Date</th>
-                <td>Start</td><td><utils:dateTimePicker value="${sessionStreamMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-                <td>End</td><td><utils:dateTimePicker value="${sessionStreamMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                <td>Start</td><td><time:dateTimePicker value="${sessionStreamMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                <td>End</td><td><time:dateTimePicker value="${sessionStreamMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
                 <td>or last N hours <input name="streamHours" type="text" value="${sessionStreamHours}" size="5"></td>
             </td>
             <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">

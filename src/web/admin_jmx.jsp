@@ -1,7 +1,7 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <%@taglib uri="http://www.servletsuite.com/servlets/jmxtag" prefix="jmx"%> 
-<%@taglib uri="http://glast-ground.slac.stanford.edu/jmx" prefix="bean"%>
+<%@taglib uri="http://srs.slac.stanford.edu/jmx" prefix="bean"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>

@@ -43,9 +43,10 @@
         <c:if test="${fn:startsWith(queryString,'&')}" >
             <c:set var="queryString" value="${fn:substringAfter(queryString,'&')}"/>
         </c:if>
+        <c:set var="queryString" value="${fn:replace(queryString,'=','%3D')}"/>
+        <c:set var="queryString" value="${fn:replace(queryString,'&','%26')}"/>
 
         <c:set var="logURL" value="${logURL}?skipHtml=true&href=run.jsp&queryString=${queryString}"/>
-
 
         <c:catch var="error">
             <c:import url="${logURL}&experiment=${appVariables.experiment}" var="logFile"/>

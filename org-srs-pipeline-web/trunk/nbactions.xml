@@ -71,4 +71,14 @@
                 <activatedProfile>deploy-prod</activatedProfile>
             </activatedProfiles>
         </action>
+        <action>
+            <actionName>CUSTOM-Build for project ABC</actionName>
+            <displayName>Build for project ABC</displayName>
+            <goals>
+                <goal>install</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>ABC</activatedProfile>
+            </activatedProfiles>
+        </action>
     </actions>

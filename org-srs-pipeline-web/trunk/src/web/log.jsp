@@ -26,7 +26,7 @@
             <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
 
-        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLofFileServletDb, logName, appVariables.experiment) }"/>
+        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLogFileServletDb, initParam.pipelineLogFileServletDecoratorGroup, logName, appVariables.experiment) }"/>
 
 
         <c:set var="logURL" value="${fn:replace(logName,mountPoint.mountPoint, pageContext.request.requestURL)}"/>
@@ -35,9 +35,7 @@
         <c:set var="logURL" value="${fn:replace(logURL,'log.jsp', logFilesServlet)}"/>
 
         <c:catch var="error">
-            <c:import url="${logURL}?skipHtml=true&experiment=${appVariables.experiment}" var="logFile" />
-            <b>Log file:</b> <font class="logFile">${logName}</font> (<a href="${logURL}?download=true">download</a>)
-            <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
+            <c:redirect url="${logURL}"  />
         </c:catch>
         <c:if test="${!empty error}">
             <p>Log file not found.</p>

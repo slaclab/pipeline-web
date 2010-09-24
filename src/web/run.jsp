@@ -31,7 +31,7 @@
         <c:set var="workingDir" value="${workingDir}${param.path}"/>
 
 
-        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLofFileServletDb, workingDir, appVariables.experiment) }"/>
+        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLogFileServletDb, initParam.pipelineLogFileServletDecoratorGroup, workingDir, appVariables.experiment) }"/>
 
 
         <c:set var="logURL" value="${fn:replace(workingDir,mountPoint.mountPoint, pageContext.request.requestURL)}"/>
@@ -39,28 +39,9 @@
         <c:set var="logURL" value="${fn:replace(logURL,'run.jsp', logFilesServlet)}"/>
 
 
-        <c:set var="queryString" value="${pageContext.request.queryString}"/>
-        <c:if test="${fn:startsWith(queryString,'&')}" >
-            <c:set var="queryString" value="${fn:substringAfter(queryString,'&')}"/>
-        </c:if>
-        <c:set var="queryString" value="${fn:replace(queryString,'=','%3D')}"/>
-        <c:set var="queryString" value="${fn:replace(queryString,'&','%26')}"/>
-
-        <c:set var="logURL" value="${logURL}?skipHtml=true&href=run.jsp&queryString=${queryString}"/>
-
         <c:catch var="error">
-            <c:import url="${logURL}&experiment=${appVariables.experiment}" var="logFile"/>
-            <c:choose>
-                <c:when test="${pipeline:isFile(workingDir)}">
-                    <b>File:</b> <font class="logFile">${workingDir}</font> (<a href="${logURL}&download=true">download</a>)
-                    <pre class="log"><c:out value="${logFile}" escapeXml="true"/></pre>
-                </c:when>
-                <c:otherwise>
-                    <c:out value="${logFile}" escapeXml="false"/>
-                </c:otherwise>
-            </c:choose>
+            <c:redirect url="${logURL}" />
         </c:catch>
-
         <c:if test="${!empty error}">
             <p>Working directory not found.</p>
             <pre>

@@ -65,12 +65,12 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-web-base</artifactId>
-            <version>2.1</version>
+            <version>2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-groupmanager-web</artifactId>
-            <version>1.14</version>
+            <version>1.16-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>glast</groupId>
@@ -78,9 +78,9 @@
             <version>1.0.4</version>
         </dependency>
         <dependency>
-            <groupId>glast</groupId>
-            <artifactId>org-glast-datahandling-common</artifactId>
-            <version>1.5.3</version>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-datahandling-common</artifactId>
+            <version>1.6.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>coldtags</groupId>
@@ -97,6 +97,12 @@
             <groupId>srs</groupId>
             <artifactId>org-srs-decorator-jar</artifactId>
             <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-decorator-war</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <type>war</type>
         </dependency>
     </dependencies>
 

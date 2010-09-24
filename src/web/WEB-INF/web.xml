@@ -49,7 +49,7 @@
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
-        <url-pattern>*.jsp</url-pattern>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
 

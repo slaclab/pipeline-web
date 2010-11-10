@@ -6,14 +6,14 @@
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
-<%@taglib prefix="utils" uri="http://glast-ground.slac.stanford.edu/utils" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/GlastSQL" prefix="gsql" %>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
+<%@taglib uri="http://srs.slac.stanford.edu/sql" prefix="srs_sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Message Viewer</title> 
+    <title>Message Viewer</title>
     <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-    <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css"> 
+    <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">
 </head>
 <body>
 
@@ -30,11 +30,11 @@
     <c:set var="maximumDate" value="${param.maxDate=='None' ? -1 : param.maxDate}"/>
 </c:if>
 <%-- If clear button selected set start and end dates to default values --%>
-<c:set var="clear"   value="${param.clear}" /> 
-<c:if test= "${clear =='Default'}"> 
+<c:set var="clear"   value="${param.clear}" />
+<c:if test= "${clear =='Default'}">
     <c:set var="minimumDate" value=""/>
     <c:set var="maximumDate" value=""/>
-</c:if> 
+</c:if>
 <%-- If no start/end dates provided use default dates: start date = current date/time - 24 hours and end date = None --%>
 <c:if test="${empty minimumDate}">
     <c:set var="minimumDate" value="${logStartDate.time-preferences.defaultMessagePeriodMinutes*60*1000}"/>
@@ -43,13 +43,13 @@
     <c:set var="maximumDate" value="-1"/>
 </c:if>
 
-<c:set var="severity" value="${param.severity}"/> 
+<c:set var="severity" value="${param.severity}"/>
 <c:set var="logTask" value="${task}"/>
 <c:set var="logProcess" value="${process}" />
 <c:set var="logProcessInstance" value="${processInstance}"/>
 
 <c:if test="${!empty clear || empty severity}">
-    <c:set var="severity" value="800" /> 
+    <c:set var="severity" value="800" />
     <c:set var="logTask" value=""/>
     <c:set var="logProcess" value=""/>
     <c:set var="logProcessInstance" value=""/>
@@ -61,9 +61,9 @@
     <td colspan="20">
         Task: <pt:taskChooser name="task" selected="${logTask}" allowNone="true" useKey="true"/>
         <c:if test="${!empty logTask}">
-            Process: <pt:processChooser name="process" selected="${logProcess}" allowNone="true" task="${logTask}"/> 
+            Process: <pt:processChooser name="process" selected="${logProcess}" allowNone="true" task="${logTask}"/>
             <c:if test="${!empty logProcess}">
-                Stream <pt:processInstanceChooser name="pi" selected="${logProcessInstance}" allowNone="true" process="${logProcess}"/> 
+                Stream <pt:processInstanceChooser name="pi" selected="${logProcessInstance}" allowNone="true" process="${logProcess}"/>
             </c:if>
         </c:if>
         Severity: <select name="severity">
@@ -78,15 +78,15 @@
     </td>
 </tr>
 <tr>
-    <td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-    <td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-    
+    <td><time:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+    <td><time:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+
     <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Default" name="clear"></td>
     </td>
 </tr>
 </table>
 </form>
-<gsql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
+<srs_sql:query  var="log" defaultSortColumn="timeentered" pageSize="500">
     select log, log_level, message, timeentered, processInstance, process, processname, taskPath, taskNamePath,
     case when exception is null then 0 else 1 end hasException,
     PII.GetStreamIdPath(stream) streamIdPath
@@ -94,34 +94,34 @@
     left outer join processinstance i using (processinstance)
     left outer join process p using (process)
     left outer join taskpath t using (task)
-    where log_level > 0 
-    <c:if test="${!empty severity}"> 
-       and log_level>=? 
-       <gsql:param value="${severity}"/>
-    </c:if> 
-    <c:if test="${minimumDate !='-1'}">
-       and timeentered>=?       
-       <jsp:setProperty name="logStartDate" property="time" value="${minimumDate}"/>   
-       <gsql:dateParam value="${logStartDate}" type="timestamp"/> 
+    where log_level > 0
+    <c:if test="${!empty severity}">
+       and log_level>=?
+       <srs_sql:param value="${severity}"/>
     </c:if>
-    <c:if test="${maximumDate!='-1'}"> 
-       and timeentered<=?      
-       <jsp:setProperty name="logEndDate" property="time" value="${maximumDate}" /> 	
-       <gsql:dateParam value="${logEndDate}" type="timestamp"/> 
-    </c:if>   
+    <c:if test="${minimumDate !='-1'}">
+       and timeentered>=?
+       <jsp:setProperty name="logStartDate" property="time" value="${minimumDate}"/>
+       <srs_sql:dateParam value="${logStartDate}" type="timestamp"/>
+    </c:if>
+    <c:if test="${maximumDate!='-1'}">
+       and timeentered<=?
+       <jsp:setProperty name="logEndDate" property="time" value="${maximumDate}" />
+       <srs_sql:dateParam value="${logEndDate}" type="timestamp"/>
+    </c:if>
     <c:if test="${!empty logTask}">
        and task=?
-       <gsql:param value="${logTask}"/>
+       <srs_sql:param value="${logTask}"/>
     </c:if>
     <c:if test="${!empty logProcess}">
        and process=?
-       <gsql:param value="${logProcess}"/>
+       <srs_sql:param value="${logProcess}"/>
     </c:if>
     <c:if test="${!empty logProcessInstance}">
        and processinstance=?
-       <gsql:param value="${logProcessInstance}"/>
+       <srs_sql:param value="${logProcessInstance}"/>
     </c:if>
-</gsql:query>
+</srs_sql:query>
 
 <display:table class="datatable" name="${log}" sort="external" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
     <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time" sortable="true" headerClass="sortable" />

@@ -5,14 +5,14 @@
     <parent>
         <groupId>glast</groupId>
         <artifactId>org-glast-maven-war-project</artifactId>
-        <version>2.0</version>
+        <version>3.0</version>
     </parent>
   
     <modelVersion>4.0.0</modelVersion>
     <groupId>glast</groupId>
     <artifactId>org-glast-pipeline-web</artifactId>
-    <name>Pipeline Web Front End</name>
-    <version>2.9-SNAPSHOT</version>
+    <name>Pipeline Web Front End 2.8.4</name>
+    <version>2.8.4</version>
     <description>Pipeline Web Front End</description>
     <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
     <packaging>war</packaging>
@@ -51,16 +51,12 @@
         </repository>
     </repositories>
 
+
     <dependencies>
         <dependency>
             <groupId>glast</groupId>
             <artifactId>org-glast-maven-aida-project</artifactId>
-            <version>2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>glast</groupId>
-            <artifactId>org-glast-groupmanager-jar</artifactId>
-            <version>1.7</version>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>glast</groupId>
@@ -68,26 +64,61 @@
             <version>1.8</version>
         </dependency>
         <dependency>
-            <groupId>glast</groupId>
-            <artifactId>org-glast-base-web</artifactId>
-            <version>1.0.2</version>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-web-base</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-groupmanager-web</artifactId>
+            <version>1.16</version>
         </dependency>
         <dependency>
             <groupId>glast</groupId>
             <artifactId>org-glast-pipeline-client</artifactId>
-            <version>0.7</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>glast</groupId>
             <artifactId>org-glast-datahandling-common</artifactId>
-            <version>1.5.3-SNAPSHOT</version>
+            <version>1.5.3</version>
         </dependency>
         <dependency>
             <groupId>coldtags</groupId>
             <artifactId>jmxtag</artifactId>
             <version>2.8</version>
         </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc</artifactId>
+            <version>1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-decorator-jar</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-decorator-war</artifactId>
+            <version>1.1</version>
+            <type>war</type>
+        </dependency>
     </dependencies>
-  
+
+    <properties>
+        <experiment.decorator.group>SRSPipeline</experiment.decorator.group>
+    </properties>
+
+
+    <profiles>
+        <profile>
+            <id>Fermi</id>
+            <properties>
+                <experiment.decorator.group>FermiPipeline</experiment.decorator.group>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

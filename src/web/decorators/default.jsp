@@ -13,7 +13,7 @@
          .emphasis {color: #CC0000}
          table.filtertable { background-color: #FFCC66; }
          table.datatable td.admin { background-color: pink; padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;  }
-         
+
          table.mbeanAttributeTable {
          background:#5ff;
          }

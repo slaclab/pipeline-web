@@ -7,7 +7,6 @@
 <%@taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
 <%@taglib prefix="p" uri="http://glast-ground.slac.stanford.edu/pipeline"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
    <head>
@@ -16,7 +15,6 @@
    </head>
    <body>
 
-       <login:requireLogin/>
 
       <h1>Pipeline JMX Admin</h1>
       <c:set var="admin" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>

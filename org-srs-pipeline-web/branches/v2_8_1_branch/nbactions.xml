@@ -5,70 +5,69 @@
             <displayName>dependencyTree</displayName>
             <goals>
                 <goal>dependency:tree</goal>
-                
-                
             </goals>
             <properties>
                 <verbose>true</verbose>
             </properties>
         </action>
-        
         <action>
-            <actionName>CUSTOM-redeploy-dev</actionName>
-            <displayName>tomcat-redeploy-dev</displayName>
-            <goals>
-                <goal>package</goal>
-                <goal>tomcat:undeploy</goal>
-                <goal>tomcat:deploy</goal>
-            </goals>
-            <activatedProfiles>
-                <activatedProfile>deploy-dev</activatedProfile>
-            </activatedProfiles>
-        </action>
-        <action>
-            <actionName>CUSTOM-deploy-dev</actionName>
-            <displayName>tomcat-deploy-dev</displayName>
+            <actionName>CUSTOM-SRS-deploy-prod</actionName>
+            <displayName>SRS tomcat deploy (prod)</displayName>
             <goals>
                 <goal>package</goal>
                 <goal>tomcat:deploy</goal>
             </goals>
             <activatedProfiles>
-                <activatedProfile>deploy-dev</activatedProfile>
-            </activatedProfiles>
-        </action>
-        <action>
-            <actionName>CUSTOM-redeploy-prod</actionName>
-            <displayName>tomcat-redeploy-prod</displayName>
-            <goals>
-                <goal>package</goal>
-                <goal>tomcat:undeploy</goal>
-                <goal>tomcat:deploy</goal>
-            </goals>
-            <activatedProfiles>
+                <activatedProfile>SRS</activatedProfile>
                 <activatedProfile>deploy-prod</activatedProfile>
             </activatedProfiles>
         </action>
         <action>
-            <actionName>CUSTOM-deploy-prod</actionName>
-            <displayName>tomcat-deploy-prod</displayName>
+            <actionName>CUSTOM-SRS-deploy-local</actionName>
+            <displayName>SRS tomcat deploy (local)</displayName>
             <goals>
                 <goal>package</goal>
                 <goal>tomcat:deploy</goal>
             </goals>
             <activatedProfiles>
-                <activatedProfile>deploy-prod</activatedProfile>
-            </activatedProfiles>
-        </action>
-        <action>
-            <actionName>CUSTOM-deploy-local</actionName>
-            <displayName>tomcat-deploy-local</displayName>
-            <goals>
-                <goal>package</goal>
-                <goal>tomcat:deploy</goal>
-            </goals>
-            <activatedProfiles>
+                <activatedProfile>SRS</activatedProfile>
                 <activatedProfile>deploy-local</activatedProfile>
             </activatedProfiles>
         </action>
-        
+        <action>
+            <actionName>CUSTOM-SRS-deploy-dev</actionName>
+            <displayName>SRS tomcat deploy (dev)</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>tomcat:deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>SRS</activatedProfile>
+                <activatedProfile>deploy-dev</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-Fermi-deploy-dev</actionName>
+            <displayName>Fermi tomcat deploy (dev)</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>tomcat:deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>Fermi</activatedProfile>
+                <activatedProfile>deploy-dev</activatedProfile>
+            </activatedProfiles>
+        </action>
+        <action>
+            <actionName>CUSTOM-Fermi-deploy-prod</actionName>
+            <displayName>Fermi tomcat deploy (prod)</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>tomcat:deploy</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>Fermi</activatedProfile>
+                <activatedProfile>deploy-prod</activatedProfile>
+            </activatedProfiles>
+        </action>
     </actions>

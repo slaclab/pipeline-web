@@ -16,6 +16,8 @@
    </head>
    <body>
 
+       <login:requireLogin/>
+
       <h1>Pipeline JMX Admin</h1>
       <c:set var="admin" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
       <sql:query var="result">

@@ -7,12 +7,12 @@
         </session-timeout>
     </session-config>
 
-    <context-param>
+   <context-param>
         <param-name>
             version
         </param-name>
         <param-value>
-            2.8.4-SNAPSHOT
+            ${pom.version}
         </param-value>
     </context-param>
 

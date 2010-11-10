@@ -16,15 +16,15 @@
       <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
          <c:redirect url="noPermission.jsp"/>
       </c:if>
-      
+
       <c:choose>
          <c:when test="${param.submit == 'CANCEL'}">
             <c:redirect url="index.jsp"/>
          </c:when>
          <c:when test="${param.submit == 'Rollback Selected'}">
             <p class="warning">
-            You have requested to rollback ${fn:length(paramValues["select"])} processes 
-            from task <i>${taskName}</i> process <i>${processName}</i>. 
+            You have requested to rollback ${fn:length(paramValues["select"])} processes
+            from task <i>${taskName}</i> process <i>${processName}</i>.
             This operation cannot be undone!</p>
 
             <form method="post">
@@ -38,8 +38,8 @@
          </c:when>
          <c:when test="${param.submit == 'Rollback Selected Streams'}">
             <p class="warning">
-            You have requested to rollback ${fn:length(paramValues["select"])} streams 
-            from task <i>${taskName}</i>. 
+            You have requested to rollback ${fn:length(paramValues["select"])} streams
+            from task <i>${taskName}</i>.
             This operation cannot be undone!</p>
 
             <form method="post">
@@ -56,16 +56,16 @@
             <sql:query var="notation">
              select * from notation where task=?
               <sql:param value="${task}"/>
-            </sql:query>  
+            </sql:query>
             <sql:query var="datasets">
             select count(*) count from dataset
                          join processinstance using (processinstance)
                          join process using (process)
                          join ( select task from task start with Task=? connect by prior Task = ParentTask) using (task)
                <sql:param value="${task}"/>
-            </sql:query> 
+            </sql:query>
             <p class="warning">
-            You have requested to delete task <i>${taskVersion}</i>.</p> 
+            You have requested to delete task <i>${taskVersion}</i>.</p>
             <c:if test="${notation.rowCount>0}">
                <p>Created by ${notation.rows[0].username} at ${notation.rows[0].notedate} with comment:  <i><c:out value="${notation.rows[0].comments}" escapeXml="true"/></i></p>
             </c:if>
@@ -81,11 +81,11 @@
             </form>
          </c:when>
          <c:when test="${param.submit == 'Confirm Rollback!'}">
-            <p:rollback processes="${paramValues['select']}"/> 
+            <p:rollback processes="${paramValues['select']}"/>
             <p class="message">Rollback completed successfully.</a>
          </c:when>
          <c:when test="${param.submit == 'Confirm Stream Rollback!'}">
-            <p:rollback streams="${paramValues['select']}" args="${param.args}"/>    
+            <p:rollback streams="${paramValues['select']}" args="${param.args}"/>
             <p class="message">Rollback completed successfully.</a>
          </c:when>
          <c:when test="${param.submit=='Confirm Delete!'}">
@@ -93,6 +93,6 @@
             <p class="message">Delete completed successfully.</a>
          </c:when>
       </c:choose>
-      
+
    </body>
 </html>

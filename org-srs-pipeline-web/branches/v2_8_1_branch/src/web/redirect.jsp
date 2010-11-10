@@ -8,25 +8,25 @@
    <head>
       <title>Redirect to processing data</title>
    </head>
-   <body> 
-      
+   <body>
+
       <c:choose>
-         <c:when test = "${param.show == 'stream'}">   
-            <sql:query var="data">       
-               select stream from stream 
+         <c:when test = "${param.show == 'stream'}">
+            <sql:query var="data">
+               select stream from stream
                join task using (task)
                join taskpath using (task)
-               where taskversion like ? 
+               where taskversion like ?
                and streamid = ?
                order by version desc,revision desc, islatest desc
                <sql:param value="${param.taskname}%"/>
                <sql:param value="${param.streamid}"/>
             </sql:query>
             <c:redirect url="si.jsp?&stream=${data.rows[0].stream}"/>
-         </c:when>         
+         </c:when>
          <c:otherwise>
             Unrecognized request type show=${param.show}
-         </c:otherwise> 
+         </c:otherwise>
       </c:choose>
    </body>
 </html>

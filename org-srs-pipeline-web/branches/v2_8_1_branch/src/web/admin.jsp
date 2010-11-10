@@ -67,18 +67,18 @@
             Stream:&nbsp;<input type="text" name="streamid" value="" size="10" />
             Args:&nbsp;<input type="text" name="args" value="" size="50" />
             <input type="submit" value="Create Stream" name="submit">
-         </form> 
+         </form>
 
          <h2>Restart Server</h2>
          <form method="POST">
             <input type="submit" value="Restart Server" name="submit">
          </form>
-         
+
          <h2>Delete Task</h2>
          <form method="POST" action="confirm.jsp">
             Task:&nbsp;<pt:taskChooser name="task" showAllVersions="true" allowNone="true" useKey="true"/>
             <input type="submit" value="Delete Task" name="submit">
-         </form> 
+         </form>
       </c:if>
 
    </body>

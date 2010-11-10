@@ -4,7 +4,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib uri="http://glast-ground.slac.stanford.edu/utils" prefix="utils" %>
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
+<%@taglib uri="http://srs.slac.stanford.edu/utils" prefix="utils" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
@@ -14,7 +15,7 @@
 <head>
     <title>Streams for task: ${taskName}</title>
     <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-    <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
+    <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">
 </head>
 <body>
 
@@ -37,7 +38,7 @@
     <c:set var="min" value=""/>
     <c:set var="max" value=""/>
     <c:set var="minimumDate" value="-1"/>
-    <c:set var="maximumDate" value="-1"/> 
+    <c:set var="maximumDate" value="-1"/>
     <c:set var="status" value=""/>
 </c:if>
 
@@ -47,53 +48,53 @@
     from stream where task=?
     <sql:param value="${param.task}"/>
     <c:if test="${showLatest}"> and isLatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
-    <c:if test="${!empty status}"> 
-        <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />      
+    <c:if test="${!empty status}">
+        <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />
         <c:set var ="LastReq" value = "${fn:length(paramValues.status) -1}" />
-        <c:choose> 
-            <c:when  test = "${NumStatusReqs > 1}"> 
+        <c:choose>
+            <c:when  test = "${NumStatusReqs > 1}">
                 and streamstatus in (
-                <c:forEach  var="i" begin= "0" end="${NumStatusReqs -'1'}" step="1" > 
-                    <c:set var ="testi" value = "${i}" />                                          
-                    <c:if test = "${testi== LastReq}">           
-                        '${paramValues.status[i]}'                        
+                <c:forEach  var="i" begin= "0" end="${NumStatusReqs -'1'}" step="1" >
+                    <c:set var ="testi" value = "${i}" />
+                    <c:if test = "${testi== LastReq}">
+                        '${paramValues.status[i]}'
                     </c:if>
                     <c:if test = "${testi != LastReq}">
-                        '${paramValues.status[i]}',                     
-                    </c:if>                       
+                        '${paramValues.status[i]}',
+                    </c:if>
                 </c:forEach>
                 )
-            </c:when>   
-            <c:otherwise>     
+            </c:when>
+            <c:otherwise>
                 <c:if test= "${status != 'NOTSUCCESS'}">
                     and streamstatus=?
                     <sql:param value="${status}"/>
                 </c:if>
                 <c:if test= "${status == 'NOTSUCCESS'}">
-                    and streamstatus != 'SUCCESS'            
-                </c:if>         
+                    and streamstatus != 'SUCCESS'
+                </c:if>
             </c:otherwise>
         </c:choose>
-    </c:if>   
+    </c:if>
     <c:if test="${!empty min}">
-        and StreamId>=? 
+        and StreamId>=?
         <sql:param value="${min}"/>
     </c:if>
     <c:if test="${!empty max}">
         and StreamId<=?
         <sql:param value="${max}"/>
     </c:if>
-    <c:if test="${minimumDate>0}"> 
+    <c:if test="${minimumDate>0}">
         and STARTDATE>=?
         <jsp:useBean id="minDateUsed" class="java.util.Date" />
-        <jsp:setProperty name="minDateUsed" property="time" value="${minimumDate}" />       
-        <sql:dateParam value="${minDateUsed}" type="timestamp"/> 
+        <jsp:setProperty name="minDateUsed" property="time" value="${minimumDate}" />
+        <sql:dateParam value="${minDateUsed}" type="timestamp"/>
     </c:if>
     <c:if test="${maximumDate>0}">
         and ENDDATE<=?
         <jsp:useBean id="maxDateUsed" class="java.util.Date" />
         <jsp:setProperty name="maxDateUsed" property="time" value="${maximumDate}" />
-        <sql:dateParam value="${maxDateUsed}" type="timestamp"/> 
+        <sql:dateParam value="${maxDateUsed}" type="timestamp"/>
     </c:if>
 </sql:query>
 
@@ -102,22 +103,22 @@
 </sql:query>
 
 <form name="DateForm">
-    <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td> 
+    <table class="filtertable"><tr><th>Stream</th><td>Min</td><td><input type="text" name="min" value="${min}"></td><td>Max</td><td><input type="text" name="max" value="${max}"></td>
         <td>Status: <select size="3" name="status" multiple>
             <option value="" ${status=="" ? "selected" : ""}>All</option>
-        <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option> 
+        <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option>
         <c:forEach var="row" items="${statii.rows}">
-            <c:set var= "found" value = "0" /> 
-            <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
+            <c:set var= "found" value = "0" />
+            <c:forEach  var = "seletedStatus" items = "${paramValues.status}" >
                 <c:if test = "${seletedStatus ==  row.STREAMSTATUS}">
-                    <c:set var= "found" value = "1" />    
-                </c:if>                                                    
-            </c:forEach>   
-            <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>                                                               
-        </c:forEach>                         
+                    <c:set var= "found" value = "1" />
+                </c:if>
+            </c:forEach>
+            <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>
+        </c:forEach>
         <tr><th>Date</th>
-            <td>Start</td><td><utils:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
-            <td>End</td><td><utils:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+            <td>Start</td><td><time:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
+            <td>End</td><td><time:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PDT"/></td>
             <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
         <input type="hidden" name="task" value="${task}"></td></tr>
         <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
@@ -141,7 +142,7 @@
              }
            }
          }
-</script>  
+</script>
 <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
 <c:choose>
 <c:when test="${param.format=='stream'}">
@@ -164,11 +165,11 @@
     <c:set var="p" value="${fn:split(row.progress,':')}"/>
     <utils:progressBar donePercentage="${100*p[0]/(p[0]+p[1]+p[2])}" errorPercentage="${100*p[1]/(p[0]+p[1]+p[2])}" />
 </display:column>
-<c:if test="${adminMode}">   
-    <display:column property="isLatestStreamSelector" title=" " class="admin"/>       
+<c:if test="${adminMode}">
+    <display:column property="isLatestStreamSelector" title=" " class="admin"/>
     <display:footer>
         <tr>
-            <td colspan="20" class="admin">     
+            <td colspan="20" class="admin">
                 <a href="javascript:void(0)" onClick="ShowAll(true);">Select all</a>&nbsp;.&nbsp;
                 <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
                 <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
@@ -177,7 +178,7 @@
             </td>
         </tr>
     </display:footer>
-    </tr>   
+    </tr>
 </c:if>
 </display:table>
 </form>
@@ -186,7 +187,7 @@
         <li><a href="streams.jsp?task=${param.task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
     </ul>
 </c:if>
-</c:otherwise>                                                                                                                                                                                                           
+</c:otherwise>
 </c:choose>
 </body>
 </html>

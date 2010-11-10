@@ -6,12 +6,16 @@
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
    <head>
       <title>Pipeline: Admin</title>
    </head>
    <body>
+
+       <login:requireLogin/>
+
       <c:if test="${!gm:isUserInGroup(userName,'PipelineAdmin')}">
          <c:redirect url="noPermission.jsp"/>
       </c:if>

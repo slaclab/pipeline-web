@@ -4,6 +4,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="logFilesUtils" uri="http://srs.slac.stanford.edu/fileUtils" %>
+<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
     <head>
@@ -11,6 +12,7 @@
     </head>
     <body>
 
+        <login:requireLogin/>
 
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 

@@ -6,6 +6,7 @@
 <%@taglib prefix="pipeline" uri="http://glast-ground.slac.stanford.edu/pipeline" %>
 <%@taglib prefix="srs_utils" uri="http://srs.slac.stanford.edu/utils" %>
 <%@taglib prefix="logFilesUtils" uri="http://srs.slac.stanford.edu/fileUtils" %>
+<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
     <head>
@@ -13,6 +14,7 @@
     </head>
     <body>
 
+        <login:requireLogin/>
 
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 

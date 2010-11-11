@@ -4,6 +4,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="logFilesUtils" uri="http://srs.slac.stanford.edu/fileUtils" %>
+<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
     <head>
@@ -11,6 +12,7 @@
     </head>
     <body>
 
+        <login:requireLogin/>
 
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 
@@ -34,16 +36,22 @@
         <c:set var="logFilesServlet" value="PipelineLogFiles/${mountPoint.decorator}/" />
         <c:set var="logURL" value="${fn:replace(logURL,'log.jsp', logFilesServlet)}"/>
 
-        <c:catch var="error">
-            <c:redirect url="${logURL}"  />
-        </c:catch>
-        <c:if test="${!empty error}">
-            <p>Log file not found.</p>
-            <pre>
-             ${error}
-            </pre>
-        </c:if>
+        <c:set var="contextPathInfo" value="/${fn:substring(logURL,fn:indexOf(logURL,logFilesServlet),-1)}"/>
 
-            
+        <c:set var="path" value="${fn:replace(param.path,'..','')}"/>
+        <c:set var="path" value="${fn:replace(path,'//','/')}"/>
+
+
+        <c:set var="logURL" value="${contextPathInfo}?href=log.jsp&queryString=pi=${processInstance}&path=${path}&contextPathInfo=${contextPathInfo}"/>
+
+        <c:choose>
+            <c:when test="${! empty param.download}">
+                <c:redirect url="${logURL}&download=true"/>
+            </c:when>
+            <c:otherwise>
+                <c:import url="${logURL}"/>
+            </c:otherwise>
+        </c:choose>
+
     </body>
 </html>

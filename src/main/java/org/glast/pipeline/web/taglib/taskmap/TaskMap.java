@@ -14,7 +14,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.glast.pipeline.web.util.*;
 /**
- * Task for displaying task image map
+ * A tag for uploading xml files to the pipeline database
  * @author tonyj
  */
 public class TaskMap extends SimpleTagSupport
@@ -43,7 +43,7 @@ public class TaskMap extends SimpleTagSupport
                 writer.println("<map name=\"taskMap"+task+"\">");
                 writer.println(bytes.toString());
                 writer.println("</map>");
-                writer.println("<img src=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"\" usemap=\"#taskMap"+task+"\" border=\"0\"/>");
+                writer.println("<img src=\"TaskImageServlet?task="+task+"&gvOrientation="+gvOrientation+"\" usemap=\"taskMap"+task+"\"/>");
             }
             catch (IOException x)
             {

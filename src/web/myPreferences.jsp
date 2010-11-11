@@ -9,7 +9,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <%-- --%>
 <%@taglib prefix="preferences" uri="http://srs.slac.stanford.edu/preferences" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%-- --%>
 
 <html>
@@ -18,16 +18,16 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
         <title>Set User Preferences Form</title>
     </head>
     <body>
-        
+
         <h1>Set User Preferences Form</h1>
         This form allows you to set the default settings to be used when you first logon to Pipeline-II.<br>
         Select items from the pull down menus and then click the <strong>Update Preferences</strong> button.<p>
-        
+
         <preferences:preferences name="preferences">
-            
+
             <tr>
                 <th colspan="3">
-                    Preferences For Pipeline II Main Page
+                   Preferences For Pipeline II Main Page
                 </th>
             </tr>
             <preferences:preference name="task"  size="50" title="Default Task">
@@ -37,13 +37,13 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <preferences:value value="active" text="Tasks with Active Runs"/>
                 <preferences:value value="last30" text="Active in Last 30 days"/>
             </preferences:preference>
-            
+
             <preferences:preference name="taskVersion" size="50" title="Default Version ">
                 <preferences:value value="latestVersions" text="Latest Task Versions"/>
                 <preferences:value value="allVersions" text="All Task Versions"/>
                 <preferences:value value="mergeVersions" text="Merge Task Versions"/>
             </preferences:preference>
-            
+
             <preferences:preference name="defaultSort" size = "50" title="Default Sort Column">
                 <preferences:value value="1" text="Last Active"/>
                 <preferences:value value="2" text="Task Name"/>
@@ -58,62 +58,28 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
                 <preferences:value value="11" text="Canceling"/>
                 <preferences:value value="12" text="Canceled"/>
             </preferences:preference>
-            
+
+
             <preferences:preference name="defaultOrder" size="50" title="Default Sort Order ">
                 <preferences:value value="ascending"/>
                 <preferences:value value="descending"/>
             </preferences:preference>
-            <tr>
+             <tr>
                 <th colspan="3">
                     Preferences For Streams Processing<br>
-                </th>
-            </tr> 
-            <preferences:preference name="showStreams" size="5" title="Default Number of Streams">
-            </preferences:preference>
-       
-            <preferences:preference name="defaultStreamPeriodHours" size="5" title="Default Stream period (last N hours) ">
-            </preferences:preference>
-            
-            <tr>
-                <th colspan="3">
-                    Preferences For Process Period<br>
-                </th>
-            </tr> 
-            <preferences:preference name="defaultProcessPeriodHours" size="5" title="Default processes in the last N hours">
-            </preferences:preference>
-            
-            <tr>
-                <th colspan="3">
-                    Preferences For JobProcessingStats Plots Period<br>
+                    If there are more than 50 records all 50 will be shown under certain conditions
                 </th>
             </tr>
-            <preferences:preference name="defaultPerfPlotHours" size="5" title="Default Performance Plot Period (last N hours) ">
+            <preferences:preference name="showStreams" size="5" title="Number of Streams">
             </preferences:preference>
-
-            <tr>
+              <tr>
                 <th colspan="3">
-                    Preferences For P2stat Plots <br>
+                    Preferences For Message Viewer
                 </th>
             </tr>
-            <preferences:preference name="defaultP2statHours" size="5" title="Default Performance Period (last N hours) ">
-            </preferences:preference>
-
-            <tr>
-                <th colspan="3">
-                    Preferences For LogViewer Period
-                </th>
-            </tr>            
-            <preferences:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)">
-            </preferences:preference>
-
-            <tr>
-                <th colspan="3">
-                    Preferences For DataProcessingStats
-                </th>
-            </tr>
-            <preferences:preference name="defaultDPhours" size="5" title="Default time period (hours)">
-            </preferences:preference>
+            <preferences:preference name="defaultMessagePeriodMinutes" size="5" title="Default time period (minutes)"/>
 
         </preferences:preferences>
+
     </body>
 </html>

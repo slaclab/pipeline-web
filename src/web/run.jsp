@@ -6,6 +6,7 @@
 <%@taglib prefix="pipeline" uri="http://glast-ground.slac.stanford.edu/pipeline" %>
 <%@taglib prefix="srs_utils" uri="http://srs.slac.stanford.edu/utils" %>
 <%@taglib prefix="logFilesUtils" uri="http://srs.slac.stanford.edu/fileUtils" %>
+<%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
     <head>
@@ -13,8 +14,12 @@
     </head>
     <body>
 
+        <login:requireLogin/>
 
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
+
+        <c:set var="path" value="${fn:replace(param.path,'..','')}"/>
+        <c:set var="path" value="${fn:replace(path,'//','/')}"/>
 
         <sql:query var="name">
             select WORKINGDIR,JOBSITE from PROCESSINSTANCE where PROCESSINSTANCE=?
@@ -28,7 +33,7 @@
         <c:if test="${pipeline:isFile(workingDir)}">
             <c:set var="workingDir" value="${workingDir}/"/>
         </c:if>
-        <c:set var="workingDir" value="${workingDir}${param.path}"/>
+        <c:set var="workingDir" value="${workingDir}${path}"/>
 
 
         <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLogFileServletDb, initParam.pipelineLogFileServletDecoratorGroup, workingDir, appVariables.experiment) }"/>
@@ -38,17 +43,19 @@
         <c:set var="logFilesServlet" value="PipelineLogFiles/${mountPoint.decorator}/" />
         <c:set var="logURL" value="${fn:replace(logURL,'run.jsp', logFilesServlet)}"/>
 
+        <c:set var="contextPathInfo" value="/${fn:substring(logURL,fn:indexOf(logURL,logFilesServlet),-1)}"/>
 
-        <c:catch var="error">
-            <c:redirect url="${logURL}" />
-        </c:catch>
-        <c:if test="${!empty error}">
-            <p>Working directory not found.</p>
-            <pre>
-             ${error}
-            </pre>
-        </c:if>
 
+        <c:set var="logURL" value="${contextPathInfo}?href=run.jsp&queryString=pi=${processInstance}&path=${! empty path ? path : '.' }&contextPathInfo=${contextPathInfo}"/>
+
+        <c:choose>
+            <c:when test="${! empty param.download}">
+                <c:redirect url="${logURL}&download=true"/>
+            </c:when>
+            <c:otherwise>
+                <c:import url="${logURL}"/>
+            </c:otherwise>
+        </c:choose>
 
     </body>
 </html>

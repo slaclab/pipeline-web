@@ -3,9 +3,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="srs_utils" uri="http://srs.slac.stanford.edu/utils" %>
 <%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <table width="100%">
     <tr>
@@ -52,10 +52,10 @@
                     </td>
                 </tr>
             </table>
-        </td>  
+        </td>
     </tr>
 </table>
-<c:if test="${!empty param.processingMessage}"> 
+<c:if test="${!empty param.processingMessage}">
     <strong><p align="center"> ${param.processingMessage}</p> </strong>
 </c:if>
 <c:if test="${!empty task}">
@@ -65,5 +65,3 @@
         <c:if test="${!empty processName}">/ <a href="process.jsp?process=${process}">${processName}</a> </c:if>
     </div>
 </c:if>
-
-

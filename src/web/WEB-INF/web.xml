@@ -7,7 +7,7 @@
         </session-timeout>
     </session-config>
 
-    <context-param>
+   <context-param>
         <param-name>
             version
         </param-name>
@@ -16,26 +16,17 @@
         </param-value>
     </context-param>
 
-    <!-- Default Database Connection -->
-    <context-param>
-        <param-name>
-            javax.servlet.jsp.jstl.sql.dataSource
-        </param-name>
-        <param-value>
-            jdbc/pipeline-ii-prod
-        </param-value>
-    </context-param>
 
     <filter>
         <filter-name>ModeSwitcherFilter</filter-name>
         <filter-class>org.srs.web.base.filters.modeswitcher.ModeSwitcherFilter</filter-class>
         <init-param>
             <param-name>experiment</param-name>
-            <param-value>${experiment.name}</param-value>
+            <param-value>Fermi</param-value>
         </init-param>
         <init-param>
             <param-name>configDb</param-name>
-            <param-value>${experiment.configuration.database}</param-value>
+            <param-value>jdbc/config-fermi</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -49,9 +40,8 @@
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
-
 
     <filter>
         <filter-name>CheckCookiesFilter</filter-name>
@@ -114,15 +104,15 @@
         <filter-class>org.srs.web.base.preferences.filter.PreferencesFilter</filter-class>
         <init-param>
             <param-name>preferencesDatabase</param-name>
-            <param-value>${experiment.configuration.database}</param-value>
+            <param-value>jdbc/config-fermi</param-value>
         </init-param>
         <init-param>
             <param-name>application</param-name>
-            <param-value>${build.finalName}</param-value>
+            <param-value>Pipeline-II</param-value>
         </init-param>
         <init-param>
             <param-name>experiment</param-name>
-            <param-value>${build.finalName}</param-value>
+            <param-value>Fermi</param-value>
         </init-param>
         <init-param>
             <param-name>preferences</param-name>
@@ -235,7 +225,7 @@
             pipelineLogFileServletDb
         </param-name>
         <param-value>
-            ${experiment.configuration.database}
+            jdbc/config-fermi
         </param-value>
     </context-param>
 
@@ -244,7 +234,7 @@
             pipelineLogFileServletDecoratorGroup
         </param-name>
         <param-value>
-            ${experiment.decorator.group}
+            FermiPipeline
         </param-value>
     </context-param>
 
@@ -254,17 +244,20 @@
         <servlet-class>org.srs.decorator.servlet.DecoratorServlet</servlet-class>
         <init-param>
             <param-name>configDb</param-name>
-            <param-value>${experiment.configuration.database}</param-value>
+            <param-value>jdbc/config-fermi</param-value>
         </init-param>
         <init-param>
             <param-name>decoratorGroup</param-name>
-            <param-value>${experiment.decorator.group}</param-value>
+            <param-value>FermiPipeline</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>PipelineLogFileServlet</servlet-name>
         <url-pattern>/PipelineLogFiles/*</url-pattern>
     </servlet-mapping>
+
+
+
 
 
 </web-app>

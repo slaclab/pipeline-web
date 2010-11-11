@@ -16,15 +16,6 @@
         </param-value>
     </context-param>
 
-    <!-- Default Database Connection -->
-    <context-param>
-        <param-name>
-            javax.servlet.jsp.jstl.sql.dataSource
-        </param-name>
-        <param-value>
-            jdbc/pipeline-ii-prod
-        </param-value>
-    </context-param>
 
     <filter>
         <filter-name>ModeSwitcherFilter</filter-name>

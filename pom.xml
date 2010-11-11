@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>glast</groupId>
     <artifactId>org-glast-pipeline-web</artifactId>
-    <name>Pipeline Web Front End 2.8.4</name>
-    <version>2.8.4</version>
+    <name>Pipeline Web Front End 2.8.5-SNAPSHOT</name>
+    <version>2.8.5-SNAPSHOT</version>
     <description>Pipeline Web Front End</description>
     <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
     <packaging>war</packaging>

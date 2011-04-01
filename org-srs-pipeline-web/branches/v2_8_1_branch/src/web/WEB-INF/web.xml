@@ -127,7 +127,7 @@
 
     <context-param>
         <param-name>org.srs.web.base.datasource.mode</param-name>
-        <param-value>dataSource</param-value>
+        <param-value>dataSourceMode</param-value>
     </context-param>
     <context-param>
         <param-name>org.srs.web.base.datasource.variable</param-name>

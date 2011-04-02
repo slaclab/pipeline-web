@@ -65,17 +65,17 @@
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
                     <td colspan="5"><strong>Select Task</strong>:
-                    <select name="taskName">
-                        <sql:query var="taskdata">
-                            select distinct taskname
-                            from ${datatbl}
-                            order by taskname
-                        </sql:query>
-                        <option value="ALL">All Tasks</option>
-                        <c:forEach items="${taskdata.rows}" var="taskrow">
-                            <option value="${taskrow.taskname}" ${taskrow.taskname == sessionTaskName ? 'selected' : ''}>${taskrow.taskname}</option>
-                        </c:forEach>
-                </select>		  </tr>
+                        <select name="taskName">
+                            <sql:query var="taskdata">
+                                select distinct taskname
+                                from ${datatbl}
+                                order by taskname
+                            </sql:query>
+                            <option value="ALL">All Tasks</option>
+                            <c:forEach items="${taskdata.rows}" var="taskrow">
+                                <option value="${taskrow.taskname}" ${taskrow.taskname == sessionTaskName ? 'selected' : ''}>${taskrow.taskname}</option>
+                            </c:forEach>
+                        </select>		  </tr>
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
 
                     <td><strong>Start</strong> <time:dateTimePicker size="20" name="startTime" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td>
@@ -85,7 +85,7 @@
 
                 <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"></td>
                 </tr>
-        </table></form>
+            </table></form>
 
         <jsp:useBean id="endTimeBean" class="java.util.Date" />
         <c:set var="endRange" value="${endTimeBean}"/>
@@ -151,7 +151,7 @@
 
         <P><span class="emphasis"> Starting Date: ${startRange}
                 &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
-        ${fn:length(data.rows)} records found from table ${plotby} with group by ${groupby}</span></P>
+                ${fn:length(data.rows)} records found from table ${plotby} with group by ${groupby}</span></P>
 
         <c:if test="${data.rowCount > 0}">
 
@@ -239,17 +239,17 @@
         <c:if test="${sessionTaskName == 'ALL' && data.rowCount>0}">
             <sql:query var="taskdata">
                 with tasks as (
-                 select taskname, sum(running) running
-                 from processingstatisticshour
-                 where entered>=? and entered<=? and running>0
-                 <sql:dateParam value="${startRange}"/>
-                 <sql:dateParam value="${endRange}"/>
-                 group by taskname
-                 order by running desc
+                select taskname, sum(running) running
+                from processingstatisticshour
+                where entered>=? and entered<=? and running>0
+                <sql:dateParam value="${startRange}"/>
+                <sql:dateParam value="${endRange}"/>
+                group by taskname
+                order by running desc
                 )
-               select 'TOTAL' taskname, count(*) running from tasks
-               union all
-               select taskname,running from tasks where rownum<=25
+                select 'TOTAL' taskname, count(*) running from tasks
+                union all
+                select taskname,running from tasks where rownum<=25
             </sql:query>
 
             Showing
@@ -286,33 +286,36 @@
                 </c:if>
             </sql:query>
 
-            <aida:plotter height="600">
-                <aida:region  title="Running processes by task">
-                    <aida:style>
-                        <aida:style type="legendBox">
-                            <aida:attribute name="isVisible" value="true"/>
-                        </aida:style>
-                        <aida:style type="statisticsBox">
-                            <aida:attribute name="isVisible" value="false"/>
-                        </aida:style>
-                        <aida:style type="xAxis">
-                            <aida:attribute name="label" value=""/>
-                            <aida:attribute name="type" value="date"/>
-                        </aida:style>
-                        <aida:style type="data">
-                            <aida:attribute name="connectDataPoints" value="true"/>
-                        </aida:style>
-                    </aida:style>
+            <c:if test="${ tasks.rowCount > 0 }">
 
-                    <aida:tuple var="tuple" query="${tasks}"/>
-                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">
-                        <c:if test="${taskrow.taskname != 'TOTAL'}">
-                            <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />
-                            <aida:plot var="${running}"/>
-                        </c:if>
-                    </c:forEach>
-                </aida:region>
-            </aida:plotter>
+                <aida:plotter height="600">
+                    <aida:region  title="Running processes by task">
+                        <aida:style>
+                            <aida:style type="legendBox">
+                                <aida:attribute name="isVisible" value="true"/>
+                            </aida:style>
+                            <aida:style type="statisticsBox">
+                                <aida:attribute name="isVisible" value="false"/>
+                            </aida:style>
+                            <aida:style type="xAxis">
+                                <aida:attribute name="label" value=""/>
+                                <aida:attribute name="type" value="date"/>
+                            </aida:style>
+                            <aida:style type="data">
+                                <aida:attribute name="connectDataPoints" value="true"/>
+                            </aida:style>
+                        </aida:style>
+
+                        <aida:tuple var="tuple" query="${tasks}"/>
+                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">
+                            <c:if test="${taskrow.taskname != 'TOTAL'}">
+                                <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />
+                                <aida:plot var="${running}"/>
+                            </c:if>
+                        </c:forEach>
+                    </aida:region>
+                </aida:plotter>
+            </c:if>
         </c:if>
     </body>
 </html>

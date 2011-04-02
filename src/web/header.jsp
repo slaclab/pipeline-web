@@ -38,7 +38,7 @@
                 </tr>
                 <tr>
                     <td align="right">
-                        <login:login useQueryString="true"/> Mode: [ <srs_utils:modeChooser mode="dataSource" href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><srs_utils:conditonalLink url="myPreferences.jsp" name="Preferences" /></c:if>
+                        <login:login useQueryString="true"/> Mode: [ <srs_utils:modeChooser mode="dataSourceMode" href="index.jsp"/> ]  <c:if test="${ ! empty userName }"><srs_utils:conditonalLink url="myPreferences.jsp" name="Preferences" /></c:if>
                     </td>
                 </tr>
                 <tr>

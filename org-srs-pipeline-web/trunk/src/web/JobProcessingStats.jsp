@@ -21,7 +21,7 @@
 
         <jsp:useBean id="startTimeBean" class="java.util.Date" />
         <jsp:useBean id="endTimeBean" class="java.util.Date" />
-        
+
         <c:set var="isSubmit" value="${param.filter}" />
         <c:set var="isDefault" value="${param.default}" />
         <c:set var="startTime" value="${param.startTime}" />
@@ -31,11 +31,11 @@
             <fmt:parseNumber var="hours" value="${param.hours}" type="number" integerOnly="true"/>
         </c:catch>
 
-       <c:set var="sessionTaskName" value="${taskName}" />
- 
-         <c:if test="${empty firstTimeJPStats}">
-             <%-- if no user preference then default hours comes from myPreferences.java
-              if user preference is -1 then set it to myPreferences.java default of 7 --%>
+        <c:set var="sessionTaskName" value="${taskName}" />
+
+        <c:if test="${empty firstTimeJPStats}">
+            <%-- if no user preference then default hours comes from myPreferences.java
+             if user preference is -1 then set it to myPreferences.java default of 7 --%>
             <c:set var="hours" value="${preferences.defaultPerfPlotHours}"/>
             <c:set var="sessionHours" value="${hours}" scope="session"/>
             <c:set var="sessionUseHours" value="true" scope="session"/> 
@@ -47,53 +47,53 @@
             <c:set var="firstTimeJPStats" value="beenHereDoneThat2" scope="session"/>
         </c:if>
 
-   <%--   <c:if test="${isSubmit == 'Submit'}"> --%>
-            <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" />
-            <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" />
-            <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
-            <c:set var="userSelectedTaskName" value="${!empty taskName}" />
+        <%--   <c:if test="${isSubmit == 'Submit'}"> --%>
+        <c:set var="userSelectedStartTime" value="${!empty startTime && startTime != '-1' && startTime != sessionStartTime}" />
+        <c:set var="userSelectedEndTime" value="${!empty endTime && endTime != '-1' && endTime != sessionEndTime}" />
+        <c:set var="userSelectedHours" value="${!empty hours &&  !userSelectedStartTime && !userSelectedEndTime}" />
+        <c:set var="userSelectedTaskName" value="${!empty taskName}" />
 
-            <c:choose>
-                <c:when test="${userSelectedTaskName}">
-                    <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
-                </c:when>
-                <c:when test="${!userSelectedTaskName && empty sessionTaskName}">
-                    <c:set var ="sessionTaskName" value="ALL" scope="session"/>
-                </c:when>
-            </c:choose>
+        <c:choose>
+            <c:when test="${userSelectedTaskName}">
+                <c:set var ="sessionTaskName" value="${taskName}" scope="session"/>
+            </c:when>
+            <c:when test="${!userSelectedTaskName && empty sessionTaskName}">
+                <c:set var ="sessionTaskName" value="ALL" scope="session"/>
+            </c:when>
+        </c:choose>
 
-            <c:choose>
-                <c:when test="${userSelectedStartTime || userSelectedEndTime}">
-                    <c:set var ="sessionUseHours" value="false" scope="session"/>
-                    <c:set var="sessionHours" value="" scope="session"/>
-                    <c:set var="hours" value=""/>
-                    <c:if test="${userSelectedStartTime}" >
-                        <c:set var ="sessionStartTime" value="${startTime}" scope="session"/>
-                        <c:if test="${endTime == '-1'}">
-                            <c:set var ="sessionEndTime" value="${endTimeBean.time}" scope="session"/>
-                        </c:if>
+        <c:choose>
+            <c:when test="${userSelectedStartTime || userSelectedEndTime}">
+                <c:set var ="sessionUseHours" value="false" scope="session"/>
+                <c:set var="sessionHours" value="" scope="session"/>
+                <c:set var="hours" value=""/>
+                <c:if test="${userSelectedStartTime}" >
+                    <c:set var ="sessionStartTime" value="${startTime}" scope="session"/>
+                    <c:if test="${endTime == '-1'}">
+                        <c:set var ="sessionEndTime" value="${endTimeBean.time}" scope="session"/>
                     </c:if>
-                    <c:if test="${userSelectedEndTime}">
-                        <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
-                        <c:if test="${startTime == '-1'}">
-                            <c:set var ="sessionStartTime" value="${endTime}" scope="session"/>
-                        </c:if>
+                </c:if>
+                <c:if test="${userSelectedEndTime}">
+                    <c:set var ="sessionEndTime" value="${endTime}" scope="session"/>
+                    <c:if test="${startTime == '-1'}">
+                        <c:set var ="sessionStartTime" value="${endTime}" scope="session"/>
                     </c:if>
-                    <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
-                </c:when>
-                <c:when test="${userSelectedHours}">
-                    <c:set var ="sessionUseHours" value="true" scope="session"/>
-                    <c:set var ="sessionHours" value="${hours}" scope="session"/>
-                    <c:set var="sessionStartTime" value="" scope="session"/>
-                    <c:set var="sessionEndTime" value="" scope="session"/>
-                    <c:set var="startTime" value='-1'/>
-                    <c:set var="endTime" value='-1'/>
-                    <%--  <c:redirect url="JobProcessingStats.jsp"/> --%>
-                </c:when>
-            </c:choose>
-     <%--   </c:if>  --%>
+                </c:if>
+                <%--   <c:redirect url="JobProcessingStats.jsp"/> --%>
+            </c:when>
+            <c:when test="${userSelectedHours}">
+                <c:set var ="sessionUseHours" value="true" scope="session"/>
+                <c:set var ="sessionHours" value="${hours}" scope="session"/>
+                <c:set var="sessionStartTime" value="" scope="session"/>
+                <c:set var="sessionEndTime" value="" scope="session"/>
+                <c:set var="startTime" value='-1'/>
+                <c:set var="endTime" value='-1'/>
+                <%--  <c:redirect url="JobProcessingStats.jsp"/> --%>
+            </c:when>
+        </c:choose>
+        <%--   </c:if>  --%>
 
-         
+
         <c:if test="${isDefault == 'Default'}">
             <c:set var ="sessionUseHours" value="true" scope="session"/>
             <c:set var="preferenceHours" value="${preferences.defaultPerfPlotHours}"/>
@@ -103,22 +103,22 @@
             <c:set var ="sessionEndTime" value="None" scope="session"/>
             <c:set var ="sessionTaskName" value="ALL" scope="session"/>
         </c:if>
-         
+
         <form name="DateForm">        
             <table bordercolor="#000000" bgcolor="#FFCC66" class="filtertable">
                 <tr bordercolor="#000000" bgcolor="#FFCC66">               
                     <td colspan="5"><strong>Select Task</strong>:                 
-                    <select name="taskName">
-                        <sql:query var="taskdata">
-                            select distinct taskname
-                            from ${datatbl}  
-                            order by taskname  
-                        </sql:query>
-                        <option value="ALL">All Tasks</option>
-                        <c:forEach items="${taskdata.rows}" var="taskrow"> 
-                            <option value="${taskrow.taskname}" ${taskrow.taskname == sessionTaskName ? 'selected' : ''}>${taskrow.taskname}</option>
-                        </c:forEach>
-                </select>		  </tr> 
+                        <select name="taskName">
+                            <sql:query var="taskdata">
+                                select distinct taskname
+                                from ${datatbl}
+                                order by taskname
+                            </sql:query>
+                            <option value="ALL">All Tasks</option>
+                            <c:forEach items="${taskdata.rows}" var="taskrow">
+                                <option value="${taskrow.taskname}" ${taskrow.taskname == sessionTaskName ? 'selected' : ''}>${taskrow.taskname}</option>
+                            </c:forEach>
+                        </select>		  </tr>
                 <tr bordercolor="#000000" bgcolor="#FFCC66">
                     <td><strong>Start</strong> <time:dateTimePicker size="20" name="startTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionStartTime}"  timezone="PST8PDT"/></td>
                     <td><strong>End</strong> <time:dateTimePicker size="20" name="endTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>
@@ -126,11 +126,11 @@
                 </tr> 
                 <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"><input type="submit" value="Default" name="default"></td>
                 </tr> 
-        </table></form>   
-        
+            </table></form>
+
         <c:set var="endRange" value="${endTimeBean}"/>
         <c:set var="startRange" value="${startTimeBean}" />
-        
+
         <c:if test="${ ! sessionUseHours && sessionEndTime != '-1' }">   		  
             <jsp:setProperty name="endRange" property="time" value="${sessionEndTime}" />
         </c:if>
@@ -140,7 +140,7 @@
         <c:if test="${sessionUseHours}">
             <jsp:setProperty name="startRange" property="time" value="${startTimeBean.time-sessionHours*60*60*1000}" />
         </c:if>
-        
+
         <c:set var="timerange" value="${(endRange.time-startRange.time)/(1000*60*60)}" />
 
         <c:choose>
@@ -190,15 +190,15 @@
                 <sql:param value="${groupby}"/>
             </c:if> 
         </sql:query>
-       
+
         <P><span class="emphasis"> Starting Date: ${startRange}
                 &nbsp; -&nbsp; &nbsp;   Ending   Date: ${endRange}<br>
-        ${fn:length(data.rows)} records found from table ${plotby} with group by ${groupby}</span></P> 
-       
+                ${fn:length(data.rows)} records found from table ${plotby} with group by ${groupby}</span></P>
+
         <c:if test="${data.rowCount > 0}">
 
             <aida:plotter height="400">
-            
+
                 <aida:tuple var="tuple" query="${data}"/>        
                 <aida:datapointset var="ready" tuple="${tuple}" yaxisColumn="READY" xaxisColumn="ENTERED" />   
                 <aida:datapointset var="submitted" tuple="${tuple}" yaxisColumn="SUBMITTED" xaxisColumn="ENTERED" />   
@@ -216,7 +216,7 @@
                             <aida:attribute name="connectDataPoints" value="true"/>
                         </aida:style>
                     </aida:style>   
-                    
+
                     <aida:plot var="${ready}">
                         <aida:style type="plotter"> 
                             <aida:style type="yAxis">
@@ -268,32 +268,32 @@
                     </aida:plot>
                 </aida:region>	 
             </aida:plotter>
-            
+
         </c:if>
         <c:if test="${data.rowCount == 0}">
 
             <br> 
             <span class="emphasis"><strong>There are no records for the data requested</strong></span>.
-            
+
         </c:if>
         <br> 
-        
+
         <c:if test="${sessionTaskName == 'ALL' && data.rowCount>0}">
             <sql:query var="taskdata">
                 with tasks as (
-                 select taskname, sum(running) running
-                 from processingstatisticshour
-                 where entered>=? and entered<=? and running>0
-                 <sql:dateParam value="${startRange}"/>
-                 <sql:dateParam value="${endRange}"/>
-                 group by taskname 
-                 order by running desc
+                select taskname, sum(running) running
+                from processingstatisticshour
+                where entered>=? and entered<=? and running>0
+                <sql:dateParam value="${startRange}"/>
+                <sql:dateParam value="${endRange}"/>
+                group by taskname
+                order by running desc
                 )  
-               select 'TOTAL' taskname, count(*) running from tasks
-               union all
-               select taskname,running from tasks where rownum<=25   
+                select 'TOTAL' taskname, count(*) running from tasks
+                union all
+                select taskname,running from tasks where rownum<=25
             </sql:query>
-            
+
             Showing 
             <c:if test="${taskdata.rows[0].running>taskdata.rowCount-1}">
                 top ${taskdata.rowCount-1} of 
@@ -327,33 +327,35 @@
                 </c:if>   		 
             </sql:query>
 
-            <aida:plotter height="600"> 
-                <aida:region  title="Running processes by task">
-                    <aida:style>
-                        <aida:style type="legendBox">
-                            <aida:attribute name="isVisible" value="true"/>
+            <c:if test="${ tasks.rowCount > 0 }">
+                <aida:plotter height="600">
+                    <aida:region  title="Running processes by task">
+                        <aida:style>
+                            <aida:style type="legendBox">
+                                <aida:attribute name="isVisible" value="true"/>
+                            </aida:style>
+                            <aida:style type="statisticsBox">
+                                <aida:attribute name="isVisible" value="false"/>
+                            </aida:style>
+                            <aida:style type="xAxis">
+                                <aida:attribute name="label" value=""/>
+                                <aida:attribute name="type" value="date"/>
+                            </aida:style>
+                            <aida:style type="data">
+                                <aida:attribute name="connectDataPoints" value="true"/>
+                            </aida:style>
                         </aida:style>
-                        <aida:style type="statisticsBox">
-                            <aida:attribute name="isVisible" value="false"/>
-                        </aida:style>                        
-                        <aida:style type="xAxis">
-                            <aida:attribute name="label" value=""/>
-                            <aida:attribute name="type" value="date"/>
-                        </aida:style>
-                        <aida:style type="data">
-                            <aida:attribute name="connectDataPoints" value="true"/>
-                        </aida:style>
-                    </aida:style>  
 
-                    <aida:tuple var="tuple" query="${tasks}"/>        
-                    <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">       
-                        <c:if test="${taskrow.taskname != 'TOTAL'}">
-                            <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />                                 
-                            <aida:plot var="${running}"/>               
-                        </c:if>
-                    </c:forEach>   
-                </aida:region>	 
-            </aida:plotter>  
+                        <aida:tuple var="tuple" query="${tasks}"/>
+                        <c:forEach items="${taskdata.rows}" var="taskrow" varStatus="status">
+                            <c:if test="${taskrow.taskname != 'TOTAL'}">
+                                <aida:datapointset var="running" title="${taskrow.taskname}" tuple="${tuple}" yaxisColumn="N${status.count}" xaxisColumn="ENTERED" />
+                                <aida:plot var="${running}"/>
+                            </c:if>
+                        </c:forEach>   
+                    </aida:region>
+                </aida:plotter>
+            </c:if>
         </c:if>
     </body>
 </html>

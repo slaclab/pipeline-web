@@ -61,7 +61,7 @@
         <dependency>
             <groupId>glast</groupId>
             <artifactId>org-glast-jobcontrol</artifactId>
-            <version>1.8</version>
+            <version>1.10-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>

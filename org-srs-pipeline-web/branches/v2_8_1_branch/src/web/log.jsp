@@ -27,6 +27,9 @@
         <c:if test="${name.rows[0]['JOBSITE']=='LYON'}">
             <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
+         <c:if test="${name.rows[0]['JOBSITE']=='LYONGRID'}">
+            <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
+        </c:if>
 
         <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLogFileServletDb, initParam.pipelineLogFileServletDecoratorGroup, logName, appVariables.experiment) }"/>
 

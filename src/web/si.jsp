@@ -67,9 +67,9 @@
 <sql:query var="executions">
    select executionnumber, stream from stream
    join task using (task)
-   where task=? and streamId=? and ExecutionNumber != ?
+   where task=? and stream=? and ExecutionNumber != ? order by executionnumber desc
    <sql:param value="${data.task}"/>
-   <sql:param value="${data.streamId}"/>
+   <sql:param value="${param.stream}"/>
    <sql:param value="${data.ExecutionNumber}"/>
 </sql:query>
 

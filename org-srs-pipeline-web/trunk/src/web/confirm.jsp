@@ -46,8 +46,9 @@
                     from task <i>${taskName}</i>. 
                     This operation cannot be undone!
                 </p>
-                <form method="post">             
+                <form method="post">
                     Arguments to add or override:&nbsp;<input type="text" name="args" value="" size="50" />
+                    <input type="hidden" name="select" value="${param.stream}">
                     <input type="hidden" name="origin" value="${header.referer}">
                     <input type="submit" value="Confirm Stream Rollback!" name="submit">
                     <input type="submit" value="CANCEL" name="submit">
@@ -60,7 +61,6 @@
                     This operation cannot be undone!
                 </p>
                 <form method="post">
-                    <input type="hidden" name="task" value="${task}">
                     <c:forEach var="item" items="${paramValues['select']}">
                         <input type="hidden" name="select" value="${item}">
                     </c:forEach>

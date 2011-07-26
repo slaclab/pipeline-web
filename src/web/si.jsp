@@ -51,8 +51,6 @@
     <c:if test="${adminMode}">        
         <form name="RollBackStreamForm" action="confirm.jsp" method="post">
             <input type="hidden" name="stream" value="${param.stream}">
-            <input type="hidden" name="task" value="${task}">
-            <input type="hidden" name="select" value="${param.stream}">
             <input type="submit" value="Rollback Stream" name="submit">
         </form>
     </c:if>

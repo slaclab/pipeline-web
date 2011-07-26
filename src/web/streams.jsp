@@ -236,14 +236,15 @@
                                 </c:forEach>
                                 <option value="${row.STREAMSTATUS}" ${found =="1" ? "selected" : ""}>${pl:prettyStatus(row.STREAMSTATUS)}</option>
                             </c:forEach>
-                            <tr><th>Date</th>
-                                <td>Start</td><td><time:dateTimePicker value="${sessionStreamMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-                                <td>End</td><td><time:dateTimePicker value="${sessionStreamMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
-                                <td>or last N hours <input name="streamHours" type="text" value="${sessionStreamHours}" size="5"></td>
-                                </td>
-                                <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">
-                                    <input type="hidden" name="task" value="${task}"></td></tr>
-                            <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
+                        </select>
+                <tr><th>Date</th>
+                    <td>Start</td><td><time:dateTimePicker value="${sessionStreamMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                    <td>End</td><td><time:dateTimePicker value="${sessionStreamMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/></td>
+                    <td>or last N hours <input name="streamHours" type="text" value="${sessionStreamHours}" size="5"></td>
+                    <td><input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">
+                        <input type="hidden" name="task" value="${task}"></td>
+                </tr>
+                <tr><td colspan="4"><input type="checkbox" name="showAll" ${empty param.showAll ? "" : "checked"} > Show all streams on one page</td></tr>
             </table>
         </form>
 
@@ -313,18 +314,16 @@
                                     </td>
                                 </tr>
                             </display:footer>
-                        </tr>
-                    </c:if>
-                </display:table>
+                        </c:if>
+                    </display:table>
+                </form>
 
-            </form>
-
-            <c:if test="${test.rowCount>0}">
-                <ul>
-                    <li><a href="streams.jsp?task=${param.task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
-                </ul>
-            </c:if>
-        </c:otherwise>
-    </c:choose>
-</body>
+                <c:if test="${test.rowCount>0}">
+                    <ul>
+                        <li><a href="streams.jsp?task=${param.task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${param.minDate}&maxDate=${param.maxDate}&format=stream">Dump stream id list</a>.</li>
+                    </ul>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
+    </body>
 </html>

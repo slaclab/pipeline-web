@@ -172,7 +172,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>BlankLineFilter</filter-name>
-        <url-pattern>/schemas/2.0/pipeline.xsd</url-pattern>
+        <url-pattern>*.xsd</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
     </filter-mapping>

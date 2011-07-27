@@ -49,7 +49,7 @@
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
 
 
@@ -261,6 +261,10 @@
     <filter>
         <filter-name>ExperimentContextFilter</filter-name>
         <filter-class>org.srs.web.base.filters.experimentcontext.ExperimentContextFilter</filter-class>
+        <init-param>
+            <param-name>skipPages</param-name>
+            <param-value>*.xsd</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>ExperimentContextFilter</filter-name>

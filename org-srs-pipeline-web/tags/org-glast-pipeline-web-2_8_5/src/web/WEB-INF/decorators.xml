@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/decorators">
+    <decorator name="default" page="default.jsp">
+          <pattern>/*</pattern>
+    </decorator>
+    <excludes>
+       <pattern>/downloadFiles.jsp*</pattern>
+       <pattern>/taskout.jsp*</pattern>
+    </excludes>
+</decorators>

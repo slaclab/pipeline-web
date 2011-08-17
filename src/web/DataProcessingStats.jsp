@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://aida.freehep.org/jsp20" prefix="aida"%>
+<%@ taglib prefix="aida" uri="http://aida.freehep.org/jsp20" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
@@ -11,150 +11,74 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
-        <title>Data Processing delay</title>    
+        <title>Data Processing delay</title>
     </head>
     <body>
 
-<c:set var="debug" value="0"/>
+        <c:set var="startTime" value="${param.startTime}"/>
+        <c:set var="endTime" value="${param.endTime}"/>
 
-<jsp:useBean id="startTimeBean" class="java.util.Date" />
-<jsp:useBean id="endTimeBean" class="java.util.Date" />
+        <c:if test="${param.filter=='Clear'}">
+            <c:set var="startTime" value="-1"/>
+            <c:set var="endTime" value="-1"/>
+        </c:if>
 
-<c:set var="startTime" value="${param.startTime}"/>
-<c:set var="endTime" value="${param.endTime}"/>
-<c:set var="dphours" value="${param.dphours}"/>
+        <form name="DateForm">
+            <table class="filtertable">
+                <tr>
+                    <td><strong>Start</strong> <time:dateTimePicker size="20" name="startTime" showtime="false" format="%b/%e/%y" value="${startTime}"  timezone="PST8PDT"/></td>
+                    <td><strong>End</strong> <time:dateTimePicker size="20" name="endTime" showtime="false" format="%b/%e/%y" value="${endTime}" timezone="PST8PDT"/> </td>
+                </tr>
+                <tr>
+                    <td> <input type="submit" value="Filter" name="filter"><input type="submit" value="Clear" name="filter"></td>
+                </tr>
+            </table>
+        </form>
 
-<c:if test="${debug == 1}">
-    <c:forEach var="p" items="${param}">
-        <h3>${p.key} = ${p.value}</h3>
-    </c:forEach>
-</c:if>
-
-<%-- if no preferences set then no time constraint should be set on the query --%>
-<c:if test="${empty firstTimeDPS}">
-    <c:set var="dphours" value="${preferences.defaultDPhours}"/>
-    <c:set var="sessionDPhours" value="${dphours > 0 ? dphours : ''}" scope="session"/>
-    <c:set var="firstTimeDPS" value="notEmpty" scope="session"/>
-    <c:set var="selectDPhours" value="${dphours > 0 ? 'true' : 'false'}"/>
-    <c:set var="sessionDPstartTime" value="-1" scope="session"/>
-    <c:set var="sessionDPendTime" value="-1" scope="session"/>
-</c:if>
-
-<c:if test="${param.filter=='Default'}">
-    <c:set var="dphours" value="${preferences.defaultDPhours > 0 ? preferences.defaultDPhours : ''}"/>
-    <c:set var="sessionDPhours" value="${dphours}" scope = "session"/>
-    <c:set var="selectDPhours" value="${dphours > 0 ? 'true' : 'false'}"/>
-    <c:set var="startTime" value='-1' />
-    <c:set var="endTime" value='-1' />
-    <c:set var="sessionDPstartTime" value="-1" scope="session" />
-    <c:set var="sessionDPendTime" value="-1" scope="session" />
-</c:if>
-
-<c:if test="${param.filter == 'Filter'}">
-
-    <c:set var="selectDPstartTime" value="${!empty startTime && startTime != -1 && startTime != sessionDPstartTime}" scope="session"/>
-    <c:set var="selectDPendTime" value="${!empty endTime && endTime != -1 && endTime != sessionDPendTime}" scope="session"/>
-    <c:set var="selectDPhours" value="${!empty dphours && dphours != -1 && !selectDPstartTime && !selectDPendTime}"/>
-    <c:set var="selectDPstartNone" value="${empty dphours && param.startTime == '-1'}"/>
-    <c:set var="selectDPendNone" value="${empty dphours && param.endTime == '-1'}" />
-
-    <c:choose>
-        <c:when test="${selectDPstartTime || selectDPendTime}">
-            <c:set var="sessionDPhours" value="" scope="session"/>
-
-            <c:if test="${selectDPstartTime}">
-                <c:set var="sessionDPstartTime" value="${startTime}" scope="session"/>
+        <sql:query var="data">
+            select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+
+    (case when (dv.registered>'07-NOV-10 02:00' and dv.registered<'13-MAR-11 02:00') or
+               (dv.registered>'01-NOV-09 02:00' and dv.registered<'14-MAR-10 02:00') or 
+               (dv.registered>'02-NOV-08 02:00' and dv.registered<'08-MAR-09 02:00') then 8 else 7 end) 
+                                                    as SLAC,
+            (f.treceive-978307200-n.metavalue)/3600 as NASA,
+            n.metavalue as runStart
+            from verdataset d
+            join datasetversion dv on (d.latestversion=dv.datasetversion)
+            join verdatasetmetanumber n on (n.datasetversion=dv.datasetversion and n.metaname='nMetStop')
+            join verdatasetlocation l on (dv.masterlocation= l.datasetlocation)
+            join isoc_flight.fcopy_incoming f on (
+            f.downlink_id=(
+            select max (downlink_id)
+            from isoc_flight.glastops_downlink_acqsummary a
+            where a.startedat= l.runmin and a.scid = 77
+            )
+            )
+            where datasetgroup=39684247 and n.metaValue>239907864.08432
+            <c:if test="${startTime>0}">
+                <jsp:useBean id="startTimeBean" class="java.util.Date" />
+                <jsp:setProperty name="startTimeBean" property="time" value="${startTime}" />
+                and dv.registered>?
+                <sql:dateParam value="${startTimeBean}"/>
             </c:if>
-            <c:if test="${selectDPendTime}">
-                <c:set var="sessionDPendTime" value="${endTime}" scope="session"/>
+            <c:if test="${endTime>0}">
+                <jsp:useBean id="endTimeBean" class="java.util.Date" />
+                <jsp:setProperty name="endTimeBean" property="time" value="${endTime}" />
+                and dv.registered<?
+                <sql:dateParam value="${endTimeBean}"/>
             </c:if>
-        </c:when>
-        <c:when test="${selectDPhours}">
-            <c:set var="sessionDPstartTime" value="" scope="session" />
-            <c:set var="sessionDPendTime" value="" scope="session" />
-            <c:set var="sessionDPhours" value="${dphours}" scope="session" />
-        </c:when>
-    </c:choose>
-
-    <c:choose>
-        <c:when test="${selectDPstartNone == 'true'}">
-            <c:set var="sessionDPstartTime" value="-1" scope="session" />
-        </c:when>
-        <c:when test="${selectDPendNone == 'true'}">
-            <c:set var="sessionDPendTime" value="-1" scope="session" />
-        </c:when>
-    </c:choose>
-</c:if>
-
-<form name="DateForm">        
-    <table class="filtertable">
-        <tr>
-            <td><strong>Start</strong> <time:dateTimePicker size="20" name="startTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPstartTime}"  timezone="PST8PDT"/></td>
-            <td><strong>End</strong> <time:dateTimePicker size="20" name="endTime" shownone="true" showtime="false" format="%b/%e/%y" value="${sessionDPendTime}" timezone="PST8PDT"/> </td>
-            <td><strong>Hours</strong><br>
-            <input type="text" value="${sessionDPhours}" name="dphours" size="5"</input>
-            </td>
-        </tr>
-        <tr>
-            <td> <input type="submit" value="Filter" name="filter"><input type="submit" value="Default" name="filter"></td>
-        </tr>
-    </table>
-</form>
-           
-
-<c:if test="${debug == 0}">
-    <sql:query var="data">
-        select (TIME_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+7 as SLAC,
-        (f.treceive-978307200-n.metavalue)/3600 as NASA,
-        n.metavalue as runStart
-        from verdataset d
-        join datasetversion dv on (d.latestversion=dv.datasetversion)
-        join verdatasetmetanumber n on (n.datasetversion=dv.datasetversion and n.metaname='nMetStop')
-        join verdatasetlocation l on (dv.masterlocation= l.datasetlocation)
-        join isoc_flight.fcopy_incoming f on (
-        f.downlink_id=(
-        select max (downlink_id)
-        from isoc_flight.glastops_downlink_acqsummary a
-        where a.startedat= l.runmin and a.scid = 77
-        )
-        )
-        where datasetgroup=39684247 and n.metaValue>239907864.08432
-        <c:if test="${sessionDPstartTime > 0  && empty sessionDPhours  }">
-            and dv.registered>?
-            <jsp:setProperty name="startTimeBean" property="time" value="${sessionDPstartTime}" />
-            <sql:dateParam value="${startTimeBean}"/>
-        </c:if>
-        <c:if test="${sessionDPendTime > 0 && empty sessionDPhours}">
-            and dv.registered<?
-            <jsp:setProperty name="endTimeBean" property="time" value="${sessionDPendTime}" />
-            <sql:dateParam value="${endTimeBean}"/>
-        </c:if>
-        <c:if test="${sessionDPhours > 0}">
-            and dv.registered > ? and dv.registered < ?
-            <jsp:setProperty name="startTimeBean" property="time" value="${endTimeBean.time-sessionDPhours*60*60*1000}"/>
-            <sql:dateParam value="${startTimeBean}" type="timestamp"/>
-            <jsp:setProperty name="endTimeBean" property="time" value="${endTimeBean.time}"/>
-            <sql:dateParam value="${endTimeBean}" type="timestamp"/>
-        </c:if>
-    </sql:query>
-
-    ${aida:clearPlotRegistry(pageContext.session)}
-
-    <c:if test="${data.rowCount < 1}">
-        <h3>No Data Found</h3>
-    </c:if>
-
-        <c:if test="${data.rowCount > 0}">
+        </sql:query>
+        ${aida:clearPlotRegistry(pageContext.session)}
         <aida:plotter height="400" width="1000" nx="2">
-            <aida:tuple var="tuple" query="${data}"/>    
+            <aida:tuple var="tuple" query="${data}"/>
             <aida:tupleProjection var="lslac" tuple="${tuple}" xprojection="log10(SLAC)" xbins="96" xmin="-2" xmax="3" name="SLAC"/>
             <aida:tupleProjection var="lnasa" tuple="${tuple}" xprojection="log10(NASA)" xbins="96" xmin="-2" xmax="3" name="NASA"/>
             <aida:tupleProjection var="ltotal" tuple="${tuple}" xprojection="log10(SLAC+NASA)" xbins="96" xmin="-2" xmax="3" name="Total"/>
             <aida:tupleProjection var="slac" tuple="${tuple}" xprojection="SLAC" xbins="96" xmin="0" xmax="48" name="SLAC"/>
             <aida:tupleProjection var="nasa" tuple="${tuple}" xprojection="NASA" xbins="96" xmin="0" xmax="48" name="NASA"/>
             <aida:tupleProjection var="total" tuple="${tuple}" xprojection="SLAC+NASA" xbins="96" xmin="0" xmax="48" name="Total"/>
-            
-            <aida:region title= "Data processing elapsed time per run" >            
+
+            <aida:region title= "Data processing elapsed time per run" >
                 <aida:style>
                     <aida:style type="data">
                         <aida:style type="errorBar">
@@ -164,7 +88,7 @@
                     <aida:style type="xAxis">
                         <aida:attribute name="label" value="Hours"/>
                     </aida:style>
-                </aida:style>               
+                </aida:style>
                 <aida:plot var="${slac}">
                     <aida:style>
                         <aida:style type="fill">
@@ -190,7 +114,7 @@
                     </aida:style>
                 </aida:plot>
             </aida:region>
-            <aida:region title= "Data processing elapsed time per run" >            
+            <aida:region title= "Data processing elapsed time per run" >
                 <aida:style>
                     <aida:style type="data">
                         <aida:style type="errorBar">
@@ -200,7 +124,7 @@
                     <aida:style type="xAxis">
                         <aida:attribute name="label" value="log10(Hours)"/>
                     </aida:style>
-                </aida:style>               
+                </aida:style>
                 <aida:plot var="${lslac}">
                     <aida:style>
                         <aida:style type="fill">
@@ -226,8 +150,7 @@
                     </aida:style>
                 </aida:plot>
             </aida:region>
-        </aida:plotter>    
-    
+        </aida:plotter>
         <%-- make an average delay per day plot --%>
         <%
         IAnalysisFactory af = IAnalysisFactory.create();
@@ -250,8 +173,8 @@
         pageContext.setAttribute("cNASA",cNASA);
         pageContext.setAttribute("cTotal",cTotal);
         %>
-        <aida:plotter height="400" width="1000">  
-            <aida:region title= "Data processing elapsed time per run vs MET" > 
+        <aida:plotter height="400" width="1000">
+            <aida:region title= "Data processing elapsed time per run vs MET" >
                 <aida:style>
                     <aida:style type="yAxis">
                         <aida:attribute name="label" value="log10(Hours)"/>
@@ -292,7 +215,6 @@
                 </aida:plot>
             </aida:region>
         </aida:plotter>
-</c:if>
 
         <h2>Notes</h2>
         <ul>
@@ -309,8 +231,7 @@
             <tr><td>1.5</td><td>30 hours</td></tr>
             <tr><td>2</td><td>4 days</td></tr>
             <tr><td>2.5</td><td>13 days</td></tr>
-        </table>   
+        </table>
 
-  </c:if>
     </body>
 </html>

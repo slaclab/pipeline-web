@@ -4,7 +4,6 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="logFilesUtils" uri="http://srs.slac.stanford.edu/fileUtils" %>
-
 <%@taglib prefix="login" uri="http://srs.slac.stanford.edu/login" %>
 
 <html>
@@ -26,6 +25,9 @@
 
         <%-- This will have to be changed in the future. It is here for backward compatibility with Fermi's pipeline --%>
         <c:if test="${name.rows[0]['JOBSITE']=='LYON'}">
+            <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
+        </c:if>
+         <c:if test="${name.rows[0]['JOBSITE']=='LYONGRID'}">
             <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
 

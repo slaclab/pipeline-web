@@ -29,7 +29,9 @@
         <c:if test="${name.rows[0]['JOBSITE']=='LYON'}">
             <c:set var="workingDir" value="${fn:replace(workingDir,'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
-
+        <c:if test="${name.rows[0]['JOBSITE']=='LYONGRID'}">
+            <c:set var="workingDir" value="${fn:replace(workingDir,'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
+        </c:if>
         <c:if test="${pipeline:isFile(workingDir)}">
             <c:set var="workingDir" value="${workingDir}/"/>
         </c:if>

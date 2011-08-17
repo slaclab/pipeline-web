@@ -5,11 +5,10 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@taglib uri="http://glast-ground.slac.stanford.edu/pipeline" prefix="pl" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://srs.slac.stanford.edu/GroupManager" prefix="gm" %>
+<%@taglib uri="http://glast-ground.slac.stanford.edu/GroupManager" prefix="gm" %>
 <%@taglib prefix="pt" tagdir="/WEB-INF/tags"%>
-<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@taglib prefix="time" uri="http://srs.slac.stanford.edu/time" %>
 <html>
     <head>
         <c:choose>
@@ -21,26 +20,17 @@
             </c:when>
         </c:choose>
         <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
+        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">
     </head>
     <body>
 
-        <%-- must check if this is the first time user comes to this page. check if user preference exist for processhours --%>
-        <c:if test="${ empty firstProcessVisit}">
-            <c:set var="processhours" value="${preferences.defaultProcessPeriodHours > 0 ? preferences.defaultProcessPeriodHours : ''}"/>
-            <c:if test="${processhours > 0}">
-                <c:set var="sessionProcessHours" value="${processhours}" scope="session"/>
-                <c:set var="userSelectedProcessHours" value="true" scope="session"/>
-                <c:set var="userSelectedProcessMinDate" value="false"/> 
-                <c:set var="userSelectedProcessMaxDate" value="false"/> 
-            </c:if>
-            <c:set var="firstProcessVisit" value="beenHereDoneThat3" scope="session"/>
-        </c:if>
-        
+
+
+
         <sql:query var="proc_stats">
             select PROCESSINGSTATUS from PROCESSINGSTATUS order by displayorder
         </sql:query>
-        
+
         <c:choose>
             <c:when test="${!empty processName}">
                 <h2>Streams for process: ${processName}</h2>
@@ -51,76 +41,30 @@
                 <p><a href="JobProcessingStats.jsp?taskName=${taskName}">Processing plots</a></p>
             </c:when>
         </c:choose>
-        
-        <pt:taskSummary streamCount="runCount"/>      
-        
-        <c:set var="dateCategory" value="${empty param.dateCategory ? 'createdate' : param.dateCategory}"/>
-        <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/> 
+
+        <pt:taskSummary streamCount="runCount"/>
+
         <c:set var="streamIdFilter" value="${param.streamIdFilter}" scope="session"/>
         <c:set var="include" value="${param.include}" scope="session"/>
         <c:set var="regExp" value="${!empty param.regExp}" scope="session"/>
+
         <c:set var="min" value="${param.min}"/>
         <c:set var="max" value="${param.max}"/>
-        <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}" scope="session"/> 
-        <c:set var="userSelectedTaskName" value="${!empty taskName}" /> 
-        <c:set var="minDate" value="${param.minDate}"/> 
-        <c:set var="maxDate" value="${param.maxDate}"/>
-        <c:set var="processhours" value="${param.processhours}"/>
-        
-        <c:if test="${! empty param.submit}">
-            <c:set var="userSelectedProcessMinDate" value="${!empty minDate && minDate != sessionProcessMinDate && minDate != -1}"/> 
-            <c:set var="userSelectedProcessMaxDate" value="${!empty maxDate && maxDate != sessionProcessMaxDate && maxDate != -1}"/>
-            <c:set var="userSelectedProcessHours" value="${!empty processhours && !userSelectedProcessMinDate && !userSelectedProcessMaxDate}" scope="session"/>
-            <c:set var="userSelectedStartNone" value="${empty processhours && minDate == '-1' }"/>
-            <c:set var="userSelectedEndNone" value="${empty processhours && maxDate == '-1' }"/>
+        <c:set var="minimumDate" value="${!empty param.minDate ? param.minDate : -1}"/>
+        <c:set var="maximumDate" value="${!empty param.maxDate ? param.maxDate : -1}"/>
+        <c:set var="status" value="${!empty param.status && param.status!='0' ? param.status : ''}"/>
 
-            <c:choose>
-                <c:when test="${userSelectedProcessMinDate || userSelectedProcessMaxDate}">
-                    <c:set var="sessionProcessHours" value="" scope="session"/>
-                    <c:if test="${userSelectedProcessMinDate}">
-                        <c:set var ="sessionProcessMinDate" value="${minDate}" scope="session"/>
-                    </c:if>
-                    <c:if test="${userSelectedProcessMaxDate}">
-                        <c:set var ="sessionProcessMaxDate" value="${maxDate}" scope="session"/>
-                    </c:if>
-                </c:when>
-                <c:when test="${userSelectedProcessHours}">
-                    <c:set var="minDate" value='-1'/>
-                    <c:set var="maxDate" value='-1'/>
-                    <c:set var="sessionProcessHours" value="${processhours}" scope="session"/>
-                    <c:set var ="sessionProcessMinDate" value='-1' scope="session"/>
-                    <c:set var ="sessionProcessMaxDate" value='-1' scope="session"/>
-                </c:when>
-            </c:choose>
-
-            <c:choose>
-                <c:when test="${userSelectedStartNone || userSelectedEndNone}">
-                    <c:set var="sessionProcessHours" value="" scope="session"/>
-                    <c:if test="${userSelectedStartNone}">
-                        <c:set var ="sessionProcessMinDate" value="" scope="session"/>
-                    </c:if>
-                    <c:if test="${userSelectedEndNone}">
-                        <c:set var ="sessionProcessMaxDate" value="" scope="session"/>
-                    </c:if>
-                </c:when>
-            </c:choose>
-        </c:if> 
-         
-        <c:if test="${! empty param.reset}">
-                <c:set var="pref_processhours" value="${preferences.defaultProcessPeriodHours > 0 ? preferences.defaultProcessPeriodHours : ''}"/>
-                <c:set var="min" value=""/>
-                <c:set var="max" value=""/>
-                <c:set var="status" value=""/>
-                <c:set var="minDate" value='-1'/>
-                <c:set var="maxDate" value='-1'/>
-                <c:set var="sessionProcessHours" value="${pref_processhours}" scope="session"/>
-                <c:set var="sessionProcessMinDate" value='-1' scope="session"/>
-                <c:set var="sessionProcessMaxDate" value='-1' scope="session"/>
-                <c:set var="userSelectedProcessHours" value="${pref_processhours > 0 ? 'true' : 'false'}"/>
-                <c:set var="showAll" value="checked"/> 
+        <c:if test="${!empty param.clear}">
+            <c:set var="min" value=""/>
+            <c:set var="max" value=""/>
+            <c:set var="minimumDate" value="-1"/>
+            <c:set var="maximumDate" value="-1"/>
+            <c:set var="status" value=""/>
         </c:if>
-                
-        <sql:query var="pqTest">
+        <c:set var="dateCategory" value="${empty param.dateCategory ? 'createdate' : param.dateCategory}"/>
+        <c:set var="showLatest" value="${!empty param.showLatestChanged ? !empty param.showLatest : empty showLatest ? true : showLatest}" scope="session"/>
+
+        <sql:query var="test">
             select * from
             (
             with processinstance2 as
@@ -139,6 +83,7 @@
                     <sql:param value="${param.task}"/>
                 </c:when>
             </c:choose>
+
 
             <c:if test="${showLatest}">and islatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
 
@@ -172,6 +117,7 @@
                 </c:choose>
             </c:if>
             )
+
             select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessName, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
             <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
 
@@ -179,7 +125,6 @@
             join stream s using (stream)
             join process x using (process)
             ) q where (null is null)
-
             <c:if test="${!empty min}">
                 and StreamId>=?
                 <sql:param value="${min}"/>
@@ -188,7 +133,7 @@
                 and StreamId<=?
                 <sql:param value="${max}"/>
             </c:if>
-            <c:if test="${!empty taskFilter && !regExp}">
+               <c:if test="${!empty taskFilter && !regExp}">
                 and PII.GetStreamIdPath(stream) like ?
                 <sql:param value="%${streamIdFilter}%"/>
             </c:if>
@@ -197,83 +142,68 @@
                 and regexp_like(PII.GetStreamIdPath(stream),?)
                 <sql:param value="${streamIdFilter}"/>
             </c:if>
+
             <c:if test="${!empty param.pstream}">
                 and ? in (select ss.stream from stream ss start with ss.stream=q.stream connect by ss.stream = prior ss.parentstream)
                 <sql:param value="${param.pstream}"/>
             </c:if>
-         
-         
-            <c:if test="${sessionProcessMinDate > 0 && !userSelectedProcessHours}">
+
+            <c:if test="${minimumDate != '-1'}">
                 and ${dateCategory}  >=  ?
                 <jsp:useBean id="startDate" class="java.util.Date" />
-                <jsp:setProperty name="startDate" property="time" value="${sessionProcessMinDate}" />
+                <jsp:setProperty name="startDate" property="time" value="${minimumDate}" />
                 <sql:dateParam value="${startDate}" type="timestamp"/>
             </c:if>
-            <c:if test="${sessionProcessMaxDate > 0 && !userSelectedProcessHours}">
+            <c:if test="${maximumDate != '-1'}">
                 and ${dateCategory} <=  ?
                 <jsp:useBean id="endDate" class="java.util.Date" />
-                <jsp:setProperty name="endDate" property="time" value="${sessionProcessMaxDate}" />
+                <jsp:setProperty name="endDate" property="time" value="${maximumDate}" />
                 <sql:dateParam value="${endDate}" type="timestamp"/>
             </c:if>
-            <c:if test="${userSelectedProcessHours}">
-                and ${dateCategory} >= ? and ${dateCategory} <= ?
-                <jsp:useBean id="maxDateUsedHours" class="java.util.Date" />
-                <jsp:useBean id="minDateUsedHours" class="java.util.Date" />
-                <jsp:setProperty name="minDateUsedHours" property="time" value="${maxDateUsedHours.time - sessionProcessHours*60*60*1000}" />
-                <sql:dateParam value="${minDateUsedHours}" type="timestamp"/>
-                <sql:dateParam value="${maxDateUsedHours}" type="timestamp"/>
-            </c:if>
         </sql:query>
- 
-        <c:if test = "${empty NumStatusReqs}">       
-            <c:set var="NumStatusReqs" value="0"/> 
-        </c:if>
-      
-        <c:set var="isBatch" value="${pqTest.rows[0].processType=='BATCH'}"/> 
 
+        <c:if test = "${empty NumStatusReqs}">
+            <c:set var="NumStatusReqs" value="0"/>
+        </c:if>
+
+        <c:set var="isBatch" value="${test.rows[0].processType=='BATCH'}"/>
         <form name="DateForm">
             <table class="filtertable" >
                 <tr><th>Top Level Stream: </th><td>Min <input type="text" name="min" value="${min}"></td>
-                    <td>Max <input type="text" name="max" value="${max}"></td> 
+                    <td>Max <input type="text" name="max" value="${max}"></td>
                     <td>Status: <select size="3" name="status" multiple>
                             <option value="" ${status=="" ? "selected" : ""}>All</option>
-                            <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option>                            
+                            <option value="NOTSUCCESS" ${status=="NOTSUCCESS" ? "selected" : ""} >All Not Success </option>
                             <c:forEach var="row" items="${proc_stats.rows}">
-                                <c:set var= "found" value = "0" /> 
-                                <c:forEach  var = "seletedStatus" items = "${paramValues.status}" > 
-                                    <c:if test = "${seletedStatus ==  row.PROCESSINGSTATUS && empty param.reset}">
+                                <c:set var= "found" value = "0" />
+                                <c:forEach  var = "seletedStatus" items = "${paramValues.status}" >
+                                    <c:if test = "${seletedStatus ==  row.PROCESSINGSTATUS}">
                                         <c:set var= "found" value = "1" />
-                                    </c:if>                                                    
-                                </c:forEach>   
-                                <option value="${row.PROCESSINGSTATUS}" ${found == "1" ? "selected" : "" }>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>                                                                
-                            </c:forEach>                         
-                        </select>      
+                                    </c:if>
+                                </c:forEach>
+                                <option value="${row.PROCESSINGSTATUS}" ${found == "1" ? "selected" : "" }>${pl:prettyStatus(row.PROCESSINGSTATUS)}</option>
+                            </c:forEach>
+                        </select>
                     </td>
                 </tr>
-                <tr>                      
+                <tr>
                     <th>Stream Filter:</th><td> <input type="text" name="streamIdFilter" value="${streamIdFilter}"></td>
                     <td><input type="checkbox" name="regExp" ${regExp ? 'checked' : ''}> Regular Expression (<a href="http://www.oracle.com/technology/oramag/webcolumns/2003/techarticles/rischert_regexp_pt1.html">?</a>)</td>
-                </tr> 
-                <tr>  
+                </tr>
+                <tr>
                     <td><select size="1" name="dateCategory">
                             <option value="createdate"${dateCategory == "createdate" ? "selected" : "" }>Created Date</option>
-                            <c:if test="${isBatch}"> 
-                                <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
-                            </c:if>
+                            <option value="submitdate" ${dateCategory == "submitdate" ? "selected" : "" }>Submitted Date</option>
                             <option value="startdate"${dateCategory == "startdate" ? "selected" : "" }>Started Date</option>
                             <option value="enddate"${dateCategory == "enddate" ? "selected" : "" }>Ended Date</option>
-                        </select> 
+                        </select>
                     </td>
-                    <td><time:dateTimePicker value="${sessionProcessMinDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
+                    <td><time:dateTimePicker value="${minimumDate}" size="22" name="minDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                     </td>
-                    <td><time:dateTimePicker value="${sessionProcessMaxDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
-                    </td>  
-                    <td>
-                        or last N hours <input name="processhours" type="text" value="${sessionProcessHours}" size="5">
+                    <td><time:dateTimePicker value="${maximumDate}" size="22" name="maxDate" format="%d/%b/%Y %H:%M:%S" showtime="true" timezone="PST"/>
                     </td>
                     <td>
-                      <!--  <input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear"> -->
-                      <input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Reset" name="reset">
+                        <input type="submit" value="Filter" name="submit">&nbsp;<input type="submit" value="Clear" name="clear">
                         <c:choose>
                             <c:when test="${!empty processName}">
                                 <input type="hidden" name="process" value="${process}">
@@ -292,10 +222,9 @@
             <input type="hidden" name="pstream" value="${param.pstream}">
             <input type="hidden" name="process" value="${param.process}">
         </form>
-        
-        
+
         <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox>
-        
+
         <script language="JavaScript" type="text/javascript">
          function ShowAll(set) {
            for (var i = 0; i < document.selectForm.elements.length; i++) {
@@ -311,24 +240,24 @@
              }
            }
          }
-        </script>   
-        
-        <c:set var="adminMode" value="${gm:isUserInGroup(pageContext,'PipelineAdmin')}"/>
+        </script>
+
+        <c:set var="adminMode" value="${gm:isUserInGroup(userName,'PipelineAdmin')}"/>
         <c:choose>
             <c:when test="${param.format=='stream'}">
-                <pre><c:forEach var="row" items="${pqTest.rows}">${row.streamid}<br></c:forEach></pre>
+                <pre><c:forEach var="row" items="${test.rows}">${row.streamid}<br></c:forEach></pre>
             </c:when>
             <c:when test="${param.format=='id'}">
-                <pre><c:forEach var="row" items="${pqTest.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
+                <pre><c:forEach var="row" items="${test.rows}"><c:if test="${!empty row.JobID}">${row.JobID}<br></c:if></c:forEach></pre>
             </c:when>
             <c:otherwise>
                 <form name="selectForm" action="confirm.jsp" method="post">
-                    <display:table excludedParams="submit" class="datatable" name="${pqTest.rows}" id="Row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+                    <display:table class="datatable" name="${test.rows}" id="Row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
                         <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                         <c:if test="${empty process && !empty task}">
                             <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable"/>
                         </c:if>
-                        <display:column property="Status" sortable="true" headerClass="sortable"/>             
+                        <display:column property="Status" sortable="true" headerClass="sortable"/>
                         <c:if test="${!showLatest}">
                             <display:column property="ProcessExecutionNumber" title="Process #"/>
                             <display:column property="StreamExecutionNumber" title="Stream #"/>
@@ -344,12 +273,12 @@
                             <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
                             <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
                         </c:if>
-                        <display:column property="links" title="Links" class="leftAligned"/>                    
-                        <c:if test="${adminMode}">                  
-                            <display:column title="" property="isLatestSelector" class="admin"/>                        
+                        <display:column property="links" title="Links" class="leftAligned"/>
+                        <c:if test="${adminMode}">
+                            <display:column title="" property="isLatestSelector" class="admin"/>
                             <display:footer>
                                 <tr>
-                                    <td colspan="20" class="admin">                
+                                    <td colspan="20" class="admin">
                                         <a href="javascript:void(0)" onClick="ShowAll(true);">Select all</a>&nbsp;.&nbsp;
                                         <a href="javascript:void(0)" onClick="ShowAll(false);">Deselect all</a>&nbsp;.&nbsp;
                                         <a href="javascript:void(0)" onClick="ToggleAll();">Toggle selection</a>
@@ -366,10 +295,9 @@
                                 </tr>
                             </display:footer>
                         </c:if>
-                    </display:table>                 
+                    </display:table>
                 </form>
-                <%--
-                <c:if test="${pqTest.rowCount>0}">
+                <c:if test="${test.rowCount>0}">
                     <ul>
                         <c:choose>
                             <c:when test="${!empty processName}">
@@ -383,25 +311,8 @@
                         </c:choose>
                     </ul>
                 </c:if>
-                --%>
-
-                <c:if test="${pqTest.rowCount>0}">
-                    <ul>
-                        <c:choose>
-                            <c:when test="${!empty processName}">
-                                <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=stream">Dump stream id list</a>.</li>
-                                <li><a href="process.jsp?process=${process}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=id">Dump job id list</a>.</li>
-                            </c:when>
-                            <c:when test="${!empty task}">
-                                <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=stream">Dump stream id list</a>.</li>
-                                <li><a href="process.jsp?task=${task}&min=${param.min}&max=${param.max}&status=${param.status}&minDate=${sessionProcessMinDate}&maxDate=${sessionProcessMaxDate}&format=id">Dump job id list</a>.</li>
-                            </c:when>
-                        </c:choose>
-                    </ul>
-                </c:if>
-
-            </c:otherwise>                                                                                                                                                                                                           
+            </c:otherwise>
         </c:choose>
-        
+
     </body>
 </html>

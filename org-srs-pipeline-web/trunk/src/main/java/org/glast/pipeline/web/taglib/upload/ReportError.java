@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-import org.glast.datahandling.common.util.exception.BriefWriter;
+import org.srs.datahandling.common.util.exception.BriefWriter;
 /**
  * A tag for creating printable error
  * @author tonyj

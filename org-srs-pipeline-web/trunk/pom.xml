@@ -5,12 +5,12 @@
     <parent>
         <groupId>srs</groupId>
         <artifactId>org-srs-maven-project-war</artifactId>
-        <version>2.5</version>
+        <version>3.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>glast</groupId>
-    <artifactId>org-glast-pipeline-web</artifactId>
+    <groupId>srs</groupId>
+    <artifactId>org-srs-pipeline-web</artifactId>
     <name>Pipeline Web Front End</name>
     <version>2.9-SNAPSHOT</version>
     <description>Pipeline Web Front End</description>
@@ -31,36 +31,33 @@
 
 
     <scm>
-        <connection>scm:cvs:pserver:anoncvs@glast-java.slac.stanford.edu:/cvs/java:org-glast-pipeline-web</connection>
-        <developerConnection>scm:cvs:ext:@glast-java.slac.stanford.edu:/cvs/java:org-glast-pipeline-web</developerConnection>
-        <url>http://www-glast.stanford.edu/cgi-bin/viewcvs/org-glast-pipeline-web/?root=java</url>
+        <connection>scm:svn:svn+ssh://svn.slac.stanford.edu/nfs/slac/g/srs/subversion/${artifactId}</connection>
+        <url>http://java.freehep.org/svn/repos/srs/list/${artifactId}</url>
     </scm>
-
-
 
     <repositories>
         <repository>
-            <id>glast-maven2</id>
-            <name>GLAST Maven 2 central repository</name>
-            <url>http://glast-ground.slac.stanford.edu/maven2</url>
+            <id>srs-maven2-snapshots</id>
+            <name>SRS Maven2 central SNAPSHOTS repository</name>
+            <url>http://srs.slac.stanford.edu/maven2/SNAPSHOTS</url>
         </repository>
         <repository>
-            <id>glast-maven2-snapshots</id>
-            <name>GLAST Maven2 central SNAPSHOTS repository</name>
-            <url>http://glast-ground.slac.stanford.edu/maven2/SNAPSHOTS</url>
+            <id>srs-maven2</id>
+            <name>SRS Maven2 central repository</name>
+            <url>http://srs.slac.stanford.edu/maven2</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>glast</groupId>
-            <artifactId>org-glast-maven-aida-project</artifactId>
-            <version>2.3</version>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-maven-project-aida</artifactId>
+            <version>3.0</version>
         </dependency>
         <dependency>
-            <groupId>glast</groupId>
-            <artifactId>org-glast-jobcontrol</artifactId>
-            <version>1.8</version>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-jobcontrol</artifactId>
+            <version>1.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>
@@ -73,14 +70,14 @@
             <version>1.16</version>
         </dependency>
         <dependency>
-            <groupId>glast</groupId>
-            <artifactId>org-glast-pipeline-client</artifactId>
-            <version>1.0.4</version>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-pipeline-client</artifactId>
+            <version>1.0.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-datahandling-common</artifactId>
-            <version>1.6.3-SNAPSHOT</version>
+            <version>1.6.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>coldtags</groupId>

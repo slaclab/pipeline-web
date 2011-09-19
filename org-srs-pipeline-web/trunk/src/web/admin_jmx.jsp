@@ -23,11 +23,11 @@
       <bean:JMXConnect var="server" serverURL="service:jmx:rmi:///jndi/rmi://${result.rows[0].host}:${result.rows[0].port}/jmxrmi">
          
          <h2>Control</h2>
-         <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server:type=Main" updateable="${admin}"/>  
+         <bean:mbeanAttributesTable connection="${server}" mbean="org.srs.pipeline.server:type=Main" updateable="${admin}"/>  
          
          <table>
             <tr>
-               <jmx:forEachMBean connection="${server}" id="bean" pattern="org.glast.pipeline.server:type=Scheduler,name=*">
+               <jmx:forEachMBean connection="${server}" id="bean" pattern="org.srs.pipeline.server:type=Scheduler,name=*">
                   <td>
                      <h3>${fn:substringAfter(bean,"name=")}</h3>
                      <bean:mbeanAttributesTable connection="${server}" mbean="${bean}" updateable="${admin}"/>    
@@ -37,7 +37,7 @@
          </table>
          
          <h2>Batch Submission Engines</h2>
-         <jmx:forEachMBean connection="${server}" id="bean" pattern="org.glast.pipeline.server.batch:type=BatchManager,name=*">
+         <jmx:forEachMBean connection="${server}" id="bean" pattern="org.srs.pipeline.server.batch:type=BatchManager,name=*">
             
             <h3><jmx:getAttribute connection="${server}" mbean="${bean}" attribute="Site"/></h3>
             <bean:mbeanAttributesTable connection="${server}" mbean="${bean}" updateable="${admin}"/>
@@ -48,11 +48,11 @@
          
          
          <h2>Logger</h2>
-         <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server.logger:type=JDBCHandler"/>              
+         <bean:mbeanAttributesTable connection="${server}" mbean="org.srs.pipeline.server.logger:type=JDBCHandler"/>              
 
          <h2>Mail Processing</h2>
          <c:catch var="x">
-            <bean:mbeanAttributesTable connection="${server}" mbean="org.glast.pipeline.server:type=MailReceiver"/>              
+            <bean:mbeanAttributesTable connection="${server}" mbean="org.srs.pipeline.server:type=MailReceiver"/>              
          </c:catch>
       
       </bean:JMXConnect>

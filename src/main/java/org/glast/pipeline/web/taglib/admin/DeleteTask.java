@@ -4,7 +4,7 @@ import java.sql.Connection;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-import org.glast.pipeline.client.PipelineClient;
+import org.srs.pipeline.client.PipelineClient;
 import org.glast.pipeline.web.util.*;
 import org.glast.pipeline.web.util.ConnectionManager;
 /**

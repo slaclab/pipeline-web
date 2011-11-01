@@ -57,7 +57,7 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-jobcontrol</artifactId>
-            <version>1.12-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>

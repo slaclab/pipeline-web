@@ -5,7 +5,7 @@
   <uri>http://glast-ground.slac.stanford.edu/pipeline</uri>
   <tag>
     <name>upload</name>
-    <tag-class>org.glast.pipeline.web.taglib.upload.Upload</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.upload.Upload</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>xml</name>
@@ -22,7 +22,7 @@
   </tag>
   <tag>
     <name>createStream</name>
-    <tag-class>org.glast.pipeline.web.taglib.admin.CreateStream</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.admin.CreateStream</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>task</name>
@@ -51,7 +51,7 @@
   </tag>
   <tag>
     <name>deleteTask</name>
-    <tag-class>org.glast.pipeline.web.taglib.admin.DeleteTask</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.admin.DeleteTask</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>task</name>
@@ -62,12 +62,12 @@
   </tag>
   <tag>
     <name>restartServer</name>
-    <tag-class>org.glast.pipeline.web.taglib.admin.RestartServer</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.admin.RestartServer</tag-class>
     <body-content>empty</body-content>
   </tag>
   <tag>
     <name>rollback</name>
-    <tag-class>org.glast.pipeline.web.taglib.admin.Rollback</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.admin.Rollback</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>processes</name>
@@ -90,7 +90,7 @@
   </tag>
   <tag>
     <name>serverInfo</name>
-    <tag-class>org.glast.pipeline.web.taglib.admin.ServerInfo</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.admin.ServerInfo</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>var</name>
@@ -101,7 +101,7 @@
   </tag>
   <tag>
     <name>reportError</name>
-    <tag-class>org.glast.pipeline.web.taglib.upload.ReportError</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.upload.ReportError</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>error</name>
@@ -118,7 +118,7 @@
   </tag>
   <tag>
     <name>taskMap</name>
-    <tag-class>org.glast.pipeline.web.taglib.taskmap.TaskMap</tag-class>
+    <tag-class>org.srs.pipeline.web.taglib.taskmap.TaskMap</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>task</name>
@@ -136,49 +136,49 @@
   <function>
     <description>Convert a RUN or PROCESS status to pretty format</description>
     <name>prettyStatus</name>
-    <function-class>org.glast.pipeline.web.util.Util
+    <function-class>org.srs.pipeline.web.util.Util
         </function-class>
     <function-signature>java.lang.String prettyStatus(java.lang.String)</function-signature>
   </function>
   <function>
     <description>Convert a stream path to a set of links</description>
     <name>linkToStreams</name>
-    <function-class>org.glast.pipeline.web.util.Util
+    <function-class>org.srs.pipeline.web.util.Util
         </function-class>
     <function-signature>java.lang.String linkToStreams(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
   </function>
   <function>
     <description>Convert a task path to a set of links</description>
     <name>linkToTasks</name>
-    <function-class>org.glast.pipeline.web.util.Util
+    <function-class>org.srs.pipeline.web.util.Util
         </function-class>
     <function-signature>java.lang.String linkToTasks(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
   </function>
   <function>
     <description>Format an (oracle) timestamp</description>
     <name>formatTimestamp</name>
-    <function-class>org.glast.pipeline.web.util.Util
+    <function-class>org.srs.pipeline.web.util.Util
         </function-class>
     <function-signature>java.lang.String formatTimestamp(java.sql.Timestamp)</function-signature>
   </function>
   <function>
     <name>floor</name>
-    <function-class>org.glast.pipeline.web.util.Util</function-class>
+    <function-class>org.srs.pipeline.web.util.Util</function-class>
     <function-signature>int floor(double)</function-signature>
   </function>
   <function>
     <name>ceil</name>
-    <function-class>org.glast.pipeline.web.util.Util</function-class>
+    <function-class>org.srs.pipeline.web.util.Util</function-class>
     <function-signature>int ceil(double)</function-signature>
   </function>
   <function>
     <name>getPackageVersion</name>
-    <function-class>org.glast.pipeline.web.util.Util</function-class>
+    <function-class>org.srs.pipeline.web.util.Util</function-class>
     <function-signature>java.lang.String getPackageVersion(java.lang.String)</function-signature>
   </function>
   <function>
     <name>isFile</name>
-    <function-class>org.glast.pipeline.web.servlet.PlainFileServerServlet</function-class>
+    <function-class>org.srs.pipeline.web.servlet.PlainFileServerServlet</function-class>
     <function-signature>boolean isFile(java.lang.Object)</function-signature>
   </function>
 </taglib>

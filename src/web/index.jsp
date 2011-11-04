@@ -123,7 +123,7 @@
             </table>
         </form>      
         <br> 
-        <display:table class="datatable" name="${test.rows}"  id="tableRow" varTotals="totals"  defaultsort="${preferences.defaultSort}" defaultorder="${empty preferences.defaultOrder ? 'descending' : preferences.defaultOrder}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+        <display:table class="datatable" name="${test.rows}"  id="tableRow" varTotals="totals"  defaultsort="${preferences.defaultSort}" defaultorder="${empty preferences.defaultOrder ? 'descending' : preferences.defaultOrder}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator">
             <display:column property="lastActive" title="Last Active" sortable="true" headerClass="sortable" />
             <display:column property="taskWithVersion" title="Task Name" sortable="true" headerClass="sortable" href="task.jsp" paramId="task" paramProperty="task"/>
             <display:column property="taskType" title="Type" sortable="true" headerClass="sortable" />

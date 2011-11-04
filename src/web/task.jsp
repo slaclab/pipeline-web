@@ -130,7 +130,7 @@
                     order by task, process               
                     <sql:param value="${task}"/>
                 </sql:query>
-                <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+                <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.srs.pipeline.web.decorators.ProcessDecorator">
                     <display:column property="TaskName" title="Task"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/> 
                     <display:column property="Version" title="Version"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/>     
                     <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process"/>

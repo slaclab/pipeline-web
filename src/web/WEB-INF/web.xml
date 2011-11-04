@@ -67,13 +67,13 @@
     </filter>
     <filter>
         <filter-name>BlankLineFilter</filter-name>
-        <filter-class>org.glast.pipeline.web.filters.BlankLineFilter</filter-class>
+        <filter-class>org.srs.pipeline.web.filters.BlankLineFilter</filter-class>
     </filter>
 
 
     <filter>
         <filter-name>PipelineFilter</filter-name>
-        <filter-class>org.glast.pipeline.web.filters.PipelineFilter</filter-class>
+        <filter-class>org.srs.pipeline.web.filters.PipelineFilter</filter-class>
     </filter>
     <!-- MultiPart Filter -->
     <filter>
@@ -126,7 +126,7 @@
         </init-param>
         <init-param>
             <param-name>preferences</param-name>
-            <param-value>org.glast.pipeline.web.userpreferences.MyPreferences</param-value>
+            <param-value>org.srs.pipeline.web.userpreferences.MyPreferences</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -193,11 +193,11 @@
     </servlet>
     <servlet>
         <servlet-name>TaskImageServlet</servlet-name>
-        <servlet-class>org.glast.pipeline.web.servlet.TaskImageServlet</servlet-class>
+        <servlet-class>org.srs.pipeline.web.servlet.TaskImageServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DumpTaskServlet</servlet-name>
-        <servlet-class>org.glast.pipeline.web.servlet.DumpTaskServlet</servlet-class>
+        <servlet-class>org.srs.pipeline.web.servlet.DumpTaskServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>TaskImageServlet</servlet-name>

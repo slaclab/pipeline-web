@@ -72,7 +72,7 @@
 
 </c:forEach>  
 
- <display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1"  defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
+ <display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1"  defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator" >    
        <display:column property="ProcessStream" title="ProcessStream" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  /> 
     <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
     <display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0" paramId="process" paramProperty="Process" />              	    

@@ -23,9 +23,9 @@
         </sql:query>
         
         <h2>Message detail</h2> 
-        <display:table class="datatable" name="${code.rows}" decorator="org.glast.pipeline.web.decorators.LogTableDecorator">
-            <display:column property="timeentered" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" title="Time"/>
-            <display:column property="log_level" decorator="org.glast.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" />
+        <display:table class="datatable" name="${code.rows}" decorator="org.srs.pipeline.web.decorators.LogTableDecorator">
+            <display:column property="timeentered" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" title="Time"/>
+            <display:column property="log_level" decorator="org.srs.pipeline.web.decorators.LogLevelColumnDecorator" title="Level" />
             <display:column property="taskLinkPath" title="Task" />
             <display:column property="processname" title="Process" sortable="true" href="process.jsp" paramId="process" paramProperty="process"/>
             <display:column property="streamIdPath" title="Stream" href="pi.jsp" paramId="pi" paramProperty="processinstance" />

@@ -119,7 +119,7 @@
 </sql:query>   
 
 <form name="piSelectForm" action="confirm.jsp" method="post">
-    <display:table class="datatable" name="${testprocess.rows}" id="row" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator">
+    <display:table class="datatable" name="${testprocess.rows}" id="row" sort="list" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator">
         <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable" href="pi.jsp" paramId="pi" paramProperty="ProcessInstance"/>
         <display:column property="Status" title="Status" sortable="true" headerClass="sortable"/>
         <c:if test="${!showLatest}">
@@ -128,10 +128,10 @@
             </display:column>
         </c:if>
         <display:column property="ProcessType" title="Type" sortable="true" headerClass="sortable" href="script.jsp" paramId="process" paramProperty="Process"/>
-        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-        <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
+        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
         <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
         <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>
         <display:column property="executionHost" title="Host" sortable="true" headerClass="sortable"/>
@@ -175,13 +175,13 @@
 
 <form name="subStreamSelectForm" action="confirm.jsp" method="post">
     
-    <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
+    <display:table class="datatable" name="${test.rows}" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator" >
         <display:column property="Taskname" title="taskname" sortable="true" group = "1" headerClass="sortable" />              			    
         <display:column property="StreamId" title="Stream" sortable="true" headerClass="sortable" href="si.jsp" paramId="stream" paramProperty="stream"/>                  
         <display:column property="StreamStatus" title="Status" sortable="true" headerClass="sortable"/>
-        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator"/>
+        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator"/>
+        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator"/>
         <c:if test="${adminMode}">
             
             <display:column property="streamSelector" title=" " class="admin"/>
@@ -249,7 +249,7 @@ Show all substreams summaries for the task in table form
 </c:forEach>  
 
 <form name="selectForm" action="confirm.jsp" method="post">
-<display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >    
+<display:table class="datatable" name="${streamset.rows}" id="tableRow" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? 20 : 0}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator" >    
 <display:column property="Taskname" title="Task" class="leftAligned" sortable="true" group = "1" headerClass="sortable"  href="task.jsp" paramId="task" paramProperty="Task" />              			       
 <display:column property="Processname" title="Process" sortable="true" group = "1" headerClass="sortable" href="process.jsp?status=0&pstream=${param.stream}" paramId="process" paramProperty="Process" />              	    
 <c:forEach var="row" items="${proc_stats.rows}">

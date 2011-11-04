@@ -323,8 +323,8 @@
             </c:when>
             <c:otherwise>
                 <form name="selectForm" action="confirm.jsp" method="post">
-                    <display:table excludedParams="submit" class="datatable" name="${pqTest.rows}" id="Row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                        <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
+                    <display:table excludedParams="submit" class="datatable" name="${pqTest.rows}" id="Row" sort="list" defaultsort="1" defaultorder="ascending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator" >
+                        <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.srs.pipeline.web.decorators.StreamPathComparator" href="pi.jsp" paramId="pi" paramProperty="processinstance"/>
                         <c:if test="${empty process && !empty task}">
                             <display:column property="ProcessName" title="Process" sortable="true" headerClass="sortable"/>
                         </c:if>
@@ -333,12 +333,12 @@
                             <display:column property="ProcessExecutionNumber" title="Process #"/>
                             <display:column property="StreamExecutionNumber" title="Stream #"/>
                         </c:if>
-                        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+                        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
                         <c:if test="${isBatch}">
-                            <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+                            <display:column property="SubmitDate" title="Submitted" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
                         </c:if>
-                        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
-                        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator" />
+                        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
+                        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator" />
                         <c:if test="${isBatch}">
                             <display:column property="job" title="Job Id" sortable="true" headerClass="sortable"/>
                             <display:column property="cpuSecondsUsed" title="CPU" sortable="true" headerClass="sortable"/>

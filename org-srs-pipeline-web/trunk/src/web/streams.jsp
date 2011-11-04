@@ -274,8 +274,8 @@
                 </c:when>
                 <c:otherwise>
                 <form name="selectForm" action="confirm.jsp" method="post">
-                    <display:table excludedParams="submit" class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.glast.pipeline.web.decorators.ProcessDecorator" >
-                        <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.glast.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
+                    <display:table excludedParams="submit" class="datatable" name="${test.rows}" id="row" sort="list" defaultsort="1" defaultorder="descending" pagesize="${test.rowCount>50 && empty param.showAll ? preferences.showStreams : 0}" decorator="org.srs.pipeline.web.decorators.ProcessDecorator" >
+                        <display:column property="StreamIdPath" title="Stream" sortable="true" headerClass="sortable" comparator="org.srs.pipeline.web.decorators.StreamPathComparator" href="si.jsp" paramId="stream" paramProperty="stream"/>
                         <c:if test="${row.StreamStatus =='FAILED'}">
                             <display:column title="Status" sortable="true" headerClass="sortable">
                                 <font color="#FF0000"> ${row.StreamStatus} </font>
@@ -292,9 +292,9 @@
                                 ${row.executionNumber}${row.isLatest>0 ? "(*)" : ""}
                             </display:column>
                         </c:if>
-                        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
-                        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.glast.pipeline.web.decorators.TimestampColumnDecorator"/>
+                        <display:column property="CreateDate" title="Created" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator"/>
+                        <display:column property="StartDate" title="Started" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator"/>
+                        <display:column property="EndDate" title="Ended" sortable="true" headerClass="sortable" decorator="org.srs.pipeline.web.decorators.TimestampColumnDecorator"/>
                         <display:column title="Progress">
                             <c:set var="p" value="${fn:split(row.progress,':')}"/>
                             <utils:progressBar donePercentage="${100*p[0]/(p[0]+p[1]+p[2])}" errorPercentage="${100*p[1]/(p[0]+p[1]+p[2])}" />

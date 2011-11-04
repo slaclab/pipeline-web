@@ -7,7 +7,7 @@
  <shortDescription>Pipeline Web Front End</shortDescription>
  <url>http://glast-ground.slac.stanford.edu/Pipeline/</url>
  <name>Glast Pipeline II Front End</name>
- <package>org.glast.pipeline.web</package>
+ <package>org.srs.pipeline.web</package>
  <inceptionYear>2005</inceptionYear>
  <repository>
   <developerConnection>scm:cvs:ext:${maven.username}@glast-java.slac.stanford.edu:/cvs/java:${pom.artifactId}</developerConnection>

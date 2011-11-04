@@ -11,9 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>srs</groupId>
     <artifactId>org-srs-pipeline-web</artifactId>
-    <name>Pipeline Web Front End</name>
+    <name>SRS Pipeline Web Front End</name>
     <version>3.0-SNAPSHOT</version>
-    <description>Pipeline Web Front End</description>
+    <description>SRS Pipeline Web Front End</description>
     <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
     <packaging>war</packaging>
 

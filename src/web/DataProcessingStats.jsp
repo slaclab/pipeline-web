@@ -104,21 +104,30 @@
 
 <c:if test="${debug == 0}">
     <sql:query var="data">
-        select (TIME_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+7 as SLAC,
-        (f.treceive-978307200-n.metavalue)/3600 as NASA,
-        n.metavalue as runStart
-        from verdataset d
-        join datasetversion dv on (d.latestversion=dv.datasetversion)
-        join verdatasetmetanumber n on (n.datasetversion=dv.datasetversion and n.metaname='nMetStop')
-        join verdatasetlocation l on (dv.masterlocation= l.datasetlocation)
-        join isoc_flight.fcopy_incoming f on (
-        f.downlink_id=(
-        select max (downlink_id)
-        from isoc_flight.glastops_downlink_acqsummary a
-        where a.startedat= l.runmin and a.scid = 77
-        )
-        )
-        where datasetgroup=39684247 and n.metaValue>239907864.08432
+            select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+
+            (case when 
+               (dv.registered>'02-NOV-14 02:00' and dv.registered<'08-MAR-15 02:00') or
+               (dv.registered>'03-NOV-13 02:00' and dv.registered<'09-MAR-14 02:00') or
+               (dv.registered>'04-NOV-12 02:00' and dv.registered<'10-MAR-13 02:00') or
+               (dv.registered>'06-NOV-11 02:00' and dv.registered<'11-MAR-12 02:00') or
+               (dv.registered>'07-NOV-10 02:00' and dv.registered<'13-MAR-11 02:00') or
+               (dv.registered>'01-NOV-09 02:00' and dv.registered<'14-MAR-10 02:00') or 
+               (dv.registered>'02-NOV-08 02:00' and dv.registered<'08-MAR-09 02:00') then 8 else 7 end) 
+                                                    as SLAC,
+            (f.treceive-978307200-n.metavalue)/3600 as NASA,
+            n.metavalue as runStart
+            from verdataset d
+            join datasetversion dv on (d.latestversion=dv.datasetversion)
+            join verdatasetmetanumber n on (n.datasetversion=dv.datasetversion and n.metaname='nMetStop')
+            join verdatasetlocation l on (dv.masterlocation= l.datasetlocation)
+            join isoc_flight.fcopy_incoming f on (
+            f.downlink_id=(
+            select max (downlink_id)
+            from isoc_flight.glastops_downlink_acqsummary a
+            where a.startedat= l.runmin and a.scid = 77
+            )
+            )
+            where datasetgroup=39684247 and n.metaValue>239907864.08432
         <c:if test="${sessionDPstartTime > 0  && empty sessionDPhours  }">
             and dv.registered>?
             <jsp:setProperty name="startTimeBean" property="time" value="${sessionDPstartTime}" />

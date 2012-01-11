@@ -31,10 +31,10 @@
 
 
     <scm>
-        <connection>sscm:svn:file:///nfs/slac/g/srs/subversion/${artifactId}/trunk</connection>
-        <url>http://java.freehep.org/svn/repos/srs/list/${artifactId}</url>
+        <connection>scm:svn:file:///nfs/slac/g/srs/subversion/org-srs-pipeline-web/trunk</connection>
+        <url>http://java.freehep.org/svn/repos/srs/list/org-srs-pipeline-web</url>
     </scm>
-
+    
     <repositories>
         <repository>
             <id>srs-maven2-snapshots</id>

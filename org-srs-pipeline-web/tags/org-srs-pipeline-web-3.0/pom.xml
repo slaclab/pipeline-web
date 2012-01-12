@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
+    <parent>
+        <groupId>srs</groupId>
+        <artifactId>org-srs-maven-project-war</artifactId>
+        <version>3.1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>srs</groupId>
+    <artifactId>org-srs-pipeline-web</artifactId>
+    <name>SRS Pipeline Web Front End</name>
+    <version>3.0</version>
+    <description>SRS Pipeline Web Front End</description>
+    <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
+    <packaging>war</packaging>
+
+    <build>
+        <finalName>Pipeline-II</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceDirectory>${basedir}/src/web</warSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <scm>
+        <connection>scm:svn:file:///nfs/slac/g/srs/subversion/org-srs-pipeline-web/tags/org-srs-pipeline-web-3.0</connection>
+        <url>http://java.freehep.org/svn/repos/srs/list/org-srs-pipeline-web/tags/org-srs-pipeline-web-3.0</url>
+    </scm>
+    
+    <repositories>
+        <repository>
+            <id>srs-maven2-snapshots</id>
+            <name>SRS Maven2 central SNAPSHOTS repository</name>
+            <url>http://srs.slac.stanford.edu/maven2/SNAPSHOTS</url>
+        </repository>
+        <repository>
+            <id>srs-maven2</id>
+            <name>SRS Maven2 central repository</name>
+            <url>http://srs.slac.stanford.edu/maven2</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-maven-project-aida</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-jobcontrol</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-web-base</artifactId>
+            <version>2.8</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-groupmanager-web</artifactId>
+            <version>1.16</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-pipeline-client</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-datahandling-common</artifactId>
+            <version>1.6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>coldtags</groupId>
+            <artifactId>jmxtag</artifactId>
+            <version>2.8</version>
+        </dependency>
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc</artifactId>
+            <version>1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-decorator-jar</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>srs</groupId>
+            <artifactId>org-srs-decorator-war</artifactId>
+            <version>1.3</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <experiment.decorator.group>SRSPipeline</experiment.decorator.group>
+    </properties>
+
+
+    <profiles>
+        <profile>
+            <id>Fermi</id>
+            <properties>
+                <experiment.decorator.group>FermiPipeline</experiment.decorator.group>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
+

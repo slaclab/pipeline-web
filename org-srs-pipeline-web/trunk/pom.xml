@@ -12,7 +12,7 @@
     <groupId>srs</groupId>
     <artifactId>org-srs-pipeline-web</artifactId>
     <name>SRS Pipeline Web Front End</name>
-    <version>3.0</version>
+    <version>3.1-SNAPSHOT</version>
     <description>SRS Pipeline Web Front End</description>
     <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
     <packaging>war</packaging>
@@ -31,8 +31,8 @@
 
 
     <scm>
-        <connection>scm:svn:file:///nfs/slac/g/srs/subversion/org-srs-pipeline-web/tags/org-srs-pipeline-web-3.0</connection>
-        <url>http://java.freehep.org/svn/repos/srs/list/org-srs-pipeline-web/tags/org-srs-pipeline-web-3.0</url>
+        <connection>scm:svn:file:///nfs/slac/g/srs/subversion/org-srs-pipeline-web/trunk</connection>
+        <url>http://java.freehep.org/svn/repos/srs/list/org-srs-pipeline-web</url>
     </scm>
     
     <repositories>

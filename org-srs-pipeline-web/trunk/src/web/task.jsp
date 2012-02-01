@@ -118,16 +118,19 @@
                     <c:forEach var="row" items="${proc_stats.rows}">
                         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",                        
                     </c:forEach>
-                    lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, version || '.' || revision as version, Initcap(ProcessType) type, processname, process,displayorder
-                    from PROCESS 
-                    join (               
-                    SELECT task,taskname,version,revision,level lev FROM TASK
-                    start with Task=? connect by prior Task = ParentTask
-                    )  using (task)
-                    join PROCESSINSTANCE using (PROCESS) 
-                    where isLatest=1 and 0 not in (Select isLatest from stream start with stream = processinstance.stream connect by stream = prior parentstream and stream <> 0)           
-                    group by lev,task, taskname, version, revision, process,PROCESSNAME,displayorder, processtype
-                    order by task, process               
+                        lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, version || '.' || revision as version, Initcap(ProcessType) type, processname, process,displayorder
+                        from PROCESS 
+                        join (
+                        SELECT task,taskname,version,revision,level lev FROM TASK 
+                        start with Task=? connect by prior Task = ParentTask 
+                        ) using (task) 
+                        join PROCESSINSTANCE using (PROCESS) 
+                        where isLatest=1 and processinstance.stream in 
+                        (select latestStreams.stream from stream latestStreams
+                        where latestStreams.isLatest = 1 start with latestStreams.task = ?
+                        connect by prior latestStreams.stream = latestStreams.parentStream) 
+                        group by lev,task, taskname, version, revision, process,PROCESSNAME,displayorder, processtype 
+                        order by task, process         
                     <sql:param value="${task}"/>
                 </sql:query>
                 <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.srs.pipeline.web.decorators.ProcessDecorator">

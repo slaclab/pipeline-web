@@ -132,6 +132,7 @@
                         group by lev,task, taskname, version, revision, process,PROCESSNAME,displayorder, processtype 
                         order by task, process         
                     <sql:param value="${task}"/>
+                    <sql:param value="${task}"/>
                 </sql:query>
                 <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.srs.pipeline.web.decorators.ProcessDecorator">
                     <display:column property="TaskName" title="Task"  class="leftAligned" group = "1" href="task.jsp" paramId="task" paramProperty="Task"/> 

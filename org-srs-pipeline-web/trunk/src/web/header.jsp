@@ -44,7 +44,7 @@
                 <tr>
                     <td align="right">
                         <srs_utils:conditonalLink url="index.jsp" name="Task List" iswelcome="true"/>&nbsp;.
-                        <srs_utils:conditonalLink url="logViewer.jsp" name="Message Viewer" />&nbsp;.
+                        <srs_utils:conditonalLink url="logViewer.jsp?clear=Default" name="Message Viewer" />&nbsp;.
                         <srs_utils:conditonalLink url="JobProcessingStats.jsp" name="Usage Plots" />&nbsp;.
                         <srs_utils:conditonalLink url="http://srs.slac.stanford.edu/BatchAllocations/batchShares.jsp" name="Fair Share Plots" />&nbsp;.
                         <srs_utils:conditonalLink url="admin.jsp" name="Admin" />&nbsp;.

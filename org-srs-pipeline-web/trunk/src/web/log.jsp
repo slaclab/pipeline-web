@@ -25,7 +25,7 @@
 
 
         <%-- This will have to be changed in the future. It is here for backward compatibility with Fermi's pipeline --%>
-        <c:if test="${name.rows[0]['JOBSITE']=='LYON'}">
+        <c:if test="${name.rows[0]['JOBSITE']=='LYON' || name.rows[0]['JOBSITE']=='LYONGRID'}">
             <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
 

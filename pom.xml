@@ -26,6 +26,23 @@
                     <warSourceDirectory>${basedir}/src/web</warSourceDirectory>
                 </configuration>
             </plugin>
+<plugin>  
+        <groupId>org.apache.maven.plugins</groupId>  
+        <artifactId>maven-war-plugin</artifactId>  
+        <configuration>  
+                <overlays>  
+                        <overlay>  
+            <groupId>srs</groupId>
+            <artifactId>org-srs-decorator-war</artifactId>
+                                <excludes>  
+                                        <exclude>WEB-INF/lib/org-srs-web-base*.jar</exclude>  
+                                </excludes>  
+                        </overlay>  
+                </overlays>  
+        </configuration>  
+</plugin>  
+
+
         </plugins>
     </build>
 

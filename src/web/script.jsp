@@ -6,6 +6,8 @@
 
 <html>
    <head>
+      <link href="js/prettify.css" rel="stylesheet" type="text/css" />
+      <script src="js/prettify.js" type="text/javascript"></script>
       <title>Pipeline status</title>
    </head>
    <body>
@@ -17,7 +19,7 @@
 
       <h2>Script ${processName}</h2>
        
-      <pre class="log"><c:out value="${code.rows[0]['processcode'].characterStream}" escapeXml="true"/></pre>
-
+      <pre class="prettyprint"><c:out value="${code.rows[0]['processcode'].characterStream}" escapeXml="true"/></pre>
+      <script>prettyPrint();</script>
    </body>
 </html>

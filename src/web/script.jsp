@@ -9,6 +9,9 @@
       <link href="js/prettify.css" rel="stylesheet" type="text/css" />
       <script src="js/prettify.js" type="text/javascript"></script>
       <title>Pipeline status</title>
+      <script>
+          window.onload = function(){prettyPrint();};
+      </script>
    </head>
    <body>
 
@@ -19,7 +22,6 @@
 
       <h2>Script ${processName}</h2>
        
-      <pre class="prettyprint"><c:out value="${code.rows[0]['processcode'].characterStream}" escapeXml="true"/></pre>
-      <script>prettyPrint();</script>
+      <pre class="prettyprint linenums"><c:out value="${code.rows[0]['processcode'].characterStream}" escapeXml="true"/></pre>
    </body>
 </html>

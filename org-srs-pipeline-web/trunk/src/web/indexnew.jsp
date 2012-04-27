@@ -42,50 +42,59 @@
         
         <sql:query var="test">
         select * from (           
-        select tc.taskname, tc.VERSION,tc.REVISION, tc.lastactive, tc.tasktype, tc.TASK,
+        select 
             tc.total "ALL",
-            <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
-                tc.${row.STREAMSTATUS}${not status.last ? ',' : ''}
+            <c:forEach var="row" items="${stream_stats.rows}">
+                tc.${row.STREAMSTATUS},
             </c:forEach>
-            <%-- Don't know how to deal with this properly yet --%>
-            <%--!<c:if test="${versionGroup != 'allVersions'}">
-                Max(t.TASK) Task
-            </c:if>
+            tc.taskname, tc.lastactive, tc.tasktype, tc.TASK
             <c:if test="${versionGroup == 'allVersions'}">
-                t.TASK,VERSION,REVISION 
-            </c:if>--%>
+                ,tc.VERSION,tc.REVISION 
+            </c:if>
             from taskcache tc
             join task t on (tc.task = t.task)
             where tc.lastupdated > t.lastactive
+            <c:if test="${versionGroup == 'latestVersions'}">
+                and tc.version = 
+                (select distinct max(version) from  task t1 where t1.taskname = tc.taskname)
+                and tc.revision = 
+                (select max(revision) from task t2  where t2.taskname = tc.taskname  and t2.version = tc.version)
+            </c:if>
         union all
-        select t.taskname, t.VERSION,t.REVISION, t.lastactive, t.tasktype, t.TASK,
+        select 
             SUM(case when STREAMSTATUS is not null then 1 else 0 end) "ALL",
-            <c:forEach var="row" items="${stream_stats.rows}" varStatus="status">
-                SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}"${not status.last ? ',' : ''}
+            <c:forEach var="row" items="${stream_stats.rows}">
+                SUM(case when STREAMSTATUS='${row.STREAMSTATUS}' then 1 else 0 end) "${row.STREAMSTATUS}",
             </c:forEach>
-        
-            <%--!<c:if test="${versionGroup != 'allVersions'}">
+            t.taskname, t.lastactive, t.tasktype,
+            <c:if test="${versionGroup != 'allVersions'}">
                 Max(t.TASK) Task
             </c:if>
             <c:if test="${versionGroup == 'allVersions'}">
-                t.TASK,VERSION,REVISION 
-            </c:if>--%>
+                t.TASK,t.VERSION,t.REVISION 
+            </c:if>
             from TASK t
             join taskcache tc on (tc.task = t.task)    
             left outer join STREAM s on s.TASK=t.TASK and s.isLatest=1
             where PARENTTASK = 0 
             and t.TASKSTATUS = 'ACTIVE' 
             and tc.lastupdated < t.lastactive
-            group by 
-            t.TaskName, t.TaskType, t.LastActive, t.TASK,t.VERSION,t.REVISION
-            ) t
-            where TASK>0 
             <c:if test="${versionGroup == 'latestVersions'}">
                 and t.version = 
                 (select distinct max(version) from  task t1 where t1.taskname = t.taskname)
                 and t.revision = 
                 (select max(revision) from task t2  where t2.taskname = t.taskname  and t2.version = t.version)
             </c:if>
+            group by 
+            <c:if test="${versionGroup == 'mergeVersions'}">
+                t.TaskName, t.TaskType, t.LastActive
+            </c:if>
+            <c:if test="${versionGroup != 'mergeVersions'}">
+                t.TaskName, t.TaskType, t.LastActive, t.TASK,t.VERSION,t.REVISION
+            </c:if>
+            ) t
+            where TASK>0 
+
             <c:if test="${!empty taskFilter && !regExp}">
                 and lower("TASKNAME") like lower(?)
                 <sql:param value="%${taskFilter}%"/>

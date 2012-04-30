@@ -79,6 +79,16 @@
             where PARENTTASK = 0 
             and t.TASKSTATUS = 'ACTIVE' 
             and tc.lastupdated < t.lastactive
+            <%-- We also want to get newly created tasks, if they exist --%>
+            or t.task in (select task from (
+                select t.taskname, t.VERSION,t.REVISION, tc.lastupdated, t.tasktype, t.TASK,
+                tc.total,tc.waiting,tc.queued,tc.running,tc.success,tc.failed,tc.terminating,
+                tc.terminated,tc.canceling,tc.canceled
+                from task t
+                left outer join taskcache tc on (tc.task = t.task)
+                where tc.lastupdated < t.lastactive 
+                or (tc.lastupdated is null and t.PARENTTASK = 0 and t.TASKSTATUS = 'ACTIVE')
+            ))
             <c:if test="${versionGroup == 'latestVersions'}">
                 and t.version = 
                 (select distinct max(version) from  task t1 where t1.taskname = t.taskname)

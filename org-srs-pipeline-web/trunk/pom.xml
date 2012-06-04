@@ -79,7 +79,7 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-web-base</artifactId>
-            <version>2.9-SNAPSHOT</version>
+            <version>2.9</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>

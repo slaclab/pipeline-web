@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/Pipeline-II">
+  <ResourceLink name="jdbc/pipeline-ii-dev" type="javax.sql.DataSource" global="jdbc/pipeline-ii-dev" /> 
+  <ResourceLink name="jdbc/pipeline-ii-test" type="javax.sql.DataSource" global="jdbc/pipeline-ii-test" /> 
+  <ResourceLink name="jdbc/pipeline-ii-prod" type="javax.sql.DataSource" global="jdbc/pipeline-ii" />
+  <ResourceLink name="jdbc/glastgen" type="javax.sql.DataSource" global="jdbc/glastgen" /> 
+  <ResourceLink name="jdbc/glastgenDev" type="javax.sql.DataSource" global="jdbc/glastgenDev" />
+  <ResourceLink name="jdbc/config-exo" type="javax.sql.DataSource" global="jdbc/config-exo" />
+  <ResourceLink name="jdbc/config-srs" type="javax.sql.DataSource" global="jdbc/config-srs" /> 
+  <Logger className="org.apache.catalina.logger.FileLogger" prefix="Pipeline." suffix=".log" timestamp="true" />
+</Context>

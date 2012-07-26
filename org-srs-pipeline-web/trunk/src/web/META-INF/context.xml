@@ -7,5 +7,6 @@
   <ResourceLink name="jdbc/glastgenDev" type="javax.sql.DataSource" global="jdbc/glastgenDev" />
   <ResourceLink name="jdbc/config-exo" type="javax.sql.DataSource" global="jdbc/config-exo" />
   <ResourceLink name="jdbc/config-srs" type="javax.sql.DataSource" global="jdbc/config-srs" /> 
+  <ResourceLink name="jdbc/config-fermi" type="javax.sql.DataSource" global="jdbc/config-fermi" />
   <Logger className="org.apache.catalina.logger.FileLogger" prefix="Pipeline." suffix=".log" timestamp="true" />
 </Context>

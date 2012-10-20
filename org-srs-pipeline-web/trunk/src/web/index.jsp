@@ -53,12 +53,12 @@
             </c:if>
             from taskcache tc
             join task t on (tc.task = t.task)
-            where tc.lastupdated > t.lastactive
+            where  t.lastactive < tc.lastupdated
             <c:if test="${versionGroup == 'latestVersions'}">
-                and tc.version = 
-                (select distinct max(version) from  task t1 where t1.taskname = tc.taskname)
                 and tc.revision = 
                 (select max(revision) from task t2  where t2.taskname = tc.taskname  and t2.version = tc.version)
+                and tc.version = 
+                (select distinct max(version) from  task t1 where t1.taskname = tc.taskname)
             </c:if>
         union all
         select 
@@ -73,22 +73,12 @@
             <c:if test="${versionGroup == 'allVersions'}">
                 t.TASK,t.VERSION,t.REVISION 
             </c:if>
-            from TASK t
-            join taskcache tc on (tc.task = t.task)    
+            from (select * from task t0 
+                where t0.task in 
+                (select tx.task from (select task,lastactive from task where parenttask = 0 and taskstatus = 'ACTIVE') tx
+                left outer join taskcache tc on (tc.task = tx.task)
+                where (tc.lastupdated < tx.lastactive or tc.lastupdated is null))) t
             left outer join STREAM s on s.TASK=t.TASK and s.isLatest=1
-            where PARENTTASK = 0 
-            and t.TASKSTATUS = 'ACTIVE' 
-            and tc.lastupdated < t.lastactive
-            <%-- We also want to get newly created tasks, if they exist --%>
-            or t.task in (select task from (
-                select t.taskname, t.VERSION,t.REVISION, tc.lastupdated, t.tasktype, t.TASK,
-                tc.total,tc.waiting,tc.queued,tc.running,tc.success,tc.failed,tc.terminating,
-                tc.terminated,tc.canceling,tc.canceled
-                from task t
-                left outer join taskcache tc on (tc.task = t.task)
-                where tc.lastupdated < t.lastactive 
-                or (tc.lastupdated is null and t.PARENTTASK = 0 and t.TASKSTATUS = 'ACTIVE')
-            ))
             <c:if test="${versionGroup == 'latestVersions'}">
                 and t.version = 
                 (select distinct max(version) from  task t1 where t1.taskname = t.taskname)

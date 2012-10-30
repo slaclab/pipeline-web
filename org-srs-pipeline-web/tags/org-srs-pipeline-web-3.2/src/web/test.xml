@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline
+    xmlns="http://glast-ground.slac.stanford.edu/pipeline"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://glast-ground.slac.stanford.edu/pipeline http://glast-ground.slac.stanford.edu/Pipeline/schemas/1.1/pipeline.xsd">
+    <name>interleaveDC2-GR-v7r3p21</name>
+    <type>SimReconDigi</type>
+    <notation>-</notation>
+    <dataset-base-path>/nfs/farm/g/glast/u28/MC-tasks/interleaveDC2-GR-v7r3p21/output/$(RUN_NAME)/</dataset-base-path>
+    <run-log-path>/temp</run-log-path>
+        <executable name="mc1stepWrapper" version="dummy">
+            /nfs/farm/g/glast/u28/MC-tasks/interleaveDC2-GR-v7r3p21/config/productionMonteCarlo.pl
+        </executable>
+        <batch-job-configuration group="glastgrp" name="long-job" queue="long">
+            <working-directory>/nfs/farm/g/glast/u28/MC-tasks/interleaveDC2-GR-v7r3p21/output/$(RUN_NAME)</working-directory>
+            <log-file-path>/nfs/farm/g/glast/u28/MC-tasks/interleaveDC2-GR-v7r3p21/output/$(RUN_NAME)</log-file-path>
+        </batch-job-configuration>
+        <file name="recon" type="RECON" file-type="root">
+            <notation>-</notation>
+            <path>/</path>
+        </file>
+        <file name="merit" type="merit" file-type="root">
+            <notation>-</notation>
+            <path>/</path>
+        </file>
+        <file name="digi" type="DIGI" file-type="root">
+            <notation>-</notation>
+            <path>/</path>
+        </file>
+        <file name="mc" type="MC" file-type="root">
+            <notation>-</notation>
+            <path>/</path>
+        </file>
+        <processing-step name="mc1step" executable="mc1stepWrapper" batch-job-configuration="long-job">
+            <notation>-</notation>
+                        <output-file name="merit"/>
+                        <output-file name="mc"/>
+                        <output-file name="digi"/>
+                        <output-file name="recon"/>
+        </processing-step>
+</pipeline>

@@ -21,15 +21,10 @@
         <finalName>Pipeline-II</finalName>
         <plugins>
             <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warSourceDirectory>${basedir}/src/web</warSourceDirectory>
-                </configuration>
-            </plugin>
-            <plugin>  
                 <groupId>org.apache.maven.plugins</groupId>  
                 <artifactId>maven-war-plugin</artifactId>  
-                <configuration>  
+                <configuration>
+                    <warSourceDirectory>${basedir}/src/web</warSourceDirectory>
                     <overlays>  
                         <overlay>  
                             <groupId>srs</groupId>

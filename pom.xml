@@ -110,7 +110,7 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-decorator-war</artifactId>
-            <version>1.5</version>
+            <version>1.7</version>
             <type>war</type>
             <exclusions>
                 <exclusion>

@@ -12,7 +12,7 @@
     <groupId>srs</groupId>
     <artifactId>org-srs-pipeline-web</artifactId>
     <name>SRS Pipeline Web Front End</name>
-    <version>3.3-SNAPSHOT</version>
+    <version>3.2.1-SNAPSHOT</version>
     <description>SRS Pipeline Web Front End</description>
     <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
     <packaging>war</packaging>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-decorator-jar</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>

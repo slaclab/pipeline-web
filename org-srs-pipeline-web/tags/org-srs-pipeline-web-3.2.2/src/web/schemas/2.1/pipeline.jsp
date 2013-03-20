@@ -279,7 +279,7 @@
    <xs:simpleType name="SiteType">
       <xs:restriction base="xs:string">
          <xs:minLength value="1"/>
-         <xs:maxLength value="256"/>
+         <xs:maxLength value="64"/>
       </xs:restriction>
    </xs:simpleType>
    <xs:simpleType name="VarType">

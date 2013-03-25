@@ -126,8 +126,8 @@
                         ) using (task) 
                         join PROCESSINSTANCE using (PROCESS) 
                         where isLatest=1 and processinstance.stream in 
-                        (select latestStreams.stream from stream latestStreams
-                        where latestStreams.isLatest = 1 start with latestStreams.task = ?
+                        (select latestStreams.stream from (select * from stream s where s.isLatest = 1) latestStreams
+                        start with latestStreams.task = ?
                         connect by prior latestStreams.stream = latestStreams.parentStream) 
                         group by lev,task, taskname, version, revision, process,PROCESSNAME,displayorder, processtype 
                         order by task, process         

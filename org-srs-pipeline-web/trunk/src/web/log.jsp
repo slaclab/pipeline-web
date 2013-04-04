@@ -21,19 +21,18 @@
             select LOGFILE, JOBSITE, WORKINGDIR||'/logFile.txt' WORKINGDIR from PROCESSINSTANCE where PROCESSINSTANCE=?
             <sql:param value="${processInstance}"/>
         </sql:query>
-        <c:set var="logName" value="${name.rows[0]['LOGFILE']}"/>
-
-
-        <%-- This will have to be changed in the future. It is here for backward compatibility with Fermi's pipeline --%>
-        <c:if test="${name.rows[0]['JOBSITE']=='LYON' || name.rows[0]['JOBSITE']=='LYONGRID'}">
-            <c:set var="logName" value="${fn:replace(name.rows[0]['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
+        <c:set var="row" value="${name.rows[0]}"/>
+        <c:set var="logName" value="${row['LOGFILE']}"/>
+        <c:if test="${row['JOBSITE']=='LYON' || row['JOBSITE']=='LYONGRID'}">
+            <c:set var="logName" value="${fn:replace(row['WORKINGDIR'],'/sps/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
+            <c:set var="logName" value="${fn:replace(row['WORKINGDIR'],'/sps/hep/glast/Pipeline2/MC-tasks','/nfs/farm/g/glast/u44/IN2P3/MC-tasks')}"/>
         </c:if>
-
+       
         <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLogFileServletDb, initParam.pipelineLogFileServletDecoratorGroup, logName, appVariables.experiment) }"/>
 
-
+        
         <c:set var="logURL" value="${fn:replace(logName,mountPoint.mountPoint, pageContext.request.requestURL)}"/>
-
+        
         <c:set var="logFilesServlet" value="PipelineLogFiles/${mountPoint.decorator}/" />
         <c:set var="logURL" value="${fn:replace(logURL,'log.jsp', logFilesServlet)}"/>
 

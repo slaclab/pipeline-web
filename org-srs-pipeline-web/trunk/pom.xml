@@ -5,7 +5,7 @@
     <parent>
         <groupId>srs</groupId>
         <artifactId>org-srs-maven-project-war</artifactId>
-        <version>3.6</version>
+        <version>3.7-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -54,6 +54,15 @@
             <url>http://srs.slac.stanford.edu/nexus/content/groups/srs-maven2-public/</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <site>
+            <id>srs-site</id>
+            <name>SRS Maven2 centreal site repository</name>
+            <url>dav:http://srs.slac.stanford.edu/nexus/content/sites/srs-site/${project.artifactId}</url>
+        </site>
+    </distributionManagement>
+
 
     <dependencies>
         <dependency>

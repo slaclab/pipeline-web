@@ -41,7 +41,7 @@
             <displayName>Fermi tomcat deploy (dev)</displayName>
             <goals>
                 <goal>package</goal>
-                <goal>tomcat:deploy</goal>
+                <goal>tomcat7:deploy</goal>
             </goals>
             <activatedProfiles>
                 <activatedProfile>Fermi</activatedProfile>

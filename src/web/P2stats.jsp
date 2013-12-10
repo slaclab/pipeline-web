@@ -20,7 +20,7 @@
 
         <c:set var="debug" value="0"/>
         <c:set var="isSubmit" value="${param.filter}"/>
-        <c:set var="isDefault" value="${param.default}"/>
+        <c:set var="isDefault" value="${param.isDefault}"/>
 
         <c:if test="${empty firstTimeP2stats}">
             <c:set var="P2hours" value="${preferences.defaultP2statHours > 0 ? preferences.defaultP2statHours : ''}"/>
@@ -81,7 +81,7 @@
            </h3>
        </c:if>
 
-       <c:if test="${isDefault == 'Default'}">
+       <c:if test="${isDefault == 'true'}">
            <c:set var="pref_nhours" value="${preferences.defaultP2statHours > 0 ? preferences.defaultP2statHours : ''}"/>
            <c:set var="P2hours" value="${pref_nhours}"/>
            <c:set var="startTime" value="-1"/>
@@ -127,7 +127,7 @@
                 </tr> 
                 <input type="hidden" name="task" value="${task}"/>
                 <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter">
-                <input type="submit" value="Default" name="default"></td>
+                <input type="submit" value="true" name="isDefault"></td>
                 </tr> 
         </table></form>  
 

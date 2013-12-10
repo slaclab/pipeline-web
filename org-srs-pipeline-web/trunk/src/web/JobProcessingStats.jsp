@@ -23,7 +23,7 @@
         <jsp:useBean id="endTimeBean" class="java.util.Date" />
 
         <c:set var="isSubmit" value="${param.filter}" />
-        <c:set var="isDefault" value="${param.default}" />
+        <c:set var="isDefault" value="${param.isDefault}" />
         <c:set var="startTime" value="${param.startTime}" />
         <c:set var="endTime"   value="${param.endTime}" />
         <c:set var="taskName" value="${param.taskName}" /> 
@@ -94,7 +94,7 @@
         <%--   </c:if>  --%>
 
 
-        <c:if test="${isDefault == 'Default'}">
+        <c:if test="${isDefault == 'true'}">
             <c:set var ="sessionUseHours" value="true" scope="session"/>
             <c:set var="preferenceHours" value="${preferences.defaultPerfPlotHours}"/>
             <c:set var ="hours" value="${preferenceHours}"/> 
@@ -124,7 +124,7 @@
                     <td><strong>End</strong> <time:dateTimePicker size="20" name="endTime" shownone="false" showtime="true" format="%b/%e/%y %H:%M" value="${sessionUseHours ? -1 : sessionEndTime}" timezone="PST8PDT"/> </td>
                     <td>or last <input name="hours" type="text" value="${sessionUseHours ? sessionHours : ''}" size="5"> hours</td>
                 </tr> 
-                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"><input type="submit" value="Default" name="default"></td>
+                <tr bordercolor="#000000" bgcolor="#FFCC66"> <td> <input type="submit" value="Submit" name="filter"><input type="submit" value="true" name="isDefault"></td>
                 </tr> 
             </table></form>
 

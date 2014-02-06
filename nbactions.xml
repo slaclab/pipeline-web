@@ -5,7 +5,7 @@
             <displayName>SRS tomcat deploy (prod)</displayName>
             <goals>
                 <goal>package</goal>
-                <goal>tomcat:deploy</goal>
+                <goal>tomcat7:deploy</goal>
             </goals>
             <activatedProfiles>
                 <activatedProfile>SRS</activatedProfile>
@@ -17,7 +17,7 @@
             <displayName>SRS tomcat deploy (local)</displayName>
             <goals>
                 <goal>package</goal>
-                <goal>tomcat:deploy</goal>
+                <goal>tomcat7:deploy</goal>
             </goals>
             <activatedProfiles>
                 <activatedProfile>SRS</activatedProfile>
@@ -29,7 +29,7 @@
             <displayName>SRS tomcat deploy (dev)</displayName>
             <goals>
                 <goal>package</goal>
-                <goal>tomcat:deploy</goal>
+                <goal>tomcat7:deploy</goal>
             </goals>
             <activatedProfiles>
                 <activatedProfile>SRS</activatedProfile>

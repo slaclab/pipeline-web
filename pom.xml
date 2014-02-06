@@ -119,12 +119,12 @@
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-decorator-jar</artifactId>
-            <version>1.10</version>
+            <version>1.11-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>srs</groupId>
             <artifactId>org-srs-decorator-war</artifactId>
-            <version>1.10</version>
+            <version>1.11-SNAPSHOT</version>
             <type>war</type>
             <exclusions>
                 <exclusion>

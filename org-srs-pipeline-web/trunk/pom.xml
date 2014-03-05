@@ -67,7 +67,7 @@
     <distributionManagement>
         <site>
             <id>srs-site</id>
-            <name>SRS Maven2 centreal site repository</name>
+            <name>SRS Maven2 central site repository</name>
             <url>dav:http://srs.slac.stanford.edu/nexus/content/sites/srs-site/${project.artifactId}</url>
         </site>
     </distributionManagement>

@@ -36,18 +36,9 @@
         <c:set var="workingDir" value="${workingDir}${path}"/>
 
 
-        <c:set var="mountPoint" value="${ logFilesUtils:getMatchMountPoint(initParam.pipelineLogFileServletDb, initParam.pipelineLogFileServletDecoratorGroup, workingDir, appVariables.experiment) }"/>
+        <c:set var="logURL" value="${pageContext.request.requestURL}${workingDir}"/>
 
-        <c:choose>
-            <c:when test="${mountPoint.mountPoint == '/'}">
-                <c:set var="logURL" value="${pageContext.request.requestURL}${workingDir}"/>                                
-            </c:when>
-            <c:otherwise>
-                <c:set var="logURL" value="${fn:replace(workingDir,mountPoint.mountPoint, pageContext.request.requestURL)}"/>                
-            </c:otherwise>
-        </c:choose>
-
-        <c:set var="logFilesServlet" value="PipelineLogFiles/${mountPoint.decorator}/" />
+        <c:set var="logFilesServlet" value="PipelineLogFiles/PipelineLogFiles" />
         <c:set var="logURL" value="${fn:replace(logURL,'run.jsp', logFilesServlet)}"/>
 
         <c:set var="contextPathInfo" value="/${fn:substring(logURL,fn:indexOf(logURL,logFilesServlet),-1)}"/>

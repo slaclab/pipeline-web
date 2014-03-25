@@ -114,24 +114,39 @@
                     &nbsp;<a href="process.jsp?task=${task}&status=0">[ALL]</a>                  
                     &nbsp;<a href="process.jsp?task=${task}&status=NOTSUCCESS">[All not SUCCESS]</a>
                 </p>
-                <sql:query var="test">select   SUM(1) "ALL",
+                <sql:query var="test">
+                    WITH 
+                        task_tree (task, parenttask, taskname, version, revision) AS 
+                        ( SELECT task, parenttask, taskname, version, revision FROM task WHERE task = ?
+                          UNION ALL
+                          SELECT jt.task, jt.parenttask, jt.taskname, jt.version, jt.revision
+                            FROM task_tree tt
+                            JOIN task jt ON (tt.task = jt.parenttask)
+                        ),
+                        sst AS (SELECT stream, parentstream, streamstatus, task, islatest 
+                                  FROM stream WHERE task IN (select task from task_tree)), 
+                        stream_tree ( stream, parentstream, streamstatus, task, lev ) AS
+                        ( SELECT   stream, parentstream, streamstatus, task, 1
+                            FROM stream
+                            WHERE task = (select task from task_tree where parenttask = 0) AND islatest = 1
+                          UNION ALL
+                          SELECT   sst.stream, sst.parentstream, sst.streamstatus, sst.task, lev+1
+                            FROM stream_tree st
+                            JOIN sst ON (st.stream = sst.parentstream)
+                            WHERE islatest = 1
+                        )
+                    select   SUM(1) "ALL",
                     <c:forEach var="row" items="${proc_stats.rows}">
                         SUM(case when PROCESSINGSTATUS='${row.PROCESSINGSTATUS}' then 1 else 0 end) "${row.PROCESSINGSTATUS}",                        
-                    </c:forEach>
-                        lev, lpad(' ',1+24*(lev -1),'&nbsp;')||taskname  taskname, task, version || '.' || revision as version, Initcap(ProcessType) type, processname, process,displayorder
-                        from PROCESS 
-                        join (
-                        SELECT task,taskname,version,revision,level lev FROM TASK 
-                        start with Task=? connect by prior Task = ParentTask 
-                        ) using (task) 
-                        join PROCESSINSTANCE using (PROCESS) 
-                        where isLatest=1 and processinstance.stream in 
-                        (select latestStreams.stream from stream latestStreams
-                        where latestStreams.isLatest = 1 start with latestStreams.task = ?
-                        connect by prior latestStreams.stream = latestStreams.parentStream) 
-                        group by lev,task, taskname, version, revision, process,PROCESSNAME,displayorder, processtype 
-                        order by task, process         
-                    <sql:param value="${task}"/>
+                    </c:forEach>    
+                        lev, lpad(' ',1+24*(lev -1),'&nbsp;')|| tt.taskname  taskname, st.task, tt.version || '.' || tt.revision as version, Initcap(prt.ProcessType) type, prt.processname, pt.process, prt.displayorder
+                        FROM stream_tree st
+                        join processinstance pt on (pt.stream = st.stream)
+                        join task tt on (st.task = tt.task)
+                        join process prt on (pt.process = prt.process)
+                        where pt.islatest = 1
+                        GROUP BY lev, st.task, tt.taskname, tt.version, tt.revision, pt.process, prt.PROCESSNAME, prt.displayorder, prt.processtype
+                        ORDER BY st.task, pt.process
                     <sql:param value="${task}"/>
                 </sql:query>
                 <display:table class="datatable" name="${test.rows}" id="tableRow" varTotals="totals"  decorator="org.srs.pipeline.web.decorators.ProcessDecorator">

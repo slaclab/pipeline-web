@@ -139,7 +139,11 @@
         <h2>Streams for task: ${taskName} ${taskVersion.rows[0]["version"]}.${taskVersion.rows[0]["revision"]} </h2>
 
         <sql:query var="test">
-            select stream.*,PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
+            select stream.stream, stream.task, stream.streamid, stream.parentstream, stream.streamstatus, stream.islatest,
+            stream.executionnumber, stream.islatest, 
+            cast(stream.createDate as TIMESTAMP) createDate, cast(stream.startdate as TIMESTAMP) startDate,
+            cast(stream.enddate as TIMESTAMP) enddate, 
+            PII.GetStreamPath(stream) StreamPath, PII.GetStreamIdPath(stream) StreamIdPath, PII.GetStreamProgress(stream) progress
             from stream
             where task=?
             <sql:param value="${param.task}" />

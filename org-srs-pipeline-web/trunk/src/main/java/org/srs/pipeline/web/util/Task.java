@@ -4,11 +4,7 @@
 
 package org.srs.pipeline.web.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +15,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import oracle.jdbc.pool.OracleDataSource;
 
 /**
  *
@@ -259,37 +254,4 @@ public class Task
       draw(writer, new GraphVizProperties());
    }
    
-   public static void main(String args[]) throws Exception, SQLException, IOException {
-     OracleDataSource ds = new OracleDataSource();
-     ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
-     String user = System.getProperty("db.username","GLAST_DP_TEST");
-     String password = System.getProperty("db.username","BT33%Q9]MU");
-     Connection conn =  ds.getConnection(user,password);
-     conn.setAutoCommit(false);
-
-     Task testTask = new Task(48087, conn);
-
-     // print it:
-     testTask.print();
-
-     // draw it to a file:
-     FileWriter fw = new FileWriter("c:\\test.dot");
-     testTask.draw(fw);
-
-     // draw it to a string:
-     StringWriter sw = new StringWriter();
-     testTask.draw(sw);
-     System.out.println(sw.toString()); // print StringWriter to stdout
-     System.out.println(sw.toString());
-
-     GraphViz gv = new GraphViz(null);
-     ByteArrayOutputStream bytes = gv.getGraph(sw.toString());
-     FileOutputStream fos = new FileOutputStream("c:\\test.gif");
-     bytes.writeTo(fos);
-     fos.close();
-     bytes = gv.getGraph(sw.toString(),GraphViz.Format.CMAP);
-     fos = new FileOutputStream("c:\\test.map");
-     bytes.writeTo(fos);
-     fos.close();
-   }
 }

@@ -56,7 +56,10 @@
     </c:if>
 
 <sql:query var="rs1">
-    select stream.*,PII.GetStreamIsLatestPath(stream) isLatestPath from stream 
+    select stream.stream, stream.parentstream, stream.task, stream.streamid, stream.executionNumber,
+    stream.streamstatus, cast(stream.createdate as TIMESTAMP) createDate, cast(stream.startDate as TIMESTAMP) startDate,
+    cast(stream.endDate as TIMESTAMP) endDate,
+    PII.GetStreamIsLatestPath(stream) isLatestPath from stream 
     where stream=?
     <sql:param value="${param.stream}"/>
 </sql:query>
@@ -108,8 +111,11 @@
 <pt:autoCheckBox name="showLatest" value="${showLatest}">Show only latest execution</pt:autoCheckBox><br>
 
 <sql:query var="testprocess">
-    select processinstance, process, stream, processName, Initcap(processingStatus) status, Initcap(ProcessType) ProcessType, CreateDate, SubmitDate, StartDate,
-    EndDate, jobid, jobsite, cpuSecondsUsed, executionHost, executionNumber, autoRetryNumber, autoRetryMaxAttempts, isLatest from processinstance
+    select processinstance, process, stream, processName, Initcap(processingStatus) status, Initcap(ProcessType) ProcessType, 
+    cast(CreateDate as TIMESTAMP) createDate, cast(SubmitDate as TIMESTAMP) SubmitDate, 
+    cast(StartDate as TIMESTAMP) StartDate, cast(EndDate as TIMESTAMP) ENDDATE, 
+    jobid, jobsite, cpuSecondsUsed, executionHost, executionNumber, autoRetryNumber, autoRetryMaxAttempts, isLatest 
+    from processinstance join BatchProcessInstance using (ProcessInstance)
     join process using (process)
     where stream = ?		
     <c:if test="${showLatest}"> 

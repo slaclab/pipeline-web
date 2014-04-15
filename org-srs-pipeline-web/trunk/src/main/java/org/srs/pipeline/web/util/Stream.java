@@ -4,11 +4,9 @@
 
 package org.srs.pipeline.web.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import oracle.jdbc.pool.OracleDataSource;
+
 
 /**
  *
@@ -252,24 +250,5 @@ public class Stream
       } finally {
          writer.close();
       }
-   }
-   
-   public static void main(String args[]) throws Exception, SQLException, IOException {
-      OracleDataSource ds = new OracleDataSource();
-      ds.setURL("jdbc:oracle:thin:@glast-oracle02.slac.stanford.edu:1521:GLASTDEV");
-      String user = System.getProperty("db.username","GLAST_DP_TEST");
-      String password = System.getProperty("db.username","BT33%Q9]MU");
-      Connection conn =  ds.getConnection(user,password);
-      conn.setAutoCommit(false);
-
-      Stream testStream = new Stream(276, conn);
-      
-      // print it:
-      testStream.print();
-      
-      FileWriter fw = new FileWriter("c:\\testStream.dot");
-      
-      testStream.draw(fw);
-      fw.close();
    }
 }

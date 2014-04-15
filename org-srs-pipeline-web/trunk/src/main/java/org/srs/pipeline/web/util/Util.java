@@ -48,12 +48,12 @@ public class Util
          if (++i == names.length) break;
          result.append(separator);
       }
-      return result.toString();
+      return result.toString(); 
    }
    public static String formatTimestamp(java.sql.Timestamp timestamp) throws SQLException
    {
       return timestamp == null ? "" : format.format(timestamp);
-   }
+      }
    public static int floor(double d)
    {
       return (int) Math.floor(d);

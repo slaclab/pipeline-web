@@ -172,10 +172,15 @@
                 </c:choose>
             </c:if>
             )
-            select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,p.CREATEDATE,p.SUBMITDATE,p.STARTDATE,p.ENDDATE, x.ProcessName, x.ProcessType, p.CPUSECONDSUSED, p.EXECUTIONHOST, p.EXITCODE
+            select p.PROCESSINSTANCE,p.isLatest, s.streamid, PII.GetStreamIdPath(stream) StreamIdPath, 
+            stream, p.JOBID, p.JobSite, Initcap(p.PROCESSINGSTATUS) status,
+            cast(p.CREATEDATE as TIMESTAMP) CREATEDATE, CAST(p.SUBMITDATE AS TIMESTAMP) SUBMITDATE,
+            cast(p.STARTDATE AS TIMESTAMP) STARTDATE, cast(p.ENDDATE  AS TIMESTAMP) ENDDATE, 
+            x.ProcessName, x.ProcessType, bpi.CPUSECONDSUSED, bpi.EXECUTIONHOST, p.EXITCODE
             <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
 
             from processinstance2 p
+            join BatchProcessInstance bpi on (p.processinstance = bpi.processinstance)
             join stream s using (stream)
             join process x using (process)
             ) q where (null is null)

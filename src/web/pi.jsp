@@ -16,9 +16,17 @@
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 
         <sql:query var="rs">
-            select * from processinstance
-            join process using (process)
-            where processinstance=?
+            SELECT PI.ProcessInstance, PI.Stream, PI.ProcessingStatus, 
+                cast(PI.CreateDate AS TIMESTAMP) CreateDate, cast(PI.SubmitDate AS TIMESTAMP) SubmitDate, 
+                cast(PI.StartDate AS TIMESTAMP) startDate, cast(PI.EndDate as TIMESTAMP) EndDate, 
+                PI.JobID, PI.JobSite, PI.ExecutionNumber, PI.AutoRetryNumber, P.AutoRetryMaxAttempts, 
+                PI.IsLatest,    PI.ExitCode, BPI.MemoryUsed, 
+                BPI.cpuSecondsUsed, BPI.ExecutionHost, BPI.WorkingDir, BPI.LogFile, BPI.SwapUsed,
+                P.ProcessType, P.Process, P.ProcessName
+            from processinstance PI
+            join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
+            join process P on (PI.PROCESS = P.PROCESS)
+            where PI.processinstance=?
             <sql:param value="${param.pi}"/>
         </sql:query>
         <c:set var="data" value="${rs.rows[0]}"/>
@@ -107,10 +115,14 @@
             <h3>Upstream Process Instances</h3>
             <sql:query var="dependentprocesses">
                 select PI.ProcessInstance, P.Process, PI.Stream, P.ProcessName, Initcap(PI.ProcessingStatus) status, Initcap(P.ProcessType) ProcessType,
-                PI.CreateDate, PI.SubmitDate, PI.StartDate, PI.EndDate, PI.JobID, PI.JobSite, PI.cpuSecondsUsed, PI.ExecutionHost, PI.ExecutionNumber,
+                cast(PI.CreateDate AS TIMESTAMP) CreateDate, cast(PI.SubmitDate AS TIMESTAMP) SubmitDate, 
+                cast(PI.StartDate AS TIMESTAMP) startDate, cast(PI.EndDate as TIMESTAMP) EndDate, 
+                PI.JobID, PI.JobSite, BPI.cpuSecondsUsed, BPI.ExecutionHost, PI.ExecutionNumber,
                 PI.AutoRetryNumber, P.AutoRetryMaxAttempts, PI.IsLatest, PC.Condition
                 from
-                ProcessInstance PI join Process P on (P.Process = PI.Process)
+                ProcessInstance PI 
+                join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
+                join Process P on (P.Process = PI.Process)
                 join ((select Process, DependentProcess, InitCap(ProcessingStatus) AS Condition from ProcessStatusCondition where Hidden=0) UNION (select Process, DependentProcess, 'DONE' AS Condition from ProcessCompletionCondition where Hidden=0)) PC on (PI.Process = PC.Process)
                 join (select ProcessInstance, Process, Stream, ParentStream from ProcessInstance join Stream using (Stream) where ProcessInstance=?) CurPI on (PC.DependentProcess = CurPI.Process and (PI.Stream = CurPI.Stream OR PI.Stream in (select Stream from Stream where ParentStream=CurPI.Stream)))
                 where PI.IsLatest = 1
@@ -141,10 +153,14 @@
             <h3>Downstream Process Instances</h3>
             <sql:query var="dependentprocesses">
                 select PI.ProcessInstance, P.Process, PI.Stream, P.ProcessName, Initcap(PI.ProcessingStatus) status, Initcap(P.ProcessType) ProcessType,
-                PI.CreateDate, PI.SubmitDate, PI.StartDate, PI.EndDate, PI.JobID, PI.JobSite, PI.cpuSecondsUsed, PI.ExecutionHost, PI.ExecutionNumber,
+                 cast(PI.CreateDate AS TIMESTAMP) CreateDate, cast(PI.SubmitDate AS TIMESTAMP) SubmitDate, 
+                cast(PI.StartDate AS TIMESTAMP) startDate, cast(PI.EndDate as TIMESTAMP) EndDate, 
+                PI.JobID, PI.JobSite, BPI.cpuSecondsUsed, BPI.ExecutionHost, PI.ExecutionNumber,
                 PI.AutoRetryNumber, P.AutoRetryMaxAttempts, PI.IsLatest, PC.Condition
                 from
-                ProcessInstance PI join Process P on (P.Process = PI.Process) join ((select Process, DependentProcess, InitCap(ProcessingStatus) AS Condition from ProcessStatusCondition where Hidden=0) UNION (select Process, DependentProcess, 'DONE' AS Condition from ProcessCompletionCondition where Hidden=0)) PC on (PI.Process = PC.DependentProcess)
+                ProcessInstance PI 
+                join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
+                join Process P on (P.Process = PI.Process) join ((select Process, DependentProcess, InitCap(ProcessingStatus) AS Condition from ProcessStatusCondition where Hidden=0) UNION (select Process, DependentProcess, 'DONE' AS Condition from ProcessCompletionCondition where Hidden=0)) PC on (PI.Process = PC.DependentProcess)
                 join (select ProcessInstance, Process, Stream, ParentStream from ProcessInstance join Stream using (Stream) where ProcessInstance=?) CurPI on (PC.Process = CurPI.Process and (PI.Stream in (CurPI.Stream, CurPI.ParentStream)))
                 where PI.IsLatest = 1
                 order by displayorder
@@ -173,8 +189,9 @@
         <c:if test="${showSubStreams}">
             <h3>SubStreams Created</h3>
             <sql:query var="createdStreams">
-                select t.taskname, s.stream, s.streamid, Initcap(s.streamstatus)
-                StreamStatus, s.createDate, s.StartDate, s.EndDate
+                select t.taskname, s.stream, s.streamid, Initcap(s.streamstatus) StreamStatus, 
+                cast(s.CreateDate AS TIMESTAMP) CreateDate, cast(s.StartDate AS TIMESTAMP) startDate, 
+                cast(s.EndDate as TIMESTAMP) EndDate
                 from stream s
                 join Task t on (s.Task = t.task)
                 join (select Stream ParStream, SubTask from

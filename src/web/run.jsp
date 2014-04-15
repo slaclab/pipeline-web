@@ -22,7 +22,7 @@
         <c:set var="path" value="${fn:replace(path,'//','/')}"/>
 
         <sql:query var="name">
-            select WORKINGDIR,JOBSITE from PROCESSINSTANCE where PROCESSINSTANCE=?
+            select WORKINGDIR,JOBSITE from PROCESSINSTANCE JOIN BATCHPROCESSINSTANCE USING (ProcessInstance) where PROCESSINSTANCE=?
             <sql:param value="${processInstance}"/>
         </sql:query>
         <c:set var="workingDir" value="${name.rows[0]['WORKINGDIR']}"/>

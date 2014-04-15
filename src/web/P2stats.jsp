@@ -172,7 +172,8 @@
 
         <c:set var="lineSize" value="2"/>
         <sql:query var="datacheck">
-            select createdate,startdate,enddate
+            select cast(createdate as TIMESTAMP) createdate, cast(startdate as TIMESTAMP) startdate,
+            cast(enddate as TIMESTAMP) enddate
             from stream where task=?
             and streamstatus='SUCCESS'
             and PII.GetStreamIsLatestPath(Stream)=1
@@ -213,7 +214,8 @@
             <tab:tabs name="ProcessTabs" param="process">                
                 <tab:tab name="Summary" href="P2stats.jsp?task=${task}&startTime=${sessionP2StartTime}&endTime=${sessionP2EndTime}&p2hours=${sessionP2Hours}&filter=Submit" value="0">
                     <sql:query var="data">
-                        select createdate,startdate,enddate, 
+                        select cast(createdate as TIMESTAMP) createdate, cast(startdate as TIMESTAMP) startdate,
+                        cast(enddate as TIMESTAMP) enddate,
                         (TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as elapsedTime
                         , (TIME_UTIL.GetTimeFromEpochMS(startdate)-TIME_UTIL.GetTimeFromEpochMS(createdate))/(1000*60) as waitTime
                         from stream where task=? 
@@ -392,13 +394,16 @@
                 <c:forEach var="row" items="${processes.rows}">
                     <tab:tab name="${row.PROCESSNAME}" href="P2stats.jsp?task=${task}&startTime=${sessionP2StartTime}&endTime=${sessionP2EndTime}&p2hours=${sessionP2Hours}&filter=Submit" value="${row.PROCESS}">
                         <sql:query var="data">
-                            select enddate,startdate,submitdate,cpusecondsused,
-                            cpusecondsused/60 as cpuUsedTime ,
+                            select cast(submitdate as TIMESTAMP) submitdate,
+                            cast(startdate as TIMESTAMP) startdate, cast(enddate as TIMESTAMP) enddate,
+                            bpi.cpusecondsused,
+                            bpi.cpusecondsused/60 as cpuUsedTime ,
                             (TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as wallPlotTime,
-                            cpusecondsused/(TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as WallCpuTime,
+                            bpi.cpusecondsused/(TIME_UTIL.GetTimeFromEpochMS(enddate)-TIME_UTIL.GetTimeFromEpochMS(startdate))/(1000*60) as WallCpuTime,
                             (TIME_UTIL.GetTimeFromEpochMS(startdate)-TIME_UTIL.GetTimeFromEpochMS(submitdate))/(1000*60) as waitPlotTime,
-                            regexp_substr(lower(PI.executionhost), '^[a-z]+')executionhost
+                            regexp_substr(lower(BPI.executionhost), '^[a-z]+') executionhost
                             from processinstance PI
+                            join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.PROCESSINSTANCE)
                             where PI.process = ?
                             <sql:param value="${row.PROCESS}"/>
                             and PI.processingstatus = 'SUCCESS'
@@ -563,8 +568,10 @@
                         
                         <c:if test="${row.processtype !='SCRIPT'}">                                                         
                             <sql:query var="hostnode">           
-                                select distinct(regexp_substr(lower(PI.executionhost), '^[a-z]+') ) executionhost 
-                                from processinstance PI  ,process P
+                                select distinct(regexp_substr(lower(BPI.executionhost), '^[a-z]+') ) executionhost 
+                                from processinstance PI
+                                join process p on (pi.process = p.process)
+                                join batchprocessinstance bpi on (pi.processinstance = bpi.processinstance)
                                 where PI.process = P.process
                                 and PI.process = ?                               
                                 <sql:param value="${row.process}"/>                                

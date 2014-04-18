@@ -170,7 +170,9 @@
 
 
 
-<sql:query var="test">SELECT taskname, stream, streamid, Initcap(streamstatus) streamStatus, createDate, StartDate, EndDate FROM stream 
+<sql:query var="test">SELECT taskname, stream, streamid, Initcap(streamstatus) streamStatus, 
+    CAST(createDate AS TIMESTAMP) createDate, CAST(StartDate AS TIMESTAMP) StartDate, 
+    CAST(EndDate AS TIMESTAMP) EndDate FROM stream 
     join task using (task)
     where  parentstream = ? 
     <c:if test="${showLatest}"> 

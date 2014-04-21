@@ -4,6 +4,8 @@ import java.sql.Connection;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import org.srs.groupmanager.GroupManagerWeb;
+import org.srs.groupmanager.UserInfo;
 import org.srs.pipeline.client.PipelineClient;
 import org.srs.pipeline.web.util.*;
 import org.srs.pipeline.web.util.ConnectionManager;
@@ -20,25 +22,16 @@ public class CreateStream extends SimpleTagSupport
    
    public void doTag() throws JspException
    {
-      try
-      {
-         Connection conn = ConnectionManager.getConnection((PageContext) getJspContext(), null);
-         try
-         {
-            PipelineClient client = new PipelineClient(conn);
-            int streamNumber = client.createStream(task,stream,args);
-            if (var != null) getJspContext().setAttribute(var,streamNumber);
-         }
-         finally
-         {
-            conn.close();
-         }
-      }
-      catch (Exception x)
-      {
-         throw new JspException("Create stream failed",x);
-      }
+        try (Connection conn = ConnectionManager.getConnection((PageContext) getJspContext(), null)) {
+           PipelineClient client = new PipelineClient(conn);
+           UserInfo info = GroupManagerWeb.getUserInfo((PageContext) getJspContext());
+           int streamNumber = client.createStream(info.getSlacId(), task,stream,args);
+           if (var != null) getJspContext().setAttribute(var,streamNumber);
+        } catch (Exception x) {
+           throw new JspException("Create stream failed",x);
+        }
    }
+   
    public void setTask(String task)
    {
       this.task = task;

@@ -180,7 +180,7 @@
             <c:if test="${!showLatest}">, p.ExecutionNumber || case when x.autoRetryMaxAttempts > 0 then '(' || p.autoRetryNumber || '/' || x.autoRetryMaxAttempts || ')' end || case when  p.IsLatest=1  then '(*)' end processExecutionNumber, s.ExecutionNumber || case when  s.IsLatest=1  then '(*)' end streamExecutionNumber</c:if>
 
             from processinstance2 p
-            join BatchProcessInstance bpi on (p.processinstance = bpi.processinstance)
+            LEFT OUTER join BatchProcessInstance bpi on (p.processinstance = bpi.processinstance)
             join stream s using (stream)
             join process x using (process)
             ) q where (null is null)

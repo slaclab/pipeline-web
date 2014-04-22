@@ -115,7 +115,7 @@
     cast(CreateDate as TIMESTAMP) createDate, cast(SubmitDate as TIMESTAMP) SubmitDate, 
     cast(StartDate as TIMESTAMP) StartDate, cast(EndDate as TIMESTAMP) ENDDATE, 
     jobid, jobsite, cpuSecondsUsed, executionHost, executionNumber, autoRetryNumber, autoRetryMaxAttempts, isLatest 
-    from processinstance join BatchProcessInstance using (ProcessInstance)
+    from processinstance left outer join BatchProcessInstance using (ProcessInstance)
     join process using (process)
     where stream = ?		
     <c:if test="${showLatest}"> 

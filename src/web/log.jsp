@@ -18,7 +18,8 @@
         <h2>Task ${taskName} Process ${processName} Stream ${streamIdPath}</h2>
 
         <sql:query var="name">
-            select LOGFILE, JOBSITE, WORKINGDIR||'/logFile.txt' WORKINGDIR from PROCESSINSTANCE join BATCHPROCESSINSTANCE using (processinstance) where PROCESSINSTANCE=?
+            select LOGFILE, JOBSITE, WORKINGDIR||'/logFile.txt' WORKINGDIR from PROCESSINSTANCE 
+            left outer join BATCHPROCESSINSTANCE using (processinstance) where PROCESSINSTANCE=?
             <sql:param value="${processInstance}"/>
         </sql:query>
         <c:set var="row" value="${name.rows[0]}"/>

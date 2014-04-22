@@ -24,7 +24,7 @@
                 BPI.cpuSecondsUsed, BPI.ExecutionHost, BPI.WorkingDir, BPI.LogFile, BPI.SwapUsed,
                 P.ProcessType, P.Process, P.ProcessName
             from processinstance PI
-            join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
+            left outer join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
             join process P on (PI.PROCESS = P.PROCESS)
             where PI.processinstance=?
             <sql:param value="${param.pi}"/>
@@ -121,7 +121,7 @@
                 PI.AutoRetryNumber, P.AutoRetryMaxAttempts, PI.IsLatest, PC.Condition
                 from
                 ProcessInstance PI 
-                join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
+                left outer join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
                 join Process P on (P.Process = PI.Process)
                 join ((select Process, DependentProcess, InitCap(ProcessingStatus) AS Condition from ProcessStatusCondition where Hidden=0) UNION (select Process, DependentProcess, 'DONE' AS Condition from ProcessCompletionCondition where Hidden=0)) PC on (PI.Process = PC.Process)
                 join (select ProcessInstance, Process, Stream, ParentStream from ProcessInstance join Stream using (Stream) where ProcessInstance=?) CurPI on (PC.DependentProcess = CurPI.Process and (PI.Stream = CurPI.Stream OR PI.Stream in (select Stream from Stream where ParentStream=CurPI.Stream)))
@@ -159,7 +159,7 @@
                 PI.AutoRetryNumber, P.AutoRetryMaxAttempts, PI.IsLatest, PC.Condition
                 from
                 ProcessInstance PI 
-                join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
+                left outer join BatchProcessInstance BPI on (PI.ProcessInstance = BPI.ProcessInstance)
                 join Process P on (P.Process = PI.Process) join ((select Process, DependentProcess, InitCap(ProcessingStatus) AS Condition from ProcessStatusCondition where Hidden=0) UNION (select Process, DependentProcess, 'DONE' AS Condition from ProcessCompletionCondition where Hidden=0)) PC on (PI.Process = PC.DependentProcess)
                 join (select ProcessInstance, Process, Stream, ParentStream from ProcessInstance join Stream using (Stream) where ProcessInstance=?) CurPI on (PC.Process = CurPI.Process and (PI.Stream in (CurPI.Stream, CurPI.ParentStream)))
                 where PI.IsLatest = 1

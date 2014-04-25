@@ -140,7 +140,7 @@
                 </c:when>
             </c:choose>
 
-            <c:if test="${showLatest}">and islatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
+            <c:if test="${showLatest}">and islatest=1 </c:if>
 
             <c:if test="${!empty status}">
                 <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />

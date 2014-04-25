@@ -148,7 +148,7 @@
             where task=?
             <sql:param value="${param.task}" />
 
-            <c:if test="${showLatest}"> and isLatest=1 and PII.GetStreamIsLatestPath(stream)=1</c:if>
+            <c:if test="${showLatest}"> and isLatest=1 </c:if>
 
             <c:if test="${!empty status}">
                 <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />

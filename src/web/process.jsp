@@ -140,7 +140,7 @@
                 </c:when>
             </c:choose>
 
-            <c:if test="${showLatest}">and islatest=1 </c:if>
+            <c:if test="${showLatest}">and islatest=1</c:if>
 
             <c:if test="${!empty status}">
                 <c:set var ="NumStatusReqs" value = "${fn:length(paramValues.status)}" />
@@ -183,8 +183,9 @@
             LEFT OUTER join BatchProcessInstance bpi on (p.processinstance = bpi.processinstance)
             join stream s using (stream)
             join process x using (process)
+            <c:if test="${showLatest}">where s.islatest=1 </c:if>
             ) q where (null is null)
-
+            
             <c:if test="${!empty min}">
                 and StreamId>=?
                 <sql:param value="${min}"/>

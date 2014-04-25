@@ -9,7 +9,9 @@
 <%@attribute name="process" type="java.lang.Integer" %>
 
 <sql:query var="instances">
-     select processinstance,streamid from processinstance join stream using (stream) where process=? order by streamid
+     select processinstance,streamid from processinstance join stream using (stream) 
+     where process=? and processinstance.islatest = 1 and stream.islatest = 1 
+     order by streamid
      <sql:param value="${process}"/>
 </sql:query>
 <select size="1" name="${name}">

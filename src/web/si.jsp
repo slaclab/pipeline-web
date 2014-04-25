@@ -59,7 +59,7 @@
     select stream.stream, stream.parentstream, stream.task, stream.streamid, stream.executionNumber,
     stream.streamstatus, cast(stream.createdate as TIMESTAMP) createDate, cast(stream.startDate as TIMESTAMP) startDate,
     cast(stream.endDate as TIMESTAMP) endDate,
-    PII.GetStreamIsLatestPath(stream) isLatestPath from stream 
+    isLatest isLatestPath from stream 
     where stream=?
     <sql:param value="${param.stream}"/>
 </sql:query>

@@ -33,7 +33,7 @@
     start with Task=? connect by prior Task = ParentTask
     )  using (task)
     join PROCESSINSTANCE using (PROCESS) 
-    where isLatest=1 and PII.GetStreamIsLatestPath(stream)=1 
+    where isLatest=1 
     and stream in (
     SELECT stream
     FROM stream 

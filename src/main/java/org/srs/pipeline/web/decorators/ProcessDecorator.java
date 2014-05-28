@@ -9,9 +9,7 @@ import org.srs.jobcontrol.JobControlException;
 import org.srs.jobcontrol.JobStatus;
 import org.srs.jobcontrol.NoSuchJobException;
 import org.srs.pipeline.web.util.Util;
-import java.util.Iterator;
 import java.util.Map;
-import javax.servlet.ServletRequest;
 import org.displaytag.decorator.TableDecorator;
 
 /**
@@ -103,20 +101,26 @@ public class ProcessDecorator extends TableDecorator
    {
       Map map = (Map) getCurrentRowObject();
       Object processinstance = map.get("processinstance");
+      Object pid = map.get("JobID");
+      Object site = map.get("JobSite");
       
       StringBuilder result = new StringBuilder();
       if (map.get("ProcessType").toString().equalsIgnoreCase("batch"))
       {
-         result.append("<a href=\"logViewer.jsp?pi="+processinstance+"&severity=500&showAllMessages=true\">Messages</a>");
+         result.append("<a href=\"logViewer.jsp?pi=").append(processinstance).append("&severity=500&showAllMessages=true\">Messages</a>");
          if (map.get("StartDate") != null)
          {
-            result.append("&nbsp;:&nbsp;<a href=\"log.jsp?pi="+processinstance+"\">Log</a>");
-            result.append("&nbsp;:&nbsp;<a href=\"run.jsp?pi="+processinstance+"\">Files</a>");
+            if ("PANDAPILOT".equals(site)) {
+               result.append("&nbsp;:&nbsp;<a href=\"http://pandawms.org/lsst/job/").append(pid).append("/\">Panda</a>");    
+            } else {
+               result.append("&nbsp;:&nbsp;<a href=\"log.jsp?pi=").append(processinstance).append("\">Log</a>");
+               result.append("&nbsp;:&nbsp;<a href=\"run.jsp?pi=").append(processinstance).append("\">Files</a>");
+            }
          }
       }
       else if (map.get("ProcessType").toString().equalsIgnoreCase("script"))
       {
-         result.append("<a href=\"logViewer.jsp?pi="+processinstance+"&severity=500&showAllMessages=true\">Messages</a>");
+         result.append("<a href=\"logViewer.jsp?pi=").append(processinstance).append("&severity=500&showAllMessages=true\">Messages</a>");
       }
       return result.toString();
    }

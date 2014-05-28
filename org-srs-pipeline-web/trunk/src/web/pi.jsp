@@ -64,8 +64,13 @@
             <tr><td>Swap Used</td><td>${data.SwapUsed}</td></tr>
             <tr><td>Execution Host</td><td>${data.ExecutionHost}</td></tr>
             <tr><td>Exit Code</td><td>${data.ExitCode}</td></tr>
-            <tr><td>Working Dir</td><td><a href="run.jsp?pi=${param.pi}">${data.WorkingDir}</a></td></tr>
-            <tr><td>Log File</td><td><a href="log.jsp?pi=${param.pi}">${data.LogFile}</a></td></tr>
+            <c:if test="${data.JobSite!='PANDAPILOT'}">
+               <tr><td>Working Dir</td><td><a href="run.jsp?pi=${param.pi}">${data.WorkingDir}</a></td></tr>
+               <tr><td>Log File</td><td><a href="log.jsp?pi=${param.pi}">${data.LogFile}</a></td></tr>
+            </c:if>
+            <c:if test="${data.JobSite=='PANDAPILOT'}">
+               <tr><td>Panda</td><td><a href="http://pandawms.org/lsst/job/${data.JobID}/">${data.JobID}</a></td></tr>
+            </c:if>
             <tr>
                 <td>Execution Number</td>
                 <td><b>${data.ExecutionNumber}</b>

@@ -100,12 +100,24 @@
         </tr>
     </table>
 </form>
-           
-
+    
+            <c:if test="${empty dataShownAs}">
+                <c:set var="dataShownAs" value="plot" scope="session"/>
+            </c:if>
+            <c:if test="${!empty param.dataShownAs}">
+                <c:set var="dataShownAs" value="${param.dataShownAs}" scope="session"/>
+            </c:if>
+            Show data as: 
+            <c:choose>
+                <c:when test="${dataShownAs == 'plot'}"><b>Plot</b> | <a href="?dataShownAs=table">Table</a></c:when>
+                <c:otherwise><a href="?dataShownAs=plot">Plot</a> | <b>Table</b></c:otherwise>
+            </c:choose>
+                <br>
 <c:if test="${debug == 0}">
     <sql:query var="data">
             select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+
             (case when 
+               (dv.registered>'01-NOV-15 02:00' and dv.registered<'13-MAR-16 02:00') or
                (dv.registered>'02-NOV-14 02:00' and dv.registered<'08-MAR-15 02:00') or
                (dv.registered>'03-NOV-13 02:00' and dv.registered<'09-MAR-14 02:00') or
                (dv.registered>'04-NOV-12 02:00' and dv.registered<'10-MAR-13 02:00') or
@@ -145,6 +157,7 @@
             <jsp:setProperty name="endTimeBean" property="time" value="${endTimeBean.time}"/>
             <sql:dateParam value="${endTimeBean}" type="timestamp"/>
         </c:if>
+            order by runStart desc
     </sql:query>
 
     ${aida:clearPlotRegistry(pageContext.session)}
@@ -154,6 +167,9 @@
     </c:if>
 
         <c:if test="${data.rowCount > 0}">
+            
+            <c:choose>
+                <c:when test="${dataShownAs == 'plot'}">
         <aida:plotter height="400" width="1000" nx="2">
             <aida:tuple var="tuple" query="${data}"/>    
             <aida:tupleProjection var="lslac" tuple="${tuple}" xprojection="log10(SLAC)" xbins="96" xmin="-2" xmax="3" name="SLAC"/>
@@ -301,6 +317,30 @@
                 </aida:plot>
             </aida:region>
         </aida:plotter>
+                    
+                </c:when>
+                <c:otherwise>
+                        <table>
+    <tr>
+    <td>Run Start</td>
+    <td>SLAC</td>
+    <td>NASA</td>
+    </tr>
+    <c:forEach var="p" items="${data.rows}">
+    <tr>
+    <td>${p.runStart}</td>
+    <td>${p.SLAC}</td>
+    <td>${p.NASA}</td>
+    </tr>
+    </c:forEach>
+    </table>
+
+
+                </c:otherwise>
+            </c:choose>
+            
+            
+            
 </c:if>
 
         <h2>Notes</h2>

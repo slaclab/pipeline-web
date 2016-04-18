@@ -117,6 +117,10 @@
     <sql:query var="data">
             select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+
             (case when 
+               (dv.registered>'03-NOV-19 02:00' and dv.registered<'8-MAR-20 02:00') or
+               (dv.registered>'04-NOV-18 02:00' and dv.registered<'10-MAR-19 02:00') or
+               (dv.registered>'05-NOV-17 02:00' and dv.registered<'11-MAR-18 02:00') or
+               (dv.registered>'06-NOV-16 02:00' and dv.registered<'12-MAR-17 02:00') or
                (dv.registered>'01-NOV-15 02:00' and dv.registered<'13-MAR-16 02:00') or
                (dv.registered>'02-NOV-14 02:00' and dv.registered<'08-MAR-15 02:00') or
                (dv.registered>'03-NOV-13 02:00' and dv.registered<'09-MAR-14 02:00') or

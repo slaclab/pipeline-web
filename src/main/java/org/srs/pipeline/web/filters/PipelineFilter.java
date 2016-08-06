@@ -87,7 +87,7 @@ public class PipelineFilter implements Filter
             Connection connection = dataSource.getConnection();
             try
             {
-               String sql = "select process,PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath,processname,taskpath,taskNamePath,taskname,task "+
+               String sql = "select process,PII.getStreamPath(stream) streampath, PII.getStreamIdPath(stream) streamIdPath,processname,taskpath,taskNamePath,taskname,task, stream "+
                        "from processinstance "+
                        "join process using (process) "+
                        "join taskpath using (task) "+
@@ -109,6 +109,7 @@ public class PipelineFilter implements Filter
                   servletRequest.setAttribute("taskNamePath",rs.getString(6));
                   servletRequest.setAttribute("taskName",rs.getString(7));
                   servletRequest.setAttribute("task",rs.getInt(8));
+                  servletRequest.setAttribute("streamPk",rs.getString(9));
                   rs.close();
                }
                finally

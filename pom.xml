@@ -5,7 +5,7 @@
     <parent>
         <groupId>srs</groupId>
         <artifactId>org-srs-maven-project-war</artifactId>
-        <version>4.1</version>
+        <version>5.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <name>SRS Pipeline Web Front End</name>
     <version>4.1-SNAPSHOT</version>
     <description>SRS Pipeline Web Front End</description>
-    <url>http://glast-ground.slac.stanford.edu/Pipeline-II/</url>
+    <url>https://glast-ground.slac.stanford.edu/Pipeline-II/</url>
     <packaging>war</packaging>
 
     <build>
@@ -60,7 +60,7 @@
         <repository>
             <id>srs-maven2-public</id>
             <name>SRS Maven 2 central repository</name>
-            <url>http://srs.slac.stanford.edu/nexus/content/groups/srs-maven2-public/</url>
+            <url>https://srs.slac.stanford.edu/nexus/content/groups/srs-maven2-public/</url>
         </repository>
     </repositories>
 
@@ -68,7 +68,7 @@
         <site>
             <id>srs-site</id>
             <name>SRS Maven2 central site repository</name>
-            <url>dav:http://srs.slac.stanford.edu/nexus/content/sites/srs-site/${project.artifactId}</url>
+            <url>dav:https://srs.slac.stanford.edu/nexus/content/sites/srs-site/${project.artifactId}</url>
         </site>
     </distributionManagement>
 

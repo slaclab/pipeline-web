@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
     <parent>
@@ -21,20 +22,20 @@
         <finalName>Pipeline-II</finalName>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>  
-                <artifactId>maven-war-plugin</artifactId>  
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <warSourceDirectory>${basedir}/src/web</warSourceDirectory>
-                    <overlays>  
-                        <overlay>  
+                    <overlays>
+                        <overlay>
                             <groupId>srs</groupId>
                             <artifactId>org-srs-decorator-war</artifactId>
-                            <excludes>  
-                                <exclude>WEB-INF/lib/org-srs-web-base*.jar</exclude>  
-                            </excludes>  
-                        </overlay>  
-                    </overlays>  
-                </configuration>  
+                            <excludes>
+                                <exclude>WEB-INF/lib/org-srs-web-base*.jar</exclude>
+                            </excludes>
+                        </overlay>
+                    </overlays>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,8 +46,15 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            
-            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -55,7 +63,7 @@
         <connection>scm:svn:file:///nfs/slac/g/srs/subversion/org-srs-pipeline-web/trunk</connection>
         <url>http://java.freehep.org/svn/repos/srs/list/org-srs-pipeline-web</url>
     </scm>
-    
+
     <repositories>
         <repository>
             <id>srs-maven2-public</id>

@@ -61,14 +61,15 @@ public class PipelineFilter implements Filter
                   int stream = Integer.parseInt(streamId);
                   preparedStatement.setInt(1,stream);
                   ResultSet rs = preparedStatement.executeQuery();
-                  rs.next();
-                  servletRequest.setAttribute("streamId",rs.getString(1));
-                  servletRequest.setAttribute("streamPath",rs.getString(2));
-                  servletRequest.setAttribute("streamIdPath",rs.getString(3));
-                  servletRequest.setAttribute("taskPath",rs.getString(4));
-                  servletRequest.setAttribute("taskNamePath",rs.getString(5));
-                  servletRequest.setAttribute("taskName",rs.getString(6));
-                  servletRequest.setAttribute("task",rs.getInt(7));
+                  if (rs.next()) {
+                     servletRequest.setAttribute("streamId",rs.getString(1));
+                     servletRequest.setAttribute("streamPath",rs.getString(2));
+                     servletRequest.setAttribute("streamIdPath",rs.getString(3));
+                     servletRequest.setAttribute("taskPath",rs.getString(4));
+                     servletRequest.setAttribute("taskNamePath",rs.getString(5));
+                     servletRequest.setAttribute("taskName",rs.getString(6));
+                     servletRequest.setAttribute("task",rs.getInt(7));
+                  }
                   rs.close();
                }
                finally
@@ -99,17 +100,18 @@ public class PipelineFilter implements Filter
                   int processInstance = Integer.parseInt(piId);
                   preparedStatement.setInt(1,processInstance);
                   ResultSet rs = preparedStatement.executeQuery();
-                  rs.next();
-                  servletRequest.setAttribute("processInstance",processInstance);
-                  servletRequest.setAttribute("process",rs.getInt(1));
-                  servletRequest.setAttribute("streamPath",rs.getString(2));
-                  servletRequest.setAttribute("streamIdPath",rs.getString(3));
-                  servletRequest.setAttribute("processName",rs.getString(4));
-                  servletRequest.setAttribute("taskPath",rs.getString(5));
-                  servletRequest.setAttribute("taskNamePath",rs.getString(6));
-                  servletRequest.setAttribute("taskName",rs.getString(7));
-                  servletRequest.setAttribute("task",rs.getInt(8));
-                  servletRequest.setAttribute("streamPk",rs.getString(9));
+                  if (rs.next()) {
+                     servletRequest.setAttribute("processInstance",processInstance);
+                     servletRequest.setAttribute("process",rs.getInt(1));
+                     servletRequest.setAttribute("streamPath",rs.getString(2));
+                     servletRequest.setAttribute("streamIdPath",rs.getString(3));
+                     servletRequest.setAttribute("processName",rs.getString(4));
+                     servletRequest.setAttribute("taskPath",rs.getString(5));
+                     servletRequest.setAttribute("taskNamePath",rs.getString(6));
+                     servletRequest.setAttribute("taskName",rs.getString(7));
+                     servletRequest.setAttribute("task",rs.getInt(8));
+                     servletRequest.setAttribute("streamPk",rs.getString(9));
+                  }
                   rs.close();
                }
                finally
@@ -139,13 +141,14 @@ public class PipelineFilter implements Filter
                   int process = Integer.parseInt(processId);
                   preparedStatement.setInt(1,process);
                   ResultSet rs = preparedStatement.executeQuery();
-                  rs.next();
-                  servletRequest.setAttribute("process",process);
-                  servletRequest.setAttribute("processName",rs.getString(1));
-                  servletRequest.setAttribute("taskPath",rs.getString(2));
-                  servletRequest.setAttribute("taskNamePath",rs.getString(3));
-                  servletRequest.setAttribute("taskName",rs.getString(4));
-                  servletRequest.setAttribute("task",rs.getInt(5));
+                  if (rs.next()) {
+                     servletRequest.setAttribute("process",process);
+                     servletRequest.setAttribute("processName",rs.getString(1));
+                     servletRequest.setAttribute("taskPath",rs.getString(2));
+                     servletRequest.setAttribute("taskNamePath",rs.getString(3));
+                     servletRequest.setAttribute("taskName",rs.getString(4));
+                     servletRequest.setAttribute("task",rs.getInt(5));
+                  }
                   rs.close();
                }
                finally
@@ -174,12 +177,13 @@ public class PipelineFilter implements Filter
                   int task = Integer.parseInt(taskId);
                   preparedStatement.setInt(1,task);
                   ResultSet rs = preparedStatement.executeQuery();
-                  rs.next();
-                  servletRequest.setAttribute("task",task);
-                  servletRequest.setAttribute("taskPath",rs.getString(1));
-                  servletRequest.setAttribute("taskNamePath",rs.getString(2));
-                  servletRequest.setAttribute("taskName",rs.getString(3));
-                  servletRequest.setAttribute("taskVersion",rs.getString(4));
+                  if (rs.next()) {
+                     servletRequest.setAttribute("task",task);
+                     servletRequest.setAttribute("taskPath",rs.getString(1));
+                     servletRequest.setAttribute("taskNamePath",rs.getString(2));
+                     servletRequest.setAttribute("taskName",rs.getString(3));
+                     servletRequest.setAttribute("taskVersion",rs.getString(4));
+                  }
                   rs.close();
                }
                finally

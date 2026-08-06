@@ -46,12 +46,15 @@
     <filter>
         <filter-name>LoginFilter</filter-name>
         <filter-class>org.srs.web.base.filters.login.LoginFilter</filter-class>
+        <init-param>
+            <param-name>configDb</param-name>
+            <param-value>${experiment.configuration.database}</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
-
 
     <filter>
         <filter-name>CheckCookiesFilter</filter-name>

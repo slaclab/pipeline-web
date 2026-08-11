@@ -50,7 +50,7 @@
                 <jc:remoteFile var="logFile" stream="${streamPk}" processInstance="${processInstance}" 
                                filePath="${logName}" host="${jobsite.host}" user="${jobsite.jobsiteuser}"
                                port="${jobsite.port}" serviceName="${jobsite.servicename}"/>
-                <pre>${logFile}</pre>
+                <pre><c:out value="${logFile}" escapeXml="true" /></pre>
             </c:when>
             <c:when test="${! empty param.download}">
                 <c:redirect url="${logURL}&download=true"/>

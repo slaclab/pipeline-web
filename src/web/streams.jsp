@@ -14,8 +14,8 @@
 <html>
     <head>
         <title>Streams for task: ${taskName}</title>
-        <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">
+        <script language="JavaScript" src="//glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
+        <link rel="stylesheet" href="//glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">
     </head>
     <body>
 

@@ -10,8 +10,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
-        <script language="JavaScript" src="http://glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
-        <link rel="stylesheet" href="http://glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">        
+        <script language="JavaScript" src="//glast-ground.slac.stanford.edu/Commons/scripts/FSdateSelect.jsp"></script>
+        <link rel="stylesheet" href="//glast-ground.slac.stanford.edu/Commons/css/FSdateSelect.css" type="text/css">
         <title>Pipeline Jobs VS Time Plots</title>    
     </head>
     <body>

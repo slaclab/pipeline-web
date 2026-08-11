@@ -427,6 +427,10 @@
                             
                         </sql:query>             
 
+
+                        <c:if test="${fn:length(data.rows) > 0}">
+
+                            
                         <aida:tuple var="tuple" query="${data}" />    
                         
                         <%-- Don't plot this section if an single NODE plot is to be displayed
@@ -665,6 +669,7 @@
                                     </c:if>  
                                 </aida:plotter> 
                             </c:if>
+                        </c:if>  
                         </c:if>  
                     </tab:tab>             
                 </c:forEach>            

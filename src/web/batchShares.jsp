@@ -16,7 +16,7 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link href="http://glast-ground.slac.stanford.edu/Commons/css/glastCommons.jsp" rel="stylesheet" type="text/css">
+        <link href="//glast-ground.slac.stanford.edu/Commons/css/glastCommons.jsp" rel="stylesheet" type="text/css">
         <title>Batch Fair Shares Page</title>    
         
     </head>

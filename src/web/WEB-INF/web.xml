@@ -50,6 +50,10 @@
             <param-name>configDb</param-name>
             <param-value>${experiment.configuration.database}</param-value>
         </init-param>
+        <init-param>
+            <param-name>requireLogin</param-name>
+            <param-value>true</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>

@@ -183,14 +183,50 @@
             
             <c:choose>
                 <c:when test="${dataShownAs == 'plot'}">
+        <aida:tuple var="tuple" query="${data}"/>
+        <%-- The <aida:tupleProjection> tag fills a Cloud1D, which silently converts itself
+             to a histogram past 100000 entries and then throws "Cloud already been
+             converted" when the tag forces its own convert().  The unfiltered query passed
+             that limit on 2026-09-03.  Fill the histograms directly instead - no ceiling. --%>
+        <%
+        IAnalysisFactory projAf = IAnalysisFactory.create();
+        ITree logTree = projAf.createTreeFactory().create();
+        ITree linTree = projAf.createTreeFactory().create();
+        IHistogramFactory logHf = projAf.createHistogramFactory(logTree);
+        IHistogramFactory linHf = projAf.createHistogramFactory(linTree);
+        IHistogram1D hLslac  = logHf.createHistogram1D("SLAC",  96, -2, 3);
+        IHistogram1D hLnasa  = logHf.createHistogram1D("NASA",  96, -2, 3);
+        IHistogram1D hLtotal = logHf.createHistogram1D("Total", 96, -2, 3);
+        IHistogram1D hSlac   = linHf.createHistogram1D("SLAC",  96, 0, 48);
+        IHistogram1D hNasa   = linHf.createHistogram1D("NASA",  96, 0, 48);
+        IHistogram1D hTotal  = linHf.createHistogram1D("Total", 96, 0, 48);
+        ITuple projTuple = (ITuple) pageContext.getAttribute("tuple");
+        ITupleColumn.D projSLAC = (ITupleColumn.D) projTuple.column("SLAC");
+        ITupleColumn.D projNASA = (ITupleColumn.D) projTuple.column("NASA");
+        projTuple.start();
+        while (projTuple.next()) {
+            double s = projSLAC.value();
+            double n = projNASA.value();
+            hSlac.fill(s);
+            hNasa.fill(n);
+            hTotal.fill(s + n);
+            // SLAC is <= 0 for ~600 runs, where log10 is undefined; AIDA dropped those
+            // into nanEntries rather than plotting them, so skip them here too.
+            double ls = Math.log10(s);
+            double ln = Math.log10(n);
+            double lt = Math.log10(s + n);
+            if (!Double.isNaN(ls) && !Double.isInfinite(ls)) hLslac.fill(ls);
+            if (!Double.isNaN(ln) && !Double.isInfinite(ln)) hLnasa.fill(ln);
+            if (!Double.isNaN(lt) && !Double.isInfinite(lt)) hLtotal.fill(lt);
+        }
+        pageContext.setAttribute("lslac",  hLslac);
+        pageContext.setAttribute("lnasa",  hLnasa);
+        pageContext.setAttribute("ltotal", hLtotal);
+        pageContext.setAttribute("slac",   hSlac);
+        pageContext.setAttribute("nasa",   hNasa);
+        pageContext.setAttribute("total",  hTotal);
+        %>
         <aida:plotter height="400" width="1000" nx="2">
-            <aida:tuple var="tuple" query="${data}"/>    
-            <aida:tupleProjection var="lslac" tuple="${tuple}" xprojection="log10(SLAC)" xbins="96" xmin="-2" xmax="3" name="SLAC"/>
-            <aida:tupleProjection var="lnasa" tuple="${tuple}" xprojection="log10(NASA)" xbins="96" xmin="-2" xmax="3" name="NASA"/>
-            <aida:tupleProjection var="ltotal" tuple="${tuple}" xprojection="log10(SLAC+NASA)" xbins="96" xmin="-2" xmax="3" name="Total"/>
-            <aida:tupleProjection var="slac" tuple="${tuple}" xprojection="SLAC" xbins="96" xmin="0" xmax="48" name="SLAC"/>
-            <aida:tupleProjection var="nasa" tuple="${tuple}" xprojection="NASA" xbins="96" xmin="0" xmax="48" name="NASA"/>
-            <aida:tupleProjection var="total" tuple="${tuple}" xprojection="SLAC+NASA" xbins="96" xmin="0" xmax="48" name="Total"/>
             
             <aida:region title= "Data processing elapsed time per run" >            
                 <aida:style>

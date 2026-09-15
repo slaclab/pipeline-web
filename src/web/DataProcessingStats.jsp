@@ -116,8 +116,17 @@
 <c:if test="${debug == 0}">
     <sql:query var="data">
             select (GLAST_UTIL.GetDeltaSeconds(dv.registered-to_date('01-JAN-01'))-f.treceive+978307200)/3600+
-            (case when 
-               (dv.registered>'03-NOV-19 02:00' and dv.registered<'8-MAR-20 02:00') or
+            (case when
+               (dv.registered>'05-NOV-28 02:00' and dv.registered<'11-MAR-29 02:00') or
+               (dv.registered>'07-NOV-27 02:00' and dv.registered<'12-MAR-28 02:00') or
+               (dv.registered>'01-NOV-26 02:00' and dv.registered<'14-MAR-27 02:00') or
+               (dv.registered>'02-NOV-25 02:00' and dv.registered<'08-MAR-26 02:00') or
+               (dv.registered>'03-NOV-24 02:00' and dv.registered<'09-MAR-25 02:00') or
+               (dv.registered>'05-NOV-23 02:00' and dv.registered<'10-MAR-24 02:00') or
+               (dv.registered>'06-NOV-22 02:00' and dv.registered<'12-MAR-23 02:00') or
+               (dv.registered>'07-NOV-21 02:00' and dv.registered<'13-MAR-22 02:00') or
+               (dv.registered>'01-NOV-20 02:00' and dv.registered<'14-MAR-21 02:00') or
+               (dv.registered>'03-NOV-19 02:00' and dv.registered<'08-MAR-20 02:00') or
                (dv.registered>'04-NOV-18 02:00' and dv.registered<'10-MAR-19 02:00') or
                (dv.registered>'05-NOV-17 02:00' and dv.registered<'11-MAR-18 02:00') or
                (dv.registered>'06-NOV-16 02:00' and dv.registered<'12-MAR-17 02:00') or
@@ -185,6 +194,9 @@
             
             <aida:region title= "Data processing elapsed time per run" >            
                 <aida:style>
+                    <aida:style type="statisticsBox">                                                                                
+                         <aida:attribute name="isVisible" value="false"/>                                                             
+                    </aida:style>                                                                                                    
                     <aida:style type="data">
                         <aida:style type="errorBar">
                             <aida:attribute name="isVisible" value="false"/>
@@ -221,6 +233,9 @@
             </aida:region>
             <aida:region title= "Data processing elapsed time per run" >            
                 <aida:style>
+                    <aida:style type="statisticsBox">                                                                                
+                         <aida:attribute name="isVisible" value="false"/>                                                             
+                    </aida:style>                                                                                                    
                     <aida:style type="data">
                         <aida:style type="errorBar">
                             <aida:attribute name="isVisible" value="false"/>
@@ -282,6 +297,9 @@
         <aida:plotter height="400" width="1000">  
             <aida:region title= "Data processing elapsed time per run vs MET" > 
                 <aida:style>
+                    <aida:style type="statisticsBox">                                                                                
+                         <aida:attribute name="isVisible" value="false"/>                                                             
+                    </aida:style>                                                                                                    
                     <aida:style type="yAxis">
                         <aida:attribute name="label" value="log10(Hours)"/>
                     </aida:style>

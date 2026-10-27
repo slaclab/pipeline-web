@@ -6,7 +6,7 @@
     <parent>
         <groupId>srs</groupId>
         <artifactId>org-srs-maven-project-war</artifactId>
-        <version>5.1</version>
+        <version>5.4-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -61,8 +61,9 @@
 
 
     <scm>
-        <connection>scm:svn:file:///nfs/slac/g/srs/subversion/org-srs-pipeline-web/trunk</connection>
-        <url>http://java.freehep.org/svn/repos/srs/list/org-srs-pipeline-web</url>
+        <connection>scm:git:https://github.com/slaclab/pipeline-web.git</connection>
+        <developerConnection>scm:git:https://github.com/slaclab/pipeline-web.git</developerConnection>
+        <url>https://github.com/slaclab/pipeline-web</url>
     </scm>
 
     <repositories>
